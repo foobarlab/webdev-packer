@@ -5,21 +5,33 @@ if [ -z ${BUILD_RUN:-} ]; then
   exit 1
 fi
 
-# ---- MariaDB
+# ---- MariaDB (MySQL)
+
+# TODO
+
+# ---- Sqlite
 
 # TODO
 
 # ---- Postgres
 
-# TODO make this optional
-
-# ---- CouchDB
-
-# TODO make this optional
+# TODO
 
 # ---- MongoDB
 
-# TODO make this optional
+# TODO
+
+# ---- Redis
+
+# TODO
+
+# ---- Solr
+
+# TODO
+
+# ---- CouchDB
+
+# TODO
 
 # ---- Sync packages
 
