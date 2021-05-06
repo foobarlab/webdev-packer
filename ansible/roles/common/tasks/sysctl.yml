@@ -1,0 +1,18 @@
+---
+# vim: syntax=yaml
+# custom settings for sysctl
+
+- name: sysctl - backup sysctl.conf
+  copy:
+    src: /etc/sysctl.conf
+    dest: /etc/sysctl.conf.bak
+    owner: root
+    group: root
+    mode: 0644
+    backup: no
+
+- include: sysctl/defaults.yml
+- include: sysctl/local.yml
+
+- name: sysctl - reload configuration
+  shell: sysctl --system -p

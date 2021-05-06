@@ -1,0 +1,9 @@
+---
+# entry point for Vagrant provisioning
+# vim: syntax=yaml
+- hosts: all
+  become: yes
+  become_method: sudo
+  user: vagrant
+  roles:
+    - common

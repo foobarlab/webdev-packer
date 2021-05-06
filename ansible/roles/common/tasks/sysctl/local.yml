@@ -1,0 +1,74 @@
+---
+# vim: syntax=yaml
+# local sysctl config in /etc/sysctl.d/local.conf
+
+- name: sysctl - local - touch config file
+  file:
+    path: /etc/sysctl.d/local.conf
+    state: touch
+    mode: u=rw,g=r,o=r
+
+# /proc/sys/fs/inotify/max_user_watches, default: 8192
+- name: sysctl - local - change inotify limit
+  lineinfile:
+    path: /etc/sysctl.d/local.conf
+    regexp: '^(#)?fs.inotify.max_user_watches'
+    line: 'fs.inotify.max_user_watches=65536'
+    #line: 'fs.inotify.max_user_watches=524288' # TODO recommended for Theia (see https://github.com/eclipse-theia/theia/blob/master/doc/Developing.md#troubleshooting)
+
+# fs.file-max, see: https://easyengine.io/tutorials/linux/increase-open-files-limit/
+# /proc/sys/fs/file-max, default: 393841
+- name: sysctl - local - tweak openfiles limit
+  lineinfile:
+    path: /etc/sysctl.d/local.conf
+    regexp: '^(#)?fs.file-max'
+    line: 'fs.file-max=2097152'
+
+# reduce swapiness (default = 60)
+# verify value: cat /proc/sys/vm/swappiness
+# see: https://askubuntu.com/a/149427
+# see: https://help.ubuntu.com/community/SwapFaq
+# we try the following value to do less aggressive swapping
+#vm.swappiness = 20
+- name: sysctl - local - tweak swapiness to be less aggressive
+  lineinfile:
+    path: /etc/sysctl.d/local.conf
+    regexp: '^(#)?vm.swappiness'
+    line: 'vm.swappiness=20'
+
+# increase max number of processes (on 64bit the theoretical max is 4194303, on 32bit it is less)
+- name: sysctl - local - increase max allowed number of processes
+  lineinfile:
+    path: /etc/sysctl.d/local.conf
+    regexp: '^(#)?kernel.pid_max'
+    line: 'kernel.pid_max=999999'
+
+- name: sysctl - local - disable the magic-sysrq key
+  lineinfile:
+    path: /etc/sysctl.d/local.conf
+    regexp: '^(#)?kernel.sysrq'
+    line: 'kernel.sysrq=0'
+
+- name: sysctl - local - reboot after 5 seconds when the kernel panics
+  lineinfile:
+    path: /etc/sysctl.d/local.conf
+    regexp: '^(#)?kernel.panic'
+    line: 'kernel.panic=5'
+
+- name: sysctl - local - enable tcp syncookies
+  lineinfile:
+    path: /etc/sysctl.d/local.conf
+    regexp: '^(#)?net.ipv4.tcp_syncookies'
+    line: 'net.ipv4.tcp_syncookies=1'
+
+- name: sysctl - local - iptables - allow IP forwarding (only for DEVELOPMENT!)
+  lineinfile:
+    path: /etc/sysctl.d/local.conf
+    regexp: '^(#)?net.ipv4.ip_forward'
+    line: 'net.ipv4.ip_forward=1'
+
+- name: sysctl - local - iptables - allow localnet routing (normally dropped as martian, only for DEVELOPMENT!)
+  lineinfile:
+    path: /etc/sysctl.d/local.conf
+    regexp: '^(#)?net.ipv4.conf.all.route_localnet'
+    line: 'net.ipv4.conf.all.route_localnet=1'

@@ -1,0 +1,8 @@
+---
+# vim: syntax=yaml
+
+- name: update system - refresh overlays and ego sync
+  shell: /usr/local/sbin/foo-sync && sleep 5 && sync
+
+- name: update system - run world update
+  shell: emerge -vtuDN --color=n --with-bdeps=y @world

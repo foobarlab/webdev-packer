@@ -1,0 +1,12 @@
+---
+# vim: syntax=yaml
+
+- name: fix dirs - ensure essential dirs exist
+  file:
+    state: directory
+    path: "{{ item.path }}"
+    mode: "{{ item.mode }}"
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+  with_items:
+    - { path: /usr/local/src , mode: "0755", owner: root, group: root }

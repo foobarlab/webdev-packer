@@ -1,0 +1,33 @@
+---
+# vim: syntax=yaml
+# use "mkpasswd --method=sha-512" to generate password hash for users, see: https://serversforhackers.com/c/create-user-in-ansible
+
+- name: create users and groups - add 'www-data' group
+  group:
+    name: www-data
+    state: present
+    system: yes
+
+- name: create users and groups - add 'www-data' user
+  user:
+    name: www-data
+    group: www-data
+    state: present
+    shell: /sbin/nologin
+    system: yes
+    createhome: no
+    home: /var/www
+
+- name: create users and groups - add user 'vagrant' to group 'www-data'
+  user:
+    name: vagrant
+    groups: www-data
+    append: yes
+
+- name: create users and groups - make www-data owner of /var/www (home dir for www-data)
+  file:
+    path: /var/www
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: 0750

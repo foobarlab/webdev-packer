@@ -1,0 +1,5 @@
+---
+# vim: syntax=yaml
+
+- name: java - set default system vm
+  shell: eselect java-vm set system openjdk-bin-8
