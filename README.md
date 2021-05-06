@@ -1,7 +1,7 @@
 # Web Development Vagrant box
 
 This is a Funtoo Linux that is packaged into a Vagrant box file. Currently only a VirtualBox version is provided.
-It is based on the [Funtoo Base Vagrant box](https://github.com/foobarlab/funtoo-base-packer) and provides a classic simple environment for web development.
+It is based on the [Funtoo Base Vagrant box](https://github.com/foobarlab/funtoo-base-packer) and provides an environment for web development.
 
 ### What's included?
 

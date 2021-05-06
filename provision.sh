@@ -14,6 +14,7 @@ chmod +x $SCRIPTS/scripts/*.sh
 for script in \
   10-prepare \
   20-kernel \
+  25-headless \
   30-system-update \
   40-languages \
   50-webserver \

@@ -22,6 +22,7 @@ export BUILD_GUEST_TYPE="Gentoo_64"
 export BUILD_BOX_CPUS="2"
 export BUILD_BOX_MEMORY="2048"
 
+# add a custom overlay?
 export BUILD_CUSTOM_OVERLAY=false
 export BUILD_CUSTOM_OVERLAY_NAME="myreponame"
 export BUILD_CUSTOM_OVERLAY_URL="https://github.com/username/myreponame-overlay.git"
@@ -31,7 +32,7 @@ export BUILD_CUSTOM_OVERLAY_BRANCH="main"
 #export BUILD_AUTO_FINALIZE=false  # if 'true' automatically run finalize.sh script
 
 export BUILD_KERNEL=false                 # build a new kernel?
-export BUILD_HEADLESS=false               # if false, gui will be shown
+export BUILD_HEADLESS=true                # if true, gui will be uninstalled, otherwise gui will be shown
 # TODO flag for xorg (BUILD_WINDOW_SYSTEM)?
 
 export BUILD_KEEP_MAX_CLOUD_BOXES=1       # set the maximum number of boxes to keep in Vagrant Cloud
@@ -46,7 +47,7 @@ export BUILD_MAKEOPTS="-j${jobs}"
 let "memory = $BUILD_CPUS * 2048"  # recommended 2GB for each cpu
 export BUILD_MEMORY="${memory}"
 
-export BUILD_BOX_RELEASE_NOTES="Classic web development environment based on Funtoo Linux. See README in sources for details."     # edit this to reflect actual setup
+export BUILD_BOX_RELEASE_NOTES="Web development environment based on Funtoo Linux. See README in sources for details."     # edit this to reflect actual setup
 
 export BUILD_TIMESTAMP="$(date --iso-8601=seconds)"
 
