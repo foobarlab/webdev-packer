@@ -5,9 +5,6 @@ if [ -z ${BUILD_RUN:-} ]; then
   exit 1
 fi
 
-# refresh fluxbox menu
-fluxbox-generate_menu -is -ds
-
 # sanitize perl packages
 sudo perl-cleaner --all
 
