@@ -13,5 +13,5 @@ fi
 
 # ---- Sync packages
 
-sf_vagrant="`sudo df | grep vagrant | tail -1 | awk '{ print $6 }'`"
-sudo rsync -urv /var/cache/portage/packages/* $sf_vagrant/packages/
+#sf_vagrant="`sudo df | grep vagrant | tail -1 | awk '{ print $6 }'`"
+#sudo rsync -urv /var/cache/portage/packages/* $sf_vagrant/packages/
