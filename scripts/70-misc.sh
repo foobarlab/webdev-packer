@@ -5,14 +5,27 @@ if [ -z ${BUILD_RUN:-} ]; then
   exit 1
 fi
 
+# TODO split into separate files: email dns, search-index, message-queue, ... 
+
 # ---- Postfix
 
 # TODO
 #sudo emerge -nuvtND --with-bdeps=y \
 
-# ---- Dovecot
+# ---- Redis
 
-# TODO make this optional, otherwise install mailcatcher (Ansible?)
+sudo emerge -nuvtND --with-bdeps=y \
+    dev-db/redis
+
+# ---- Solr
+
+sudo emerge -nuvtND --with-bdeps=y \
+    dev-db/apache-solr-bin
+
+# ---- RabbitMQ
+
+sudo emerge -nuvtND --with-bdeps=y \
+    net-misc/rabbitmq-server
 
 # ---- Sync packages
 

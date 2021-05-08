@@ -17,9 +17,11 @@ for script in \
   25-headless \
   30-system-update \
   40-languages \
-  50-webserver \
+  50-services \
   60-database \
-  70-email \
+  70-misc \
+  80-utils \
+  82-webtools \
   90-postprocess \
   99-cleanup
 do

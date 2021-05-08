@@ -5,21 +5,14 @@ if [ -z ${BUILD_RUN:-} ]; then
   exit 1
 fi
 
-# ---- Apache
+# ---- various webtools
 
-# TODO
-
-# ---- Nginx
-
-# TODO
-
-# ---- Lighttpd
-
-# TODO
-
-# ---- Varnish Cache
-
-# TODO
+sudo emerge -nuvtND --with-bdeps=y \
+    app-admin/webapp-config \
+    www-misc/shellinabox \
+    dev-db/phpmyadmin \
+    www-apps/phpsysinfo \
+    www-apps/postfixadmin
 
 # ---- Sync packages
 

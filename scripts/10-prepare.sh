@@ -231,14 +231,26 @@ DATA
 # ---- package.mask
 
 sudo mkdir -p /etc/portage/package.mask
+cat <<'DATA' | sudo tee -a /etc/portage/package.mask/dev-erlang
+# masked for couchdb 3.1.1
+>=dev-lang/erlang-23.0
+DATA
+cat <<'DATA' | sudo tee -a /etc/portage/package.mask/dev-php
+>=dev-lang/php-7.4
+DATA
 
 # ---- package.unmask
 
 sudo mkdir -p /etc/portage/package.unmask
+cat <<'DATA' | sudo tee -a /etc/portage/package.unmask/dev-couchdb
+# unmask dev-db/couchdb as we use our own version (foobarlab overlay):
+# Pacho Ramos <pacho@gentoo.org> (11 Nov 2018): Unmaintained, security issues (#630796, #663164). Removal in a month.
+>=dev-db/couchdb-2.3.0
+DATA
 
 # ---- package.accept_keywords
 
-sudo mkdir -p /etc/portage/package.accept_keywords
+#sudo mkdir -p /etc/portage/package.accept_keywords
 
 # --- always copy kernel.config to current kernel src
 

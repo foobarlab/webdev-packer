@@ -5,9 +5,51 @@ if [ -z ${BUILD_RUN:-} ]; then
   exit 1
 fi
 
+# ---- Python
+
+sudo emerge -nuvtND --with-bdeps=y \
+    dev-python/pip \
+    dev-python/sphinx \
+    dev-python/numpy
+
+# ---- Ruby
+
+# disable doc creation by default
+cat <<'DATA' | sudo tee -a /etc/gemrc
+# if you do not want ruby docs or rake
+#gem: --no-rdoc --no-ri
+# or
+#gem: --no-document
+
+gem: --no-rdoc --no-ri
+
+DATA
+
+sudo emerge -nuvtND --with-bdeps=y \
+    dev-lang/ruby \
+    dev-ruby/rubygems \
+    dev-ruby/bundler \
+    dev-ruby/sass
+
 # ---- Java
 
-# TODO + ant
+sudo emerge -nuvtND --with-bdeps=y \
+    dev-java/openjdk-bin:8 \
+    dev-java/openjdk-bin \
+    app-eselect/eselect-java \
+    dev-java/ant \
+    dev-java/ant-contrib \
+    dev-java/ant-commons-net \
+    dev-java/ant-ivy \
+    dev-java/maven-bin
+
+# show default java vm (user/system)
+eselect java-vm show
+
+# set default java vm (set in ansible)
+#sudo eselect java-vm set system openjdk-bin-8
+#eselect java-vm set user openjdk-bin-8
+#eselect java-vm show
 
 # ---- JavaScript / node.js
 
@@ -36,13 +78,41 @@ sudo emerge -nuvtND --with-bdeps=y \
 # update PEAR/PECL channels while online
 #sudo emerge -v --config PEAR-PEAR
 
-# ---- Python
-
-# TODO add pip or more stuff?
-
 # ----- Go
 
-# TODO if needed by tooling
+sudo emerge -nuvtND --with-bdeps=y dev-lang/go
+
+# Go apps in /opt/go:
+sudo mkdir -p /opt/go
+cat <<'DATA' | sudo tee -a /root/.bashrc
+# we want our apps to be in /opt/go
+export GOPATH=/opt/go
+export PATH=$PATH:$GOPATH/bin
+
+DATA
+cat <<'DATA' | sudo tee -a /root/.zshrc
+# we want our apps to be in /opt/go
+export GOPATH=/opt/go
+export PATH=$PATH:$GOPATH/bin
+
+DATA
+cat <<'DATA' | sudo tee -a ~vagrant/.bashrc
+# include go apps installed by root to our PATH
+export PATH=$PATH:/opt/go/bin
+
+DATA
+cat <<'DATA' | sudo tee -a ~vagrant/.zshrc
+# include go apps installed by root to our PATH
+export PATH=$PATH:/opt/go/bin
+
+DATA
+
+# ---- Elixir / Erlang OTP
+
+sudo emerge -nuvtND --with-bdeps=y \
+    dev-lang/elixir \
+    dev-lang/erlang \
+    dev-util/rebar-bin
 
 # ---- Sync packages
 
