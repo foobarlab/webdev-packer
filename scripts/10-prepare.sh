@@ -80,11 +80,14 @@ MAKEOPTS="BUILD_MAKEOPTS"
 DATA
 sudo sed -i 's/BUILD_MAKEOPTS/'"$BUILD_MAKEOPTS"'/g' /etc/portage/make.conf
 
+# Experimental
+#sudo sed -i 's/USE=\"/USE="gold /g' /etc/portage/make.conf
+
+# Debugging, Various features
+sudo sed -i 's/USE=\"/USE="hscolour profile systemtap jit pgo pcntl pcre /g' /etc/portage/make.conf
+
 # Shell
 sudo sed -i 's/USE=\"/USE="bash-completion zsh-completion /g' /etc/portage/make.conf
-
-# Generic
-#sudo sed -i 's/USE=\"/USE="hscolour profile systemtap jit pgo pcntl pcre /g' /etc/portage/make.conf
 
 # Java
 sudo sed -i 's/USE=\"/USE="java jce /g' /etc/portage/make.conf
@@ -125,6 +128,13 @@ sudo sed -i 's/USE=\"/USE="mysql /g' /etc/portage/make.conf
 
 # PostgreSQL
 sudo sed -i 's/USE=\"/USE="postgres /g' /etc/portage/make.conf
+
+# TODO enable at least WebAssembly
+# LLVM
+#cat <<'DATA' | sudo tee -a /etc/portage/make.conf
+#
+#LLVM_TARGETS="AMDGPU BPF NVPTX X86 AArch64 ARM WebAssembly"
+#DATA
 
 # Media
 sudo sed -i 's/USE=\"/USE="imagemagick apng exif gif ico jpeg jpeg2k pdf png svg tiff truetype webp wmf mng pnm /g' /etc/portage/make.conf
@@ -223,9 +233,31 @@ DATA
 # ---- package.license
 
 sudo mkdir -p /etc/portage/package.license
-cat <<'DATA' | sudo tee -a /etc/portage/package.license/webdev-libpng
+cat <<'DATA' | sudo tee -a /etc/portage/package.license/dev-libpng
 # required by openjdk:
-media-libs/libpng libpng2
+>=media-libs/libpng-1.6.37 libpng2
+DATA
+cat <<'DATA' | sudo tee -a /etc/portage/package.license/dev-dnswalk
+>=net-dns/dnswalk-2.0.2 freedist
+DATA
+cat <<'DATA' | sudo tee -a /etc/portage/package.license/dev-ffmpeg
+>=media-libs/quirc-1.0 AS-IS
+DATA
+cat <<'DATA' | sudo tee -a /etc/portage/package.license/dev-llvm
+>=sys-devel/clang-9.0 Apache-2.0-with-LLVM-exceptions
+>=sys-devel/clang-common-9.0 Apache-2.0-with-LLVM-exceptions
+>=sys-libs/compiler-rt-sanitizers-9.0 Apache-2.0-with-LLVM-exceptions
+>=sys-libs/compiler-rt-9.0 Apache-2.0-with-LLVM-exceptions
+>=sys-libs/libomp-9.0 Apache-2.0-with-LLVM-exceptions
+>=sys-libs/llvm-libunwind-9.0 Apache-2.0-with-LLVM-exceptions
+>=sys-devel/lld-9.0 Apache-2.0-with-LLVM-exceptions
+>=dev-util/lldb-9.0 Apache-2.0-with-LLVM-exceptions
+DATA
+cat <<'DATA' | sudo tee -a /etc/portage/package.license/dev-subversion
+>=dev-vcs/subversion-1.14.0-r1 FSFAP
+DATA
+cat <<'DATA' | sudo tee -a /etc/portage/package.license/dev-mongodb
+>=dev-db/mongodb-4.0.20 SSPL-1
 DATA
 
 # ---- package.mask
@@ -251,6 +283,10 @@ DATA
 # ---- package.accept_keywords
 
 #sudo mkdir -p /etc/portage/package.accept_keywords
+#cat <<'DATA' | sudo tee -a /etc/portage/package.accept_keywords/dev-linux-headers
+## needed for dev-util/perf:
+#sys-kernel/linux-headers **
+#DATA
 
 # --- always copy kernel.config to current kernel src
 
