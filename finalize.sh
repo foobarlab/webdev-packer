@@ -25,7 +25,7 @@ if [ -f "$BUILD_OUTPUT_FILE_INTERMEDIATE" ]; then
     vagrant box add --name "$BUILD_BOX_NAME" "$BUILD_OUTPUT_FILE_INTERMEDIATE"
     echo "Powerup and provision '$BUILD_BOX_NAME' ..."
     vagrant up --provision --provision-with net_debug || { echo "Unable to startup '$BUILD_BOX_NAME'."; exit 1; }
-    vagrant provision --provision-with provision_ansible,cleanup
+    vagrant provision --provision-with provision_ansible,remove_kernel,cleanup
     echo "Exporting final box to '$BUILD_OUTPUT_FILE_FINAL' ..."
     vagrant package --output "$BUILD_OUTPUT_FILE_FINAL"
     echo "Build finalized."

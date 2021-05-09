@@ -28,6 +28,15 @@ make olddefconfig
 make modules_prepare
 SCRIPT
 
+$script_remove_kernel = <<SCRIPT
+emerge --unmerge debian-sources
+# clean stale kernel files
+mount /boot || true
+eclean-kernel -l
+eclean-kernel -n 1
+ego boot update
+SCRIPT
+
 $script_cleanup = <<SCRIPT
 # debug: list running services
 rc-status
@@ -165,5 +174,6 @@ Vagrant.configure("2") do |config|
 
   config.vm.provision "export_packages", type: "shell", inline: $script_export_packages, privileged: true
   config.vm.provision "clean_kernel", type: "shell", inline: $script_clean_kernel, privileged: true
+  config.vm.provision "remove_kernel", type: "shell", inline: $script_remove_kernel, privileged: true
   config.vm.provision "cleanup", type: "shell", inline: $script_cleanup, privileged: true
 end
