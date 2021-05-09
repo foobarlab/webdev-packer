@@ -14,18 +14,18 @@ sudo emerge -nuvtND --with-bdeps=y \
     app-admin/apachetop
 
 # add some more (optional) modules
-sudo emerge -nuvtND --with-bdeps=y \
-  www-apache/mod_bw \
-  www-apache/mod_common_redirect \
-  www-apache/mod_dnsbl_lookup \
-  www-apache/mod_evasive \
-  www-apache/mod_fcgid \
-  www-apache/mod_geoip2 \
-  www-apache/mod_limitipconn \
-  www-apache/mod_log_sql \
-  www-apache/mod_qos \
-  www-apache/mod_umask \
-  www-apache/mod_xsendfile
+#sudo emerge -nuvtND --with-bdeps=y \
+#  www-apache/mod_bw \
+#  www-apache/mod_common_redirect \
+#  www-apache/mod_dnsbl_lookup \
+#  www-apache/mod_evasive \
+#  www-apache/mod_fcgid \
+#  www-apache/mod_geoip2 \
+#  www-apache/mod_limitipconn \
+#  www-apache/mod_log_sql \
+#  www-apache/mod_qos \
+#  www-apache/mod_umask \
+#  www-apache/mod_xsendfile
 
 # TODO: add mod_security
 #sudo emerge -nuvtND --with-bdeps=y www-apache/mod_security www-apache/modsecurity-crs
