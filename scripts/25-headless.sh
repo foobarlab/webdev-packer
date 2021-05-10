@@ -56,10 +56,9 @@ net-analyzer/wireshark -qt5 tfshark
 media-video/ffmpeg -sdl -xvid
 DATA
 
+# install dummy kernel
+sudo emerge -nuvtND --with-bdeps=y \
+    sys-kernel/dummy-sources
+
 # remove packages
 sudo emerge --depclean
-
-# ---- Sync packages
-
-#sf_vagrant="`sudo df | grep vagrant | tail -1 | awk '{ print $6 }'`"
-#sudo rsync -urv /var/cache/portage/packages/* $sf_vagrant/packages/
