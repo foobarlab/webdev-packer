@@ -48,10 +48,10 @@ sudo emerge -nuvtND --with-bdeps=y \
 # show default java vm (user/system)
 eselect java-vm show
 
-# set default java vm (set in ansible)
-#sudo eselect java-vm set system openjdk-bin-8
+# set default java vm
+sudo eselect java-vm set system openjdk-bin-8
 #eselect java-vm set user openjdk-bin-8
-#eselect java-vm show
+eselect java-vm show
 
 # ---- JavaScript / node.js
 
