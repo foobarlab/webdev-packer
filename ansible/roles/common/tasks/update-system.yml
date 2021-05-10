@@ -9,3 +9,6 @@
 
 - name: update system - preserved rebuilds
   shell: emerge -vt @preserved-rebuild
+
+- name: update system - show (un)merged pkgs
+  shell: genlop -l -u -n
