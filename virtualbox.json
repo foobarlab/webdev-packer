@@ -59,6 +59,7 @@
           "BUILD_MAKEOPTS={{user `makeopts`}}",
           "BUILD_TIMESTAMP={{user `timestamp`}}",
           "BUILD_KERNEL={{user `kernel`}}",
+          "BUILD_HEADLESS={{user `headless`}}",
           "BUILD_CUSTOM_OVERLAY={{user `custom_overlay`}}",
           "BUILD_CUSTOM_OVERLAY_NAME={{user `custom_overlay_name`}}",
           "BUILD_CUSTOM_OVERLAY_URL={{user `custom_overlay_url`}}",
