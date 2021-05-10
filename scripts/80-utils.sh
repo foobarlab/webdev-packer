@@ -119,8 +119,7 @@ sudo emerge -nuvtND --with-bdeps=y \
     media-gfx/imagemagick \
     media-gfx/graphviz \
     app-text/ghostscript-gpl \
-    media-video/ffmpeg \
-    media-video/rtmpdump
+    media-video/ffmpeg
 
 # PHP imagick ext:
 sudo emerge -nuvtND --with-bdeps=y \
