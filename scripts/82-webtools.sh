@@ -14,6 +14,8 @@ sudo emerge -nuvtND --with-bdeps=y \
     www-apps/phpsysinfo \
     www-apps/postfixadmin
 
+# TODO phppgadmin
+
 # ---- Sync packages
 
 sf_vagrant="`sudo df | grep vagrant | tail -1 | awk '{ print $6 }'`"
