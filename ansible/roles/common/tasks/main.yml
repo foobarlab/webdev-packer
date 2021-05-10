@@ -11,6 +11,7 @@
 - include: sysctl.yml
 - include: users-and-groups.yml
 - include: fix-dirs.yml
+- include: nsswitch.yml
 - include: update-system.yml
 #- include: java.yml
 
