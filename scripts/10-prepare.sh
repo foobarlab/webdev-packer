@@ -295,7 +295,7 @@ sudo cp -f /usr/src/kernel.config /usr/src/linux/.config
 
 # --- sync
 
-sudo ego sync
+sudo /usr/local/sbin/foo-sync
 sudo eclean packages
 
 # ---- profile mix-ins
