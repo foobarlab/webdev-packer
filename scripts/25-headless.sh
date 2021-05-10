@@ -8,18 +8,18 @@ fi
 # ---- Run in headless mode?
 
 if [ -z ${BUILD_HEADLESS:-} ]; then
-    echo "BUILD_HEADLESS was not set. Skipping ..."
+    echo "BUILD_HEADLESS was not set. Skipping headless mode."
     exit 0
 else
     if [ "$BUILD_HEADLESS" = false ]; then
-        echo ">>> Skipping headless."
+        echo ">>> Skipping headless mode."
         exit 0
     else
-        echo ">>> Preparing headless ..."
+        echo ">>> Preparing headless mode ..."
     fi
 fi
 
-# uninstall X11 stuff
+# remove X11 related stuff
 sudo sed -i 's:app-editors/gvim::g' /var/lib/portage/world
 sudo sed -i 's:app-editors/leafpad::g' /var/lib/portage/world
 sudo sed -i 's:gnome-extra/nm-applet::g' /var/lib/portage/world
@@ -41,7 +41,7 @@ sudo sed -i 's:x11-terms/xterm::g' /var/lib/portage/world
 sudo sed -i 's:x11-themes/fluxbox-styles-fluxmod::g' /var/lib/portage/world
 sudo sed -i 's:x11-wm/fluxbox::g' /var/lib/portage/world
 
-# set profiles
+# set non-X profiles
 sudo epro mix-ins -X -gnome
 
 # remove use flag tweaks from previous boxes
