@@ -130,12 +130,12 @@ sudo sed -i 's/USE=\"/USE="mysql /g' /etc/portage/make.conf
 # PostgreSQL
 sudo sed -i 's/USE=\"/USE="postgres /g' /etc/portage/make.conf
 
-# TODO enable at least WebAssembly
 # LLVM
-#cat <<'DATA' | sudo tee -a /etc/portage/make.conf
-#
+cat <<'DATA' | sudo tee -a /etc/portage/make.conf
 #LLVM_TARGETS="AMDGPU BPF NVPTX X86 AArch64 ARM WebAssembly"
-#DATA
+LLVM_TARGETS="BPF X86 WebAssembly"
+
+DATA
 
 # Media
 sudo sed -i 's/USE=\"/USE="imagemagick apng exif gif ico jpeg jpeg2k pdf png svg tiff truetype webp wmf mng pnm /g' /etc/portage/make.conf
