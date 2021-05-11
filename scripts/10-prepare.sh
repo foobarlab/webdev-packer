@@ -70,7 +70,6 @@ auto-sync = no
 priority = 10
 DATA
 	sudo sed -i 's/BUILD_CUSTOM_OVERLAY_NAME/'"$BUILD_CUSTOM_OVERLAY_NAME"'/g' /etc/portage/repos.conf/$BUILD_CUSTOM_OVERLAY_NAME
-	# TODO remove 'foobarlab-stage3' overlay
 fi
 
 # ---- make.conf
