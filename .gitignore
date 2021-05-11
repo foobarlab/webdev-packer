@@ -11,3 +11,4 @@ build_version
 build_number
 temp/
 packages/
+distfiles/
