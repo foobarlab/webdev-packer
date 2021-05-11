@@ -127,7 +127,7 @@ sudo sed -i 's/USE=\"/USE="fpm php /g' /etc/portage/make.conf
 # php targets
 cat <<'DATA' | sudo tee -a /etc/portage/make.conf
 # PHP_TARGETS / PHP_TARGETS USE_EXPAND will build extensions, see: https://wiki.gentoo.org/wiki/PHP
-#PHP_TARGETS="php5-6 php7-0 php7-1 php7-2 php7-3 php7-4"
+#PHP_TARGETS="php5-6 php7-3 php7-4 php8-0"
 PHP_TARGETS="php7-3 php7-4"
 
 DATA
@@ -223,21 +223,21 @@ DATA
 cat <<'DATA' | sudo tee -a /etc/portage/package.use/webdev-krb5
 app-crypt/mit-krb5 keyutils libressl
 DATA
-cat <<'DATA' | sudo tee -a /etc/portage/package.use/webdev-ant
-# FIXME temporary added here, pulls in jython (build failing)
-dev-java/ant -bsf
-DATA
+#cat <<'DATA' | sudo tee -a /etc/portage/package.use/webdev-ant
+## FIXME temporary added here, pulls in jython (build failing)
+#dev-java/ant -bsf
+#DATA
 cat <<'DATA' | sudo tee -a /etc/portage/package.use/webdev-alsa-plugins
 # required by firefox-bin:
 >=media-plugins/alsa-plugins-1.1.9 pulseaudio
 DATA
 
-# temporary fixes (removed in 90-postprocess.sh)
-cat <<'DATA' | sudo tee -a /etc/portage/package.use/temp-circular-fix
-# resolve circular dependency during install:
->=media-libs/libwebp-1.0.2 -tiff
->=media-libs/libjpeg-turbo-2.0.2 -java
-DATA
+## temporary fixes (removed in 90-postprocess.sh)
+#cat <<'DATA' | sudo tee -a /etc/portage/package.use/temp-circular-fix
+## resolve circular dependency during install:
+#>=media-libs/libwebp-1.0.2 -tiff
+#>=media-libs/libjpeg-turbo-2.0.2 -java
+#DATA
 
 # ---- package.license
 
