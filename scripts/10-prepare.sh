@@ -239,6 +239,11 @@ DATA
 #>=media-libs/libjpeg-turbo-2.0.2 -java
 #DATA
 
+cat <<'DATA' | sudo tee -a /etc/portage/package.use/webdev-libjpeg-turbo
+# disable java
+media-libs/libjpeg-turbo -java
+DATA
+
 # ---- package.license
 
 sudo mkdir -p /etc/portage/package.license
