@@ -32,12 +32,12 @@ sudo emerge -nuvtND --with-bdeps=y \
 
 # ---- PostgreSQL
 
-#sudo emerge -nuvtND --with-bdeps=y \
-#    dev-db/postgresql \
-#    app-eselect/eselect-postgresql
-#
-## basic configuration
-#sudo emerge --config dev-db/postgresql || true
+sudo emerge -nuvtND --with-bdeps=y \
+    dev-db/postgresql \
+    app-eselect/eselect-postgresql
+
+# basic configuration
+sudo emerge --config dev-db/postgresql || true
 
 # ---- Sqlite
 
@@ -46,13 +46,13 @@ sudo emerge -nuvtND --with-bdeps=y \
 
 # ---- Couchdb
 
-#sudo emerge -nuvtND --with-bdeps=y \
-#    dev-db/couchdb
+sudo emerge -nuvtND --with-bdeps=y \
+    dev-db/couchdb
 
 # ---- MongoDB
 
-#sudo emerge -nuvtND --with-bdeps=y \
-#    dev-db/mongodb
+sudo emerge -nuvtND --with-bdeps=y \
+    dev-db/mongodb
 
 # ---- Sync packages
 

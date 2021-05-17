@@ -8,10 +8,9 @@ fi
 # ---- Python
 
 sudo emerge -nuvtND --with-bdeps=y \
-    dev-python/pip
-    
-    #dev-python/sphinx \
-    #dev-python/numpy
+    dev-python/pip \
+    dev-python/sphinx \
+    dev-python/numpy
 
 # ---- Ruby
 
@@ -39,18 +38,17 @@ sudo emerge -nuvtND --with-bdeps=y \
     app-eselect/eselect-java \
     dev-java/ant \
     dev-java/ant-contrib \
-    dev-java/ant-commons-net
-    
-    #dev-java/openjdk-bin \
-    #dev-java/ant-ivy \
-    #dev-java/maven-bin
+    dev-java/ant-commons-net \
+    dev-java/openjdk-bin \
+    dev-java/ant-ivy \
+    dev-java/maven-bin
 
 # show default java vm (user/system)
 eselect java-vm show
 
 # set default java vm
 sudo eselect java-vm set system openjdk-bin-8
-#eselect java-vm set user openjdk-bin-8
+eselect java-vm set user openjdk-bin-8
 eselect java-vm show
 
 # ---- JavaScript / node.js

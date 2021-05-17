@@ -14,18 +14,18 @@ sudo emerge -nuvtND --with-bdeps=y \
 
 # ---- Redis
 
-#sudo emerge -nuvtND --with-bdeps=y \
-#    dev-db/redis
+sudo emerge -nuvtND --with-bdeps=y \
+    dev-db/redis
 
 # ---- Solr
 
-#sudo emerge -nuvtND --with-bdeps=y \
-#    dev-db/apache-solr-bin
+sudo emerge -nuvtND --with-bdeps=y \
+    dev-db/apache-solr-bin
 
 # ---- RabbitMQ
 
-#sudo emerge -nuvtND --with-bdeps=y \
-#    net-misc/rabbitmq-server
+sudo emerge -nuvtND --with-bdeps=y \
+    net-misc/rabbitmq-server
 
 # ---- Sync packages
 

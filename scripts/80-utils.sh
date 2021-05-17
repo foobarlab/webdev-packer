@@ -13,10 +13,10 @@ fi
 
 # ---- various version control systems (other than Git)
 
-#sudo emerge -nuvtND --with-bdeps=y \
-#  dev-vcs/subversion \
-#  dev-vcs/mercurial \
-#  dev-vcs/cvs
+sudo emerge -nuvtND --with-bdeps=y \
+  dev-vcs/subversion \
+  dev-vcs/mercurial \
+  dev-vcs/cvs
 
 # TODO add 'dev-vcs/git-lfs' (last build failed)
 
@@ -138,12 +138,12 @@ sudo emerge -nuvtND --with-bdeps=y \
 
 # ---- debugging / profiling / benchmark
 
-#sudo emerge -nuvtND --with-bdeps=y \
-#    sys-devel/gdb \
-#    dev-util/strace \
-#    dev-util/systemtap \
-#    sys-apps/lnxhc \
-#    app-admin/dio
+sudo emerge -nuvtND --with-bdeps=y \
+    sys-devel/gdb \
+    dev-util/strace \
+    dev-util/systemtap \
+    sys-apps/lnxhc \
+    app-admin/dio
 
 sudo emerge -nuvtND --with-bdeps=y \
     dev-db/mysql-super-smack
