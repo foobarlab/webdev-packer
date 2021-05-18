@@ -20,6 +20,7 @@ sudo etc-update --verbose --preen    # auto-merge trivial changes
 
 # DEBUG:
 eselect java-vm show
+sudo cat /etc/profile.d/java-config-2.sh
 
 user_id=$(id -u)    # FIX: because of "/etc/profile.d/java-config-2.sh: line 22: user_id: unbound variable" we try to set the variable here
 sudo env-update

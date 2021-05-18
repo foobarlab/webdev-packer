@@ -25,7 +25,10 @@ sudo find /var/cache/portage/packages/ -type d -exec chmod 755 {} +
 sudo find /var/cache/portage/packages/ -type f -exec chmod 644 {} +
 sudo chown root:portage /var/cache/portage/packages
 sudo chmod 775 /var/cache/portage/packages
-sudo ego sync
+
+# ---- sync pkgs and fix bin pkgs
+
+sudo /usr/local/sbin/foo-sync
 sudo emaint binhost --fix
 
 # ---- box name
@@ -308,13 +311,12 @@ DATA
 #sys-kernel/linux-headers **
 #DATA
 
-# --- always copy kernel.config to current kernel src
+# ---- always copy kernel.config to current kernel src
 
 sudo cp -f /usr/src/kernel.config /usr/src/linux/.config
 
-# --- sync
+# ---- clean bin pkgs
 
-sudo /usr/local/sbin/foo-sync
 sudo eclean packages
 
 # ---- profile mix-ins
