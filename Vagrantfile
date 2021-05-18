@@ -167,9 +167,9 @@ Vagrant.configure("2") do |config|
     ansible.verbose = true
     ansible.compatibility_mode = "2.0"
     ansible.playbook = "provision.yml"
-    #ansible.extra_vars = {
-    #  my_var: "#{ENV['MY_VAR']}"
-    #}
+    ansible.extra_vars = {
+      mysql_root_password: "#{ENV['BUILD_MYSQL_ROOT_PASSWORD']}"
+    }
   end
 
   config.vm.provision "export_packages", type: "shell", inline: $script_export_packages, privileged: true
