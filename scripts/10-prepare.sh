@@ -26,11 +26,6 @@ sudo find /var/cache/portage/packages/ -type f -exec chmod 644 {} +
 sudo chown root:portage /var/cache/portage/packages
 sudo chmod 775 /var/cache/portage/packages
 
-# ---- sync pkgs and fix bin pkgs
-
-sudo /usr/local/sbin/foo-sync
-sudo emaint binhost --fix
-
 # ---- box name
 
 echo "$BUILD_BOX_DESCRIPTION" >> ~vagrant/.release_$BUILD_BOX_NAME
@@ -315,8 +310,13 @@ DATA
 
 sudo cp -f /usr/src/kernel.config /usr/src/linux/.config
 
+# ---- sync pkgs and fix bin pkgs
+
+sudo /usr/local/sbin/foo-sync
+
 # ---- clean bin pkgs
 
+sudo emaint binhost --fix
 sudo eclean packages
 
 # ---- profile mix-ins
