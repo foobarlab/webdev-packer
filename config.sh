@@ -35,6 +35,8 @@ export BUILD_KERNEL=false                 # build a new kernel?
 export BUILD_HEADLESS=true                # if true, gui will be uninstalled, otherwise gui will be shown
 # TODO flag for xorg (BUILD_WINDOW_SYSTEM)?
 
+export BUILD_MYSQL_ROOT_PASSWORD=changeme # set the root password for MySQL/MariaDB
+
 export BUILD_KEEP_MAX_CLOUD_BOXES=1       # set the maximum number of boxes to keep in Vagrant Cloud
 
 # ----------------------------! do not edit below this line !----------------------------
