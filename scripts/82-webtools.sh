@@ -10,10 +10,10 @@ fi
 sudo emerge -nuvtND --with-bdeps=y \
     app-admin/webapp-config \
     www-misc/shellinabox \
-    dev-db/phpmyadmin \
     www-apps/phpsysinfo \
     www-apps/postfixadmin \
-    www-apps/phppgadmin
+    dev-db/phpmyadmin \
+    dev-db/phppgadmin
 
 # ---- Sync packages
 
