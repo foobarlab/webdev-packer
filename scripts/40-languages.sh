@@ -43,12 +43,8 @@ sudo emerge -nuvtND --with-bdeps=y \
     dev-java/ant-ivy \
     dev-java/maven-bin
 
-# show default java vm (user/system)
-eselect java-vm show
-
-# set default java vm
+# set default java system vm
 sudo eselect java-vm set system openjdk-bin-8
-eselect java-vm set user openjdk-bin-8
 eselect java-vm show
 
 # ---- JavaScript / node.js
