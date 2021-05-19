@@ -1,0 +1,83 @@
+---
+# vim: syntax=yaml
+# couchdb - see: http://docs.couchdb.org/en/stable/
+# LOG FILES: (couchdb:couchdb,644) couch.log
+
+# adjust some system limits for couchdb:
+# see: http://docs.couchdb.org/en/stable/maintenance/performance.html#system-resource-limits
+# see: https://github.com/apache/couchdb/issues/796
+- name: couchdb - limits.conf - adjust max open file handles
+  copy:
+    dest: "/etc/security/limits.d/couchdb.conf"
+    owner: root
+    group: root
+    mode: 0644
+    content: |
+      # allow more open file handles
+      # see: http://docs.couchdb.org/en/stable/maintenance/performance.html#system-resource-limits
+      #<domain>    <type>    <item>    <value>
+      couchdb      hard      nofile    10000
+      couchdb      soft      nofile    10000
+
+- name: couchdb - ensure log dir exists
+  file:
+    path: /var/log/couchdb
+    state: directory
+    owner: couchdb
+    group: couchdb
+    mode: 0750
+
+- name: couchdb - configure local.ini
+  ini_file:
+    backup: yes
+    path: /etc/couchdb/local.ini
+    section: "{{ item.section }}"
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+    state: "{{ item.state }}"
+  with_items:
+    - { section: "couchdb", option: "uuid", value: "", state: absent }
+    - { section: "couchdb", option: "max_dbs_open", value: "100", state: present }  # max open dbs at the same time (increases rapidly for cluster setups!), see: http://docs.couchdb.org/en/stable/maintenance/performance.html#max-dbs-open
+    #- { section: "couchdb", option: "update_lru_on_read", value: "false", state: present } # since 2.2 defaulting to false, see also: https://github.com/apache/couchdb/issues/796
+    - { section: "chttpd", option: "port", value: "{{ couchdb_url_port }}", state: present } # default: 5984
+    - { section: "chttpd", option: "bind_address", value: "0.0.0.0", state: present } # (FIXME) standard, clustered port (port 5984), access webend here: http://127.0.0.1:5984/_utils/
+    #- { section: "httpd", option: "bind_address", value: "127.0.0.1", state: present }  # (FIXME) node-local (port 5986), for security bind to localhost only!
+    #- { section: "httpd", option: "port", value: "5986", state: present }
+    #- { section: "httpd", option: "enable_cors", value: "true", state: present }
+    #- { section: "cors", option: "credentials", value: "true", state: present }
+    #- { section: "cors", option: "origins", value: "*", state: present }
+    #- { section: "cors", option: "headers", value: "accept, authorization, content-type, origin, referer", state: present }
+    #- { section: "cors", option: "methods", value: "GET, PUT, POST, HEAD, DELETE", state: present }
+    - { section: "csp", option: "enable", value: "false", state: present }  # CSP (Content Security Policy) Support for _utils - disabled for dashboard
+    #- { section: "csp", option: "header_value", value: "default-src 'self'; img-src 'self'; font-src *; script-src 'self' 'unsafe-eval'; style-src 'self' 'unsafe-inline';", state: present }
+    - { section: "admins", option: "admin", value: "{{ couchdb_admin_pass }}", state: present }
+
+- name: couchdb - copy prerequisite checking script
+  copy:
+    src: couchdb/couch-erlang-check
+    dest: /usr/local/bin/couch-erlang-check
+    mode: 0755
+    owner: root
+    group: root
+
+- name: couchdb - execute prerequisite checking script
+  command: /usr/local/bin/couch-erlang-check
+
+- name: couchdb - copy single node setup init script
+  template:
+    src: "couchdb-import-export/bin/couch-init.j2"
+    dest: "/usr/local/sbin/couch-init"
+    mode: 0750
+    owner: root
+    group: root
+
+- name: couchdb - execute single node setup init script
+  command: /usr/local/sbin/couch-init
+
+# TODO remove 'couch-init' after use?
+#- name: couchdb - remove init script
+#  file:
+#    path: /usr/local/sbin/couch-init
+#    state: absent
+
+- include: couchdb/import-export.yml

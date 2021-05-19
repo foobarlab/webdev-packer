@@ -1,0 +1,118 @@
+user nginx nginx;
+
+worker_processes 4;
+worker_rlimit_nofile 64000;
+
+error_log /var/log/nginx/error_log info;
+
+events {
+    worker_connections 16000;
+    multi_accept on;
+    use epoll;
+}
+
+http {
+    log_format main
+        '$remote_addr - $remote_user [$time_local] '
+        '"$request" $status $bytes_sent '
+        '"$http_referer" "$http_user_agent" '
+        '"$gzip_ratio"';
+
+    access_log off;
+
+    disable_symlinks if_not_owner;
+    ignore_invalid_headers on;
+    server_tokens off;
+
+    keepalive_timeout 20;
+    client_header_timeout 20;
+    client_body_timeout 20;
+    reset_timedout_connection on;
+    send_timeout 20;
+
+    sendfile off; # was 'on', 'off' for Vagrant, see https://www.vagrantup.com/docs/synced-folders/virtualbox#caveats
+    tcp_nopush on;
+    tcp_nodelay on;
+
+    include /etc/nginx/mime.types;
+    default_type application/octet-stream;
+    charset UTF-8;
+
+    gzip on;
+    gzip_vary on;
+    gzip_types text/plain text/css application/json application/x-javascript text/xml application/xml application/xml+rss text/javascript application/javascript text/x-js image/x-icon image/bmp;
+
+	root {{ hosting_path }};
+
+#	 # catch default names
+#    server {
+#        listen   80; 
+#        server_name _;
+#
+#        #limit_conn  gulag 50; 
+#
+#        # don't use server name
+#        server_name_in_redirect  off;
+#
+#        access_log  /var/log/nginx/access_default.log;
+#        error_log /var/log/nginx/server_error.log error;
+#
+#        # pass all to default
+#        location / { 
+#
+#                # return "site not available"
+#                #root   /var/www/default/htdocs;
+#                #index  index.html index.htm;
+#
+#                # return empty page
+#                #return 444;
+#                
+#                #root /usr/share/nginx/html;
+#    			#root /var/www/localhost/htdocs;
+#				root {{ htdocs_path }};
+#    			index index.cgi index.htm index.html index.php;
+#        }
+#
+#        # deny access to .htaccess files, if Apache's document root
+#        # concurs with nginx's one
+#        #location ~ /.ht {
+#        #        deny  all;
+#        #}
+#    }
+    
+# TODO add ssl default
+#    # catch default names (ssl redirect to http)
+#    server {
+#        listen   443;
+#        server_name _;
+#
+#        limit_conn  gulag 50; 
+#
+#        # don't use server name
+#        #server_name_in_redirect  off;
+#
+#        access_log  off;
+#
+#        # immeadeatly return no content 
+#        #return 444;
+#
+#        # relocate to http
+#        rewrite ^/(.*) http://$host$request_uri permanent;
+#
+#        ssl on; 
+#        ssl_certificate /etc/ssl/apache/server.pem;
+#        ssl_certificate_key /etc/ssl/apache/server.pem;
+#        ssl_ciphers HIGH:!ADH:!MD5;
+#        ssl_prefer_server_ciphers on;
+#        #ssl_protocols SSLv3;
+#        ssl_protocols TLSv1;
+#        ssl_session_cache shared:SSL:1m;
+#        ssl_session_timeout 5m;
+#
+#        #location / {
+#        #       rewrite ^/(.*) http://$host$request_uri permanent;
+#        #}
+#    }
+
+    include /etc/nginx/sites-enabled/*;
+}

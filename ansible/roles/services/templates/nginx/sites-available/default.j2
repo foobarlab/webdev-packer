@@ -1,0 +1,143 @@
+# setup nginx with apache/varnish as reverse proxy
+
+server {
+
+    listen 80;
+
+	#server_name localhost {{ default_domainname }};
+    #server_name $http_host;
+    
+    # see: https://nginx.org/en/docs/http/server_names.html
+    #server_name   ~^(www\.)?(.+)$;
+    #server_name $hostname;
+    server_name _;
+
+    #location / {
+    #    #root   /sites/$2;
+    #    root    /var/www/vhosts/$2/htdocs;
+    #}
+    
+	  root {{ htdocs_path }};    # is this needed?
+	  index index.php index.html index.htm;
+
+    access_log /var/log/nginx/default.access_log main;
+    error_log /var/log/nginx/default.error_log info;
+
+    # error pages
+    error_page 401 /401.html;
+    error_page 404 /404.html;
+    error_page 402 403 405 406 407 408 409 410 411 412 413 414 415 416 417 /unspecified.html;
+    error_page 500 501 502 504 505 506 /50x.html;
+    location = /401.html {
+        root {{ errordocs_path }};
+    }
+    location = /404.html {
+    	root {{ errordocs_path }};
+    }
+    location = /50x.html {
+        root {{ errordocs_path }};
+    }
+    location = /unspecified.html {
+        root {{ errordocs_path }};
+    }
+
+    ## Only allow GET, HEAD and POST request methods
+    #if ($request_method !~ ^(GET|HEAD|POST)$ ) {
+    #    return 444;
+    #}
+
+    # Deny illegal Host headers
+    #if ($host !~* ^(domain.tld|www.domain.tld)$ ) { 
+    #    return 444;
+    #}
+
+    # Deny certain User-Agents (case insensitive)
+    # The ~* makes it case insensitive as opposed to just a ~
+    #if ($http_user_agent ~* (Baiduspider|Sosospider|panscient|Jullo|w00t|Morfeus|Toata) ) {
+    #	return 444;
+    #}
+
+    # Deny certain Referers (case insensitive)
+    # The ~* makes it case insensitive as opposed to just a ~
+    #if ($http_referer ~* (babes|click|diamond|forsale|girl|jewelry|love|nudit|organic|poker|porn|poweroversoftware|sex|teen|video|webcam|zippo) ) { 
+    #	return 444;
+    #}
+    
+    # include php manual
+    location /manual {
+      # note this is a special path pointing to localhost not vhosts!
+    	alias /var/www/localhost/htdocs/manual/php-chunked-xhtml;
+    }
+
+    # Only allow these file types to document root
+    #location / {
+    #       if ($request_uri ~* (^\/|\.html|\.jpg|\.pl|\.png|\.css|\.ico|robots\.txt)$ ) {
+    #               break;
+    #       }
+    #       return 444;
+    #}
+
+    # Redirect from non-www to www
+    #if ($host !~* "^www\.") {
+    #       rewrite  ^/(.*)$  http://www.domain.tld/$1  permanent;
+    #}
+
+    # System Maintenance (Service Unavailable)
+    error_page 503 @503;
+    location @503 {
+		  root {{ errordocs_path }};
+		  rewrite  ^(.*)$  /maintenance.html break;
+    }
+    # Rewrite all the requests to the maintenance.html page if it exists.
+    if (-f $document_root/.maintenance) {
+    	return 503;
+    }
+    
+    # deny access to ".ht*" files (.htpasswd, .htaccess, ...) 
+    location ~ /\.ht {
+    	deny all;
+    }
+    
+    # Serve an empty 1x1 gif
+    location = /images/empty.gif {
+    	empty_gif;
+    }
+	
+	  # FIXME ignore if not present, otherwise serve happily
+	  # silent drop missing favicon requests
+	  location = /favicon.ico {
+		  access_log off;
+		  log_not_found off;
+	  }
+
+    # get static content directly
+    # see: http://forum.ispsystem.com/en/showthread.php?p=3392
+    location ~* ^.+\.(ico|jpe?g|gif|png|mp3|ogg|midi|wav|mpe?g|avi|tar|7z|zip|gz|bz2?|rar|svg|js|css|woff|woff2)$ {
+      # Stop Image and Document Hijacking
+      #if ($http_referer !~ ^(http://domain.tld|http://www.domain.tld) ) {
+      #	return 444;
+		  #}
+      root {{ htdocs_path }};
+      expires		max;
+      add_header	Cache-Control public;
+    }
+
+	  # we want everything being processed by reverse-proxy: apache or varnish, TODO add browser-sync?
+    location / {
+        try_files $uri $uri/ /index.php;
+    #    proxy_set_header X-Real-IP  $remote_addr;
+	  #    proxy_set_header X-Forwarded-For $remote_addr;
+	  #    proxy_set_header Host $host;
+	  #    #proxy_pass http://127.0.0.1:8080;	# forward to apache
+	  #    proxy_pass http://127.0.0.1:6080;	# forward to varnish
+    }
+
+    location ~ \.php$ {
+	    proxy_set_header X-Real-IP  $remote_addr;
+	    proxy_set_header X-Forwarded-For $remote_addr;
+	    proxy_set_header Host $host;
+	    proxy_pass http://127.0.0.1:8080;	# forward to apache
+	    #proxy_pass http://127.0.0.1:6080;	# forward to varnish
+	}
+
+}

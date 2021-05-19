@@ -1,0 +1,49 @@
+---
+# vim: syntax=yaml
+
+# TODO security: delete 'setup' folder?
+
+- name: phpmyadmin - ensure folder exists
+  file:
+    path: /var/www/localhost/htdocs/phpmyadmin
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: 0755
+
+- name: phpmyadmin - create blowfish secret (32 chars)
+  #shell: head /dev/urandom | tr -dc A-Za-z0-9 | head -c 32 ; echo '' # produces ASCII only
+  #shell: tr -dc 'A-Za-z0-9!"#$%&'\''()*+,-./:;<=>?@[\]^_`{|}~' </dev/urandom | head -c 32 ; echo  # produces OWASP (see https://unix.stackexchange.com/questions/230673/how-to-generate-a-random-string)
+  shell: tr -dc 'A-Za-z0-9!$%&()*+,-./:;<=>?@[\]^_`{|}~' </dev/urandom | head -c 32 ; echo  # OWASP, but not ",',#
+  register: ansible_random_generated_32chars
+
+- name: phpmyadmin - create custom config file from template
+  template:
+    src: phpmyadmin/config.inc.php.j2
+    dest: /var/www/localhost/htdocs/phpmyadmin/config.inc.php
+    backup: yes
+    mode: 0644
+
+- name: phpmyadmin - create dbdumps folder
+  file:
+    path: "{{ dbdumps_path }}"
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: 0755
+
+- name: phpmyadmin - import default configuration db
+  mysql_db:
+     login_unix_socket: /var/run/mysqld/mysqld.sock
+     name: all
+     state: import
+     target: /var/www/localhost/htdocs/phpmyadmin/sql/create_tables.sql
+
+- name: phpmyadmin - create control user 'pma' and grant all right to configuration db
+  mysql_user:
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+    name: pma
+    password: pmapass
+    #host: "%"
+    priv: 'phpmyadmin.*:ALL'
+    state: present

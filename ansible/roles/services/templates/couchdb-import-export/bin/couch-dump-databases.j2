@@ -1,0 +1,28 @@
+#!/bin/bash -e
+# export all user databases from CouchDB as *.jsonl files to given folder
+
+command -v couchexport >/dev/null 2>&1 || { echo "Command 'couchexport' required but it's not installed.  Aborting." >&2; exit 1; }
+
+COUCH_URL_SCHEME="{{ couchdb_url_scheme }}"      
+COUCH_URL_HOST="{{ couchdb_url_host }}"
+COUCH_URL_PORT="{{ couchdb_url_port }}"
+EXPORT_FOLDER="{{ couchdb_export_dir }}"
+COUCH_USER="{{ couchdb_admin_user }}"
+COUCH_PASS="{{ couchdb_admin_pass }}"
+
+COUCHEXPORT="/usr/bin/couchexport"
+export COUCH_URL="${COUCH_URL_SCHEME}://${COUCH_USER}:${COUCH_PASS}@${COUCH_URL_HOST}:${COUCH_URL_PORT}"
+export COUCH_BUFFER_SIZE=1000
+#export COUCH_PARALLELISM=10
+#export COUCH_IGNORE_FIELDS='_id,_rev'
+
+ALL_DBNAMES=`curl -s -X GET ${COUCH_URL}/_all_dbs | sed 's/\[//;s/\]//;s/"_[a-z_]*"//g;s/[,\"]/ /g'`
+
+mkdir -p ${EXPORT_FOLDER}
+
+for DBNAME in $ALL_DBNAMES; do
+    echo "Exporting [${DBNAME}] to ${EXPORT_FOLDER}/${DBNAME}.jsonl ..."
+    $COUCHEXPORT --url ${COUCH_URL} --database ${DBNAME} --type jsonl > "${EXPORT_FOLDER}/${DBNAME}.jsonl"
+done
+
+echo "Done."

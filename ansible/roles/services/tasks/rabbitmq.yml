@@ -1,0 +1,74 @@
+---
+# vim: syntax=yaml
+# rabbitmq - see: https://www.rabbitmq.com/
+# LOGS: (rabbitmq:rabbitmq,644) rabbit.log rabbitmq@localhost_upgrade.log log/crash.log (root:root,644) startup.err startup.log
+# rabbitmqadmin see: https://www.rabbitmq.com/management-cli.html
+
+- name: rabbitmq - ensure log dirs exist, check permissions
+  file:
+    path: "{{ item.path }}"
+    state: directory
+    owner: rabbitmq
+    group: rabbitmq
+    mode: "{{ item.mode }}"
+  with_items:
+    - { path: "/var/log/rabbitmq", mode: "0770" }
+    - { path: "/var/log/rabbitmq/log", mode: "0755" }
+    - { path: "/run/rabbitmq", mode: "0755" }
+
+# FIXME wrong user/group for /etc/rabbitmq/enabled_plugins? permissions?
+# enabled by default:
+- name: rabbitmq - enable plugin (management)
+  shell: rabbitmq-plugins enable rabbitmq_management
+
+# FIXME wrong user/group for /etc/rabbitmq/enabled_plugins? permissions?
+#- name: rabbitmq - enable plugin (stomp)
+#  shell: rabbitmq-plugins enable rabbitmq_stomp
+
+# FIXME wrong user/group for /etc/rabbitmq/enabled_plugins? permissions?
+#- name: rabbitmq - enable plugin (mqtt)
+#  shell: rabbitmq-plugins enable rabbitmq_mqtt
+
+- name: rabbitmq - ensure 'enabled_plugins' ownership, group and permissions
+  file:
+    path: /etc/rabbitmq/enabled_plugins
+    owner: rabbitmq
+    group: rabbitmq
+    mode: '0400'
+
+# TODO alternatively do replace single lines ...
+- name: rabbitmq - configuration (rabbitmq.conf)
+  template:
+    src: rabbitmq/rabbitmq.conf.j2
+    dest: /etc/rabbitmq/rabbitmq.conf
+    backup: yes
+    owner: rabbitmq
+    group: rabbitmq
+    mode: 0640
+
+- name: rabbitmq - configuration (rabbitmq-env.conf)
+  template:
+    src: rabbitmq/rabbitmq-env.conf.j2
+    dest: /etc/rabbitmq/rabbitmq-env.conf
+    backup: yes
+    owner: rabbitmq
+    group: rabbitmq
+    mode: 0640
+
+- name: rabbitmq - delete old cookie if any
+  file:
+    path: /var/lib/rabbitmq/.erlang.cookie
+    state: absent
+
+#- name: rabbitmq - ensure '/var/lib/rabbitmq/.erlang.cookie' ownership, group and permissions
+#  file:
+#    path: /var/lib/rabbitmq/.erlang.cookie
+#    owner: rabbitmq
+#    group: rabbitmq
+#    mode: '0400'
+
+- name: rabbitmq - ensure rabbitmq is started (needed for rabbitmqadmin)
+  shell: rc-service -q rabbitmq start
+
+- name: rabbitmq - install rabbitmq-cli admin tool (rabbitmqadmin)  
+  shell: cd /usr/local/bin && wget http://127.0.0.1:15672/cli/rabbitmqadmin && chmod 755 /usr/local/bin/rabbitmqadmin && /usr/local/bin/rabbitmqadmin --bash-completion > /usr/share/bash-completion/completions/rabbitmqadmin

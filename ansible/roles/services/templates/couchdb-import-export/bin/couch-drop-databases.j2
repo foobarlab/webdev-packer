@@ -1,0 +1,20 @@
+#!/bin/bash -e
+# delete all user databases from CouchDB
+
+command -v curl >/dev/null 2>&1 || { echo "Command 'curl' required but it's not installed.  Aborting." >&2; exit 1; }
+
+COUCH_URL_SCHEME="{{ couchdb_url_scheme }}"      
+COUCH_URL_HOST="{{ couchdb_url_host }}"
+COUCH_URL_PORT="{{ couchdb_url_port }}"
+COUCH_USER="{{ couchdb_admin_user }}"
+COUCH_PASS="{{ couchdb_admin_pass }}"
+
+COUCH_URL="${COUCH_URL_SCHEME}://${COUCH_USER}:${COUCH_PASS}@${COUCH_URL_HOST}:${COUCH_URL_PORT}"
+ALL_DBNAMES=`curl -s -X GET ${COUCH_URL}/_all_dbs | sed 's/\[//;s/\]//;s/"_[a-z_]*"//g;s/[,\"]/ /g'`
+
+for DBNAME in $ALL_DBNAMES; do
+    echo "Deleting [$DBNAME] ..."
+    curl -X DELETE "${COUCH_URL}/${DBNAME}"
+done
+
+echo "Done."

@@ -1,0 +1,8 @@
+#!/bin/bash
+# this script will install latest automysqlbackup in /usr/local
+# see: https://www.tecmint.com/mysql-mariadb-postgresql-database-backup-using-automysqlbackup-autopostgresqlbackup/
+mkdir -p /usr/local/src/automysqlbackup
+cd /usr/local/src/automysqlbackup
+wget --content-disposition "https://sourceforge.net/projects/automysqlbackup/files/latest/download" -O automysqlbackup.tar.gz
+tar xvzf ./automysqlbackup.tar.gz
+printf "\n" | ./install.sh

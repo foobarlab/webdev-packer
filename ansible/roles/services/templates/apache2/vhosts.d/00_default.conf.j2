@@ -1,0 +1,61 @@
+# vim: ts=4 filetype=apache
+# default vhost 'localhost' running on 8080 => maps to /var/www/localhost/htdocs
+# for ansible magic vars see: https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html#magic-variables-and-how-to-access-information-about-other-hosts
+
+#ServerName {{ ansible_hostname }}
+ServerName localhost
+
+IndexOptions FancyIndexing
+
+ServerTokens Full
+
+<IfDefine DEFAULT_VHOST>
+
+	Listen 0.0.0.0:8080
+
+	<VirtualHost *:8080>
+		ServerName localhost
+		ServerAlias {{ default_domainname }}
+
+		ServerAdmin root@localhost
+
+		DocumentRoot "{{ htdocs_path }}"
+		
+        DirectoryIndex index.php index.html index.htm
+
+		<Directory "{{ htdocs_path }}">
+			Options Indexes FollowSymLinks
+			AllowOverride All
+			Require all granted
+		</Directory>
+
+		<IfModule alias_module>
+			ScriptAlias /cgi-bin/ "{{ default_hosting_path }}/cgi-bin/"
+		</IfModule>
+
+		<Directory "{{ default_hosting_path }}/cgi-bin">
+			AllowOverride None
+			Options None
+			Require all granted
+		</Directory>
+
+		<IfModule mpm_peruser_module>
+			ServerEnvironment www-data www-data
+		</IfModule>
+
+		# set dashboard alias (not needed for production)
+		Alias /dashboard {{ dashboard_path }}
+		<Directory "{{ dashboard_path }}">
+			Options Indexes FollowSymLinks
+			AllowOverride All
+			Require all granted
+		</Directory>
+		
+		# TODO configure logging
+		
+		<IfModule mpm_peruser_module>
+            ServerEnvironment www-data www-data
+        </IfModule>
+
+	</VirtualHost>
+</IfDefine>

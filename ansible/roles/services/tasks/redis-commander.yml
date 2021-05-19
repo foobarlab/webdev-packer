@@ -1,0 +1,30 @@
+---
+# vim: syntax=yaml
+# redis-commander - see: https://github.com/joeferner/redis-commander
+# TODO add apache2 vhost config?
+
+- name: redis-commander - install npm
+  npm:
+    name: redis-commander
+    path: /opt/redis-commander
+    global: no
+    production: yes
+    state: latest
+
+- name: redis-commander - rc setup
+  block:
+    - name: redis-commander - copy conf.d file
+      copy:
+        src: files/redis-commander/etc/conf.d/redis-commander
+        dest: /etc/conf.d/redis-commander
+        owner: root
+        group: root
+        mode: 0755
+    - name: redis-commander - copy init.d rc file
+      copy:
+        src: files/redis-commander/etc/init.d/redis-commander
+        dest: /etc/init.d/redis-commander
+        owner: root
+        group: root
+        mode: 0755
+        #mode: a+x

@@ -1,0 +1,48 @@
+---
+# vim: syntax=yaml
+# !!!!!!!!!!!!!!!!!!!!!!!!
+# defaults, do not change!
+# !!!!!!!!!!!!!!!!!!!!!!!!
+
+# by default we do not apply the mysql_secure_install procedure
+mysql_secure_installation: true
+
+# path to virtual hosts
+hosting_path: "/var/www/vhosts"
+
+# path for dbdumps
+dbdumps_path: "/vagrant/dbdumps/"
+
+# path to default virtual host
+default_hosting_path: "{{ hosting_path }}/default"
+
+# the path to the default hosted files:
+htdocs_path: "{{ default_hosting_path }}/htdocs"
+
+# the path to the default error documents:
+errordocs_path: "{{ default_hosting_path }}/error"
+
+# the path to the dashboard documents:
+dashboard_path: "{{ default_hosting_path }}/dashboard"
+
+# the default domain name:
+default_domainname: "www.local"
+
+global_php_version: "7.3"
+dashboard_php_version: "7.3"
+
+# default domains to include in minica root ca
+default_cert_domains: "www.test,www.local"
+
+# couchdb settings:
+couchdb_url_scheme: "http"
+couchdb_url_host: "localhost"
+couchdb_url_port: "5984"
+couchdb_admin_user: "admin"
+couchdb_admin_pass: "admin"
+couchdb_import_dir: "/vagrant/dbdumps/couchdb"
+couchdb_export_dir: "{{ couchdb_import_dir }}"
+
+# rabbitmq settings
+rabbitmq_user: "guest"
+rabbitmq_pass: "guest"

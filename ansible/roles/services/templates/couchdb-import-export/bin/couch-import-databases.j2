@@ -1,0 +1,47 @@
+#!/bin/bash -e
+# import all *.jsonl files from given folder into CouchDB (ignoring _id, _rev)
+
+command -v couchimport >/dev/null 2>&1 || { echo "Command 'couchimport' required but it's not installed.  Aborting." >&2; exit 1; }
+command -v curl >/dev/null 2>&1 || { echo "Command 'curl' required but it's not installed.  Aborting." >&2; exit 1; }
+
+COUCH_URL_SCHEME="{{ couchdb_url_scheme }}"      
+COUCH_URL_HOST="{{ couchdb_url_host }}"
+COUCH_URL_PORT="{{ couchdb_url_port }}"
+COUCH_USER="{{ couchdb_admin_user }}"
+COUCH_PASS="{{ couchdb_admin_pass }}"
+IMPORT_FOLDER="{{ couchdb_import_dir }}"
+
+COUCHIMPORT="/usr/bin/couchimport"
+export COUCH_URL="${COUCH_URL_SCHEME}://${COUCH_USER}:${COUCH_PASS}@${COUCH_URL_HOST}:${COUCH_URL_PORT}"
+export COUCH_BUFFER_SIZE=1000
+#export COUCH_PARALLELISM=10
+export COUCH_IGNORE_FIELDS='_id,_rev'
+
+if [ ! -d ${IMPORT_FOLDER} ]; then
+    echo "Import folder ${IMPORT_FOLDER} does not exist. Aborting."
+    exit 1
+fi
+
+count=`find ${IMPORT_FOLDER} -mindepth 1 -maxdepth 1 -type f -name "*.jsonl" -printf x | wc -c`
+if [ ${count} -eq 0 ]; then
+    echo "Folder ${IMPORT_FOLDER} is empty. Aborting."
+    exit 1
+else
+    echo "Found $count files in ${IMPORT_FOLDER}"
+fi
+
+files=("${IMPORT_FOLDER}/*.jsonl")
+
+for filepath in $files; do
+    filename=$(basename "$filepath")
+    table="${filename%%.*}"
+    CHECK_DB_EXISTS=`curl -s -X GET ${COUCH_URL}/${table} | sed 's/{"error":"not_found","reason":"Database does not exist."}//'`
+    if [[ ! $CHECK_DB_EXISTS == "" ]]; then
+        echo "Database [$table] already exists. Skipping ..."
+    else
+        curl -X PUT "${COUCH_URL}/${table}"
+        cat "$filepath" | $COUCHIMPORT --database $table --type jsonl
+    fi
+done
+
+echo "Done."

@@ -1,0 +1,30 @@
+---
+# vim: syntax=yaml
+
+- name: couchdb - import export - install couchimport/couchexport global node module
+  npm:
+    name: couchimport
+    global: yes
+
+- name: couchdb - import export - copy backup scripts
+  template:
+    src: "couchdb-import-export/bin/{{ item }}.j2"
+    dest: "/usr/local/bin/{{ item }}"
+    mode: 0755
+    owner: root
+    group: root
+  with_items:
+    - couch-drop-databases
+    - couch-dump-databases
+    - couch-import-databases
+
+- name: couchdb - import export - create dump dir if not existant
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: 0755
+    owner: vagrant
+    group: vagrant
+  with_items:
+    - "{{ couchdb_import_dir }}"
+    - "{{ couchdb_export_dir }}"

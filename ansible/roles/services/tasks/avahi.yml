@@ -1,0 +1,42 @@
+---
+# vim: syntax=yaml
+# configures zeroconf/bonjour/rendezvous/mDNS to allow service discovery in the local network
+# see: https://www.funtoo.org/Zero_Configuration_Networking
+
+# TODO add routes (https://www.funtoo.org/Zero_Configuration_Networking)
+
+- name: avahi - copy configuration and services
+  copy:
+    src: "avahi/etc/avahi/{{ item }}"
+    dest: "/etc/avahi/{{ item }}"
+    backup: yes
+    mode: 0755
+  with_items:
+    - services/http.service
+    - services/https.service
+    - avahi-daemon.conf
+
+# TODO remove?
+#- name: avahi - remove unused services
+#  file:
+#    state: absent
+#    path: "/etc/avahi/services/{{ item }}"
+#  with_items:
+#    - ssh.service
+#    - sftp-ssh.service
+
+- name: avahi - update nsswitch.conf
+  copy:
+    src: "avahi/etc/nsswitch.conf"
+    dest: "/etc/nsswitch.conf"
+    backup: yes
+    mode: 0755
+
+- name: avahi - replace init.d script (fix failing startup)
+  copy:
+    src: "avahi/etc/init.d/avahi-daemon"
+    dest: "/etc/init.d/avahi-daemon"
+    backup: no
+    owner: root
+    group: root
+    mode: 0755

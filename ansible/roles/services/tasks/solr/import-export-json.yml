@@ -1,0 +1,23 @@
+---
+# vim: syntax=yaml
+# see: https://github.com/freedev/solr-import-export-json
+# export 'somedata': /usr/local/bin/solr-import-export-json -- -s http://localhost:8983/solr/somedata -a export -o /vagrant/somedata_collection.json
+# import 'somedata': /usr/local/bin/solr-import-export-json -- -s http://localhost:8983/solr/somedata -a import -o /vagrant/somedata_collection.json
+
+- name: solr - import/export json - checkout sources
+  git:
+    repo: https://github.com/foobarlab/solr-import-export-json.git
+    dest: /usr/local/src/solr-import-export-json
+    version: foobarlab_mod
+
+- name: solr - import/export json - compile sources
+  shell: ./build.sh
+  args:
+    executable: /bin/bash
+    chdir: /usr/local/src/solr-import-export-json
+
+- name: solr - import/export json - copy executable
+  copy:
+    src: /usr/local/src/solr-import-export-json/target/solr-import-export-json
+    dest: /usr/local/bin
+    mode: 0755

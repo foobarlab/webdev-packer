@@ -1,0 +1,148 @@
+---
+# vim: syntax=yaml
+
+# === php.ini =======================================================
+
+# --------------------------- APACHE2 -------------------------------
+
+- name: php.ini - apache2 - default settings - PHP {{ php_version }}
+  ini_file:
+    path: /etc/php/apache2-php{{ php_version }}/php.ini
+    section: "{{ item.section }}"
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+  with_items:
+    - { section: "Date", option: "date.timezone", value: '"Europe/Berlin"' }
+    - { section: "PHP", option: "always_populate_raw_post_data", value: "-1" }    # disabled (deprecated)
+    - { section: "PHP", option: "error_log", value: '"/var/log/php/error.log"' }
+    - { section: "PHP", option: "max_execution_time", value: "60" }
+    - { section: "PHP", option: "max_input_time", value: "30" }
+    - { section: "PHP", option: "memory_limit", value: "256M" }
+    - { section: "PHP", option: "post_max_size", value: "32M" }
+    - { section: "PHP", option: "upload_max_filesize", value: "32M" }
+    - { section: "PHP", option: "expose_php", value: "Off" }                      # security: do not expose php
+    - { section: "PHP", option: "display_errors", value: "Off" }                  # security: do not show errors onsite
+    - { section: "PHP", option: "display_startup_errors", value: "Off" }          # security: do not show errors onsite
+    - { section: "Session", option: "session.use_strict_mode", value: "1" }       # security: prevents session fixation attacks
+    - { section: "Session", option: "session.gc_maxlifetime", value: "86400" }    # session lifetime: 1d
+    - { section: "dba", option: "opcache.enable", value: "1" }                    # performance: enable opcache ...
+    - { section: "dba", option: "opcache.enable_cli", value: "0" }                # ... but disable opcache for commandline
+    - { section: "dba", option: "opcache.memory_consumption", value: "64" }
+    - { section: "dba", option: "opcache.interned_strings_buffer", value: "4" }
+    - { section: "dba", option: "opcache.max_accelerated_files", value: "2000" }
+    - { section: "dba", option: "opcache.max_wasted_percentage", value: "5" }
+    - { section: "dba", option: "opcache.use_cwd", value: "1" }
+    - { section: "dba", option: "opcache.validate_timestamps", value: "1" }
+    - { section: "dba", option: "opcache.revalidate_freq", value: "2" }
+    - { section: "dba", option: "opcache.revalidate_path", value: "0" }
+    - { section: "dba", option: "opcache.error_log", value: '"/var/log/php/opcache.log"' }
+    - { section: "dba", option: "opcache.log_verbosity_level", value: "1" }
+    - { section: "mail function", option: "mail.log", value: '"/var/log/php/mail.log"' }
+
+# --------------------------- FPM -------------------------------
+
+- name: php.ini - fpm - default settings - PHP {{ php_version }}
+  ini_file:
+    path: /etc/php/fpm-php{{ php_version }}/php.ini
+    section: "{{ item.section }}"
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+  with_items:
+    - { section: "Date", option: "date.timezone", value: '"Europe/Berlin"' }
+    - { section: "PHP", option: "always_populate_raw_post_data", value: "-1" }    # disabled (deprecated)
+    - { section: "PHP", option: "error_log", value: '"/var/log/php/error.log"' }
+    - { section: "PHP", option: "max_execution_time", value: "60" }
+    - { section: "PHP", option: "max_input_time", value: "30" }
+    - { section: "PHP", option: "memory_limit", value: "256M" }
+    - { section: "PHP", option: "post_max_size", value: "32M" }
+    - { section: "PHP", option: "upload_max_filesize", value: "32M" }
+    - { section: "PHP", option: "expose_php", value: "Off" }                      # security: do not expose php
+    - { section: "PHP", option: "display_errors", value: "Off" }                  # security: do not show errors onsite
+    - { section: "PHP", option: "display_startup_errors", value: "Off" }          # security: do not show errors onsite
+    - { section: "Session", option: "session.use_strict_mode", value: "1" }       # security: prevents session fixation attacks
+    - { section: "Session", option: "session.gc_maxlifetime", value: "86400" }    # session lifetime: 1d
+    - { section: "dba", option: "opcache.enable", value: "1" }                    # performance: enable opcache ...
+    - { section: "dba", option: "opcache.enable_cli", value: "0" }                # ... but disable opcache for commandline
+    - { section: "dba", option: "opcache.memory_consumption", value: "64" }
+    - { section: "dba", option: "opcache.interned_strings_buffer", value: "4" }
+    - { section: "dba", option: "opcache.max_accelerated_files", value: "2000" }
+    - { section: "dba", option: "opcache.max_wasted_percentage", value: "5" }
+    - { section: "dba", option: "opcache.use_cwd", value: "1" }
+    - { section: "dba", option: "opcache.validate_timestamps", value: "1" }
+    - { section: "dba", option: "opcache.revalidate_freq", value: "2" }
+    - { section: "dba", option: "opcache.revalidate_path", value: "0" }
+    - { section: "dba", option: "opcache.error_log", value: '"/var/log/php/opcache.log"' }
+    - { section: "dba", option: "opcache.log_verbosity_level", value: "1" }
+    - { section: "mail function", option: "mail.log", value: '"/var/log/php/mail.log"' }
+
+# --------------------------- CGI -------------------------------
+
+- name: php.ini - cgi - default settings - PHP {{ php_version }}
+  ini_file:
+    path: /etc/php/cgi-php{{ php_version }}/php.ini
+    section: "{{ item.section }}"
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+  with_items:
+    - { section: "Date", option: "date.timezone", value: '"Europe/Berlin"' }
+    - { section: "PHP", option: "always_populate_raw_post_data", value: "-1" }    # disabled (deprecated)
+    - { section: "PHP", option: "error_log", value: '"/var/log/php/error_cgi.log"' }
+    - { section: "PHP", option: "max_execution_time", value: "60" }
+    - { section: "PHP", option: "max_input_time", value: "30" }
+    - { section: "PHP", option: "memory_limit", value: "256M" }
+    - { section: "PHP", option: "post_max_size", value: "32M" }
+    - { section: "PHP", option: "upload_max_filesize", value: "32M" }
+    - { section: "PHP", option: "expose_php", value: "Off" }                      # security: do not expose php
+    - { section: "PHP", option: "display_errors", value: "Off" }                  # security: do not show errors onsite
+    - { section: "PHP", option: "display_startup_errors", value: "Off" }          # security: do not show errors onsite
+    - { section: "Session", option: "session.use_strict_mode", value: "1" }       # security: prevents session fixation attacks
+    - { section: "Session", option: "session.gc_maxlifetime", value: "86400" }    # session lifetime: 1d
+    - { section: "dba", option: "opcache.enable", value: "1" }                    # performance: enable opcache ...
+    - { section: "dba", option: "opcache.enable_cli", value: "0" }                # ... but disable opcache for commandline
+    - { section: "dba", option: "opcache.memory_consumption", value: "64" }
+    - { section: "dba", option: "opcache.interned_strings_buffer", value: "4" }
+    - { section: "dba", option: "opcache.max_accelerated_files", value: "2000" }
+    - { section: "dba", option: "opcache.max_wasted_percentage", value: "5" }
+    - { section: "dba", option: "opcache.use_cwd", value: "1" }
+    - { section: "dba", option: "opcache.validate_timestamps", value: "1" }
+    - { section: "dba", option: "opcache.revalidate_freq", value: "2" }
+    - { section: "dba", option: "opcache.revalidate_path", value: "0" }
+    - { section: "dba", option: "opcache.error_log", value: '"/var/log/php/opcache_cgi.log"' }
+    - { section: "dba", option: "opcache.log_verbosity_level", value: "1" }
+    - { section: "mail function", option: "mail.log", value: '"/var/log/php/mail_cgi.log"' }
+
+# --------------------------- CLI -------------------------------
+
+- name: php.ini - cli - default settings - PHP {{ php_version }}
+  ini_file:
+    path: /etc/php/cli-php{{ php_version }}/php.ini
+    section: "{{ item.section }}"
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+  with_items:
+    - { section: "Date", option: "date.timezone", value: '"Europe/Berlin"' }
+    - { section: "PHP", option: "always_populate_raw_post_data", value: "-1" }    # disabled (deprecated)
+    - { section: "PHP", option: "error_log", value: '"/var/log/php/error_cli.log"' }
+    - { section: "PHP", option: "max_execution_time", value: "60" }
+    - { section: "PHP", option: "max_input_time", value: "30" }
+    - { section: "PHP", option: "memory_limit", value: "256M" }
+    - { section: "PHP", option: "post_max_size", value: "32M" }
+    - { section: "PHP", option: "upload_max_filesize", value: "32M" }
+    - { section: "PHP", option: "expose_php", value: "Off" }                      # security: do not expose php
+    - { section: "PHP", option: "display_errors", value: "Off" }                  # security: do not show errors onsite
+    - { section: "PHP", option: "display_startup_errors", value: "Off" }          # security: do not show errors onsite
+    - { section: "Session", option: "session.use_strict_mode", value: "1" }       # security: prevents session fixation attacks
+    - { section: "Session", option: "session.gc_maxlifetime", value: "86400" }    # session lifetime: 1d
+    - { section: "dba", option: "opcache.enable", value: "1" }                    # performance: enable opcache ...
+    - { section: "dba", option: "opcache.enable_cli", value: "0" }                # ... but disable opcache for commandline
+    - { section: "dba", option: "opcache.memory_consumption", value: "64" }
+    - { section: "dba", option: "opcache.interned_strings_buffer", value: "4" }
+    - { section: "dba", option: "opcache.max_accelerated_files", value: "2000" }
+    - { section: "dba", option: "opcache.max_wasted_percentage", value: "5" }
+    - { section: "dba", option: "opcache.use_cwd", value: "1" }
+    - { section: "dba", option: "opcache.validate_timestamps", value: "1" }
+    - { section: "dba", option: "opcache.revalidate_freq", value: "2" }
+    - { section: "dba", option: "opcache.revalidate_path", value: "0" }
+    - { section: "dba", option: "opcache.error_log", value: '"/var/log/php/opcache_cli.log"' }
+    - { section: "dba", option: "opcache.log_verbosity_level", value: "1" }
+    - { section: "mail function", option: "mail.log", value: '"/var/log/php/mail_cli.log"' }

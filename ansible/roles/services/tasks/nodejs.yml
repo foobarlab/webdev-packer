@@ -1,0 +1,8 @@
+---
+# vim: syntax=yaml
+
+- name: nodejs - update system via npm
+  shell: npm -g update || true
+
+- name: nodejs - globally install tools
+  shell: npm -g install yarn grunt gulp npm-check-updates jshint bower rimraf || true

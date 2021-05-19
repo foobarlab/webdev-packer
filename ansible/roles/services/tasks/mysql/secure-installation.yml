@@ -1,0 +1,50 @@
+---
+# vim: syntax=yaml
+ 
+- name: mysql_secure_installation - set root user password
+  mysql_user:
+      host: "{{ item }}"
+      name: root
+      password: "{{ mysql_root_password }}"
+      check_implicit_admin: yes    # Login without credentials
+      login_unix_socket: /var/run/mysqld/mysqld.sock
+      state: present
+  with_items:
+      - localhost
+      - "{{ ansible_hostname }}"
+      - 127.0.0.1
+      - ::1
+      - 10.%
+      - 192.168.%
+      - "%"
+
+- name: mysql_secure_installation - flush privileges
+  command: 'mysql -ne "{{ item }}"'
+  with_items:
+    - FLUSH PRIVILEGES
+  changed_when: False
+
+- name: mysql_secure_installation - remove anonymous users
+  command: 'mysql -ne "{{ item }}"'
+  with_items:
+    - DELETE FROM mysql.user WHERE User=''
+  changed_when: False
+
+- name: mysql_secure_installation - disallow root login remotely
+  command: 'mysql -ne "{{ item }}"'
+  with_items:
+    - DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1', '10.%', '192.168.%', '%')
+  changed_when: False
+
+- name: mysql_secure_installation - remove test database and access to it
+  command: 'mysql -ne "{{ item }}"'
+  with_items:
+    - DROP DATABASE IF EXISTS test
+    - DELETE FROM mysql.db WHERE Db='test' OR Db='test\\_%'
+  changed_when: False
+
+- name: mysql_secure_installation - flush privileges
+  command: 'mysql -ne "{{ item }}"'
+  with_items:
+    - FLUSH PRIVILEGES
+  changed_when: False

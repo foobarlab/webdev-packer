@@ -1,0 +1,42 @@
+---
+# vim: syntax=yaml
+
+- name: php - set default versions
+  shell: "eselect php set {{ item }} php{{ global_php_version }}"
+  with_items:
+    - cli
+    - apache2
+    - fpm
+    - cgi
+
+- name: php - create folder for logs
+  file: 
+    path: /var/log/php
+    state: directory
+    mode: 0775
+   
+- name: php logs - create empty initial logs
+  file: 
+    path: "/var/log/php/{{ item }}"
+    state: touch
+    owner: www-data
+    group: www-data
+    mode: 0750
+  with_items:
+    - error.log
+    - opcache.log
+    - mail.log
+    - error_cgi.log
+    - opcache_cgi.log
+    - mail_cgi.log
+    - error_cli.log
+    - opcache_cli.log
+    - mail_cli.log
+
+- name: php - set php.ini for all PHP versions
+  include_tasks: php/ini.yml
+  loop:
+    - 7.3
+    - 7.4
+  loop_control:
+    loop_var: php_version

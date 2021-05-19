@@ -1,0 +1,16 @@
+#!/sbin/openrc-run
+# see: https://github.com/OpenRC/openrc/blob/master/service-script-guide.md
+
+name="redis-commander"
+description=""
+
+command="/opt/redis-commander/node_modules/.bin/redis-commander"
+command_args="${REDISCOMMANDER_OPTS}"
+pidfile="/var/run/${RC_SVCNAME}.pid"
+command_user="root:root"
+command_background=true
+
+depend() {
+    need net
+    use dns
+}

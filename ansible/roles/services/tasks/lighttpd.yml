@@ -1,0 +1,23 @@
+---
+# vim: syntax=yaml
+# lighttpd is used for the dashboard only
+# LOG FILES: todo
+
+- name: lighttpd - ensure log dir exists
+  file:
+    path: /var/log/lighttpd
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: 0750
+
+- name: lighttpd - add config file lighttpd.conf
+  template:
+    src: lighttpd/lighttpd.conf.j2
+    dest: /etc/lighttpd/lighttpd.conf
+    backup: yes
+    variable_start_string: "[["
+    variable_end_string: "]]"
+
+- name: lighttpd - set php version to {{ dashboard_php_version }} (cgi)
+  shell: "eselect php set cgi php{{ dashboard_php_version }}"

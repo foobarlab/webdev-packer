@@ -1,0 +1,29 @@
+#!/sbin/openrc-run
+
+extra_started_commands="reload"
+
+depend() {
+    before netmount nfsmount
+    use net
+    need dbus
+}
+
+start() {
+    ebegin "Starting avahi-daemon"
+    /usr/sbin/avahi-daemon -D
+    # UGLY HACK: the following line ensures the service is reloaded on startup:
+    /usr/sbin/avahi-daemon -r
+    eend $?
+}
+
+stop() {
+    ebegin "Stopping avahi-daemon"
+    /usr/sbin/avahi-daemon -k
+    eend $?
+}
+
+reload() {
+    ebegin "Reloading avahi-daemon"
+    /usr/sbin/avahi-daemon -r
+    eend $?
+}

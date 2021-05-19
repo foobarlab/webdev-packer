@@ -1,0 +1,10 @@
+---
+# vim: syntax=yaml
+
+- name: /etc/hosts - add custom entries
+  blockinfile:
+    path: /etc/hosts
+    marker: "# {mark} ANSIBLE MANAGED BLOCK (etc_hosts.yml)"
+    block: |
+      127.0.0.1   localhost localhost.localdomain {{ default_domainname }} {{ ansible_hostname }}.local {{ ansible_hostname }}
+      ::1         localhost localhost.localdomain {{ default_domainname }} {{ ansible_hostname }}.local {{ ansible_hostname }}

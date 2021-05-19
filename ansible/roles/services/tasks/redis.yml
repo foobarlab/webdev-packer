@@ -1,0 +1,18 @@
+---
+# vim: syntax=yaml
+# LOGS: (redis:redis,644) redis.log (/var/log/redis/redis.log)
+
+- name: redis - ensure log dir exists
+  file:
+    path: /var/log/redis
+    state: directory
+    owner: redis
+    group: redis
+    mode: 0750
+
+- name: redis - update config file
+  lineinfile:
+    path: /etc/redis/redis.conf
+    regexp: '^bind 127.0.0.1$'
+    insertafter: '^#bind 127.0.0.1$'
+    line: 'bind 0.0.0.0'

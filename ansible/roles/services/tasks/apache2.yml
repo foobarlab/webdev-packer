@@ -1,0 +1,71 @@
+---
+# vim: syntax=yaml
+# LOG FILES: (root:root,644) access_log  error_log  ssl_access_log  ssl_error_log  ssl_request_log
+
+- name: apache2 - ensure log dir exists
+  file:
+    path: /var/log/apache2
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: 0750
+
+- name: apache2 - basic configuration
+  template:
+    src: apache2/httpd.conf.j2
+    dest: /etc/apache2/httpd.conf
+    backup: yes
+
+- name: apache2 - remove default vhost configs
+  file:
+    state: absent
+    path: "/etc/apache2/vhosts.d/{{ item }}"
+  with_items:
+    - 00_default_ssl_vhost.conf
+    - 00_default_vhost.conf
+    - default_vhost.include
+
+- name: apache2 - created new default hosting dir
+  file:
+    path: "/var/www/{{ item }}"
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: 0775
+  with_items:
+    - "vhosts"
+    - "vhosts/default"
+    - "vhosts/default/cgi-bin"
+    - "vhosts/default/htdocs"
+    - "vhosts/default/error"
+    - "vhosts/default/icons"
+
+- name: apache2 - create default vhosts config
+  template:
+    src: "apache2/vhosts.d/{{ item }}.j2"
+    dest: "/etc/apache2/vhosts.d/{{ item }}"
+    backup: yes
+    mode: 0644
+  with_items:
+    - 00_default.conf
+
+- name: apache2 - create default vhosts index html file
+  copy:
+    owner: www-data
+    group: www-data
+    mode: 0755
+    dest: "{{ htdocs_path }}/index.html"
+    content: |
+      <pre>This document is served by Apache and located in {{ htdocs_path }}/index.html.</pre>
+
+- name: apache2 - create default vhosts index php file
+  copy:
+    owner: www-data
+    group: www-data
+    mode: 0755
+    dest: "{{ htdocs_path }}/index.php"
+    content: |
+      <?php phpinfo();
+
+- name: apache2 - set php 7.3 as default
+  shell: eselect php set apache2 php7.3

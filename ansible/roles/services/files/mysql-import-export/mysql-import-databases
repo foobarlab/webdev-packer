@@ -1,0 +1,65 @@
+#!/bin/bash
+
+# check for import scripts ...
+CHECK_DIRS=("/var/www/htdocs/dbdumps" "/var/local/automysqlbackup" )
+FOUND_SCRIPTS=()
+for ((i=0; i < ${#CHECK_DIRS[@]}; i++))
+  do  
+  dir=${CHECK_DIRS[$i]}
+  echo "Scanning $dir ..."
+  # we check if we got any files, see: https://stackoverflow.com/questions/6363441/check-if-a-file-exists-with-wildcard-in-shell-script
+  for f in $dir/*.sql.gz; do
+    ## Check if the glob gets expanded to existing files.
+    ## If not, f here will be exactly the pattern above
+    ## and the exists test will evaluate to false.
+    #[ -e "$f" ] && echo "${f##*/}" || echo "Nothing found."
+    [ -e "$f" ] && FOUND_SCRIPTS+=($f) || continue
+
+      ## This is all we needed to know, so we can break after the first iteration
+      # (we do not break because of the outer loop)
+      #break
+  done
+done
+
+# if we did not find any script we abort
+if [ ${#FOUND_SCRIPTS[@]} -eq 0 ]; then
+    echo "No script found for importing. Nothing todo."
+    exit 0
+else
+  # output all found scripts
+  echo "The following script files were found:"
+  for ((i=0; i < ${#FOUND_SCRIPTS[@]}; i++)) do
+    echo ${FOUND_SCRIPTS[$i]}
+  done
+fi
+
+# check which databases already exist
+ASK_FOR_OVERWRITE=false
+DATABASES_INFO=`mysql --socket=/var/run/mysqld/mysqld.sock -e "SELECT CONCAT('=> ',schema_name,'') AS '' FROM information_schema.schemata WHERE schema_name NOT LIKE 'phpmyadmin' AND schema_name NOT LIKE 'mysql' AND schema_name NOT LIKE 'performance_schema' AND schema_name NOT LIKE 'information_schema'"`
+if [[ $DATABASES_INFO != "" ]]; then
+  echo "WARNING! Found existing databases: $DATABASES_INFO"
+  ASK_FOR_OVERWRITE=true
+fi
+
+# get user confirmation to proceed ...
+if $ASK_FOR_OVERWRITE ; then
+  while true; do
+  read -p "Any of the databases could possibly get overwritten. Do you want to proceed (y/N)? " yn
+    case $yn in
+      [Yy]* ) break;;
+      * ) echo "Aborted."&& exit;;
+    esac
+  done
+fi
+
+# finally we import the scripts ...
+for ((i=0; i < ${#FOUND_SCRIPTS[@]}; i++)) do
+  script=${FOUND_SCRIPTS[$i]}
+  echo "Running SQL script: $script ..."
+  RESULT=`zcat $script | mysql --socket=/var/run/mysqld/mysqld.sock`
+  if [[ $RESULT != "" ]]; then
+    echo "$RESULT"
+  fi  
+done
+
+echo "All done."

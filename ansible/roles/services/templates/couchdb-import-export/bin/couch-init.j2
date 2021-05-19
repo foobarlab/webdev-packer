@@ -1,0 +1,26 @@
+#!/bin/bash -x
+# init a new couchdb instance
+
+# start couchdb
+/etc/init.d/couchdb restart || /etc/init.d/couchdb start
+
+# let it settle, sleep a while
+sleep 10
+
+COUCH_URL_SCHEME="{{ couchdb_url_scheme }}"      
+COUCH_URL_HOST="{{ couchdb_url_host }}"
+COUCH_URL_PORT="{{ couchdb_url_port }}"
+COUCH_USER="{{ couchdb_admin_user }}"
+COUCH_PASS="{{ couchdb_admin_pass }}"
+
+COUCH_URL="${COUCH_URL_SCHEME}://${COUCH_USER}:${COUCH_PASS}@${COUCH_URL_HOST}:${COUCH_URL_PORT}"
+
+# create dbs for single node setup
+# see: http://docs.couchdb.org/en/stable/setup/single-node.html
+curl -X PUT ${COUCH_URL}/_users
+curl -X PUT ${COUCH_URL}/_replicator
+curl -X PUT ${COUCH_URL}/_global_changes    # not needed when global feed is unsed
+
+# add an initial administrative user
+LOCAL_NODE="couchdb@127.0.0.1"
+curl -X PUT ${COUCH_URL}/_node/${LOCAL_NODE}/_config/admins/${ADMIN_USER} -d \"${ADMIN_PASS}\"

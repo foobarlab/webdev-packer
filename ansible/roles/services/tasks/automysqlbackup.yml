@@ -1,0 +1,75 @@
+---
+# vim: syntax=yaml
+# installs the latest version of automysqlbackup
+
+- name: automysqlbackup - copy installer
+  copy:
+    src: automysqlbackup/automysqlbackup-install
+    dest: /usr/local/src/automysqlbackup-install
+    mode: 0755
+    owner: root
+    group: root
+    backup: no
+
+- name: automysqlbackup - install from source
+  shell: "/usr/local/src/automysqlbackup-install"
+
+- name: automysqlbackup - delete install script
+  file:
+    path: "/usr/local/src/automysqlbackup-install"
+    state: absent
+
+- name: automysqlbackup - adjust permissions
+  file:
+    path: "/usr/local/bin/automysqlbackup"
+    state: file
+    mode: 0755
+    owner: root
+    group: root
+
+- name: automysqlbackup - create shared folder
+  file:
+    path: "/usr/local/share/automysqlbackup/bin"
+    state: directory
+    mode: 0755
+    owner: root
+    group: root
+
+- name: automysqlbackup - copy pre/post scripts
+  copy:
+    src: "automysqlbackup/bin/{{ item }}"
+    dest: "/usr/local/share/automysqlbackup/bin/{{ item }}"
+    mode: 0755
+    owner: root
+    group: root
+    backup: no
+  with_items:
+    - mysql-backup-post
+    - mysql-backup-pre
+
+- name: automysqlbackup - create config dir
+  file:
+    path: /etc/automysqlbackup/
+    state: directory
+    mode: 0755
+    owner: root
+    group: root
+
+- name: automysqlbackup - copy config
+  template:
+    src: automysqlbackup/etc/automysqlbackup.conf.j2
+    dest: /etc/automysqlbackup/automysqlbackup.conf
+    mode: 0600
+    owner: root
+    group: root
+    backup: yes
+
+- name: automysqlbackup - create backup dir
+  file:
+    path: "{{ item }}"
+    owner: root
+    group: root
+    mode: 0755
+    state: directory
+  with_items:
+    - /var/backup/dbdumps

@@ -1,0 +1,38 @@
+---
+# vim: syntax=yaml
+# solr - see: https://wiki.apache.org/solr
+
+# adjust some system limits for solr
+- name: solr - limits.conf - adjust max open file handles
+  copy:
+    dest: "/etc/security/limits.d/solr.conf"
+    owner: root
+    group: root
+    mode: 0644
+    content: |
+      # Allow more open file handles, because solr prints on the commandline:
+      # *** [WARN] *** Your open file limit is currently 16000.  
+      # It should be set to 65000 to avoid operational disruption.
+      # *** [WARN] ***  Your Max Processes Limit is currently 7947. 
+      # It should be set to 65000 to avoid operational disruption. 
+      #<domain>    <type>    <item>    <value>
+      solr          soft      nofile    65000
+      solr          hard      nofile    65000
+      solr          soft      nproc     65000
+      solr          hard      nproc     65000
+
+- name: solr - ensure log dir exists
+  file:
+    path: /var/log/solr
+    state: directory
+    owner: solr
+    group: solr
+    mode: 0750
+
+- name: solr - set SOLR_HOST
+  lineinfile:
+    path: /etc/conf.d/solr
+    insertafter: '^#SOLR_HOST=localhost$'
+    line: 'SOLR_HOST=0.0.0.0'
+
+- include: solr/import-export-json.yml

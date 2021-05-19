@@ -1,0 +1,44 @@
+#!/bin/bash
+
+DATABASES_INFO=`mysql --socket=/var/run/mysqld/mysqld.sock -e "SELECT CONCAT('=> ',schema_name,'') AS '' FROM information_schema.schemata WHERE schema_name NOT LIKE 'phpmyadmin' AND schema_name NOT LIKE 'mysql' AND schema_name NOT LIKE 'performance_schema' AND schema_name NOT LIKE 'information_schema'"`
+if [[ $DATABASES_INFO == "" ]]; then
+  echo "No databases found for dropping."
+  exit 0
+fi
+echo "Found databases: $DATABASES_INFO"
+
+while true; do
+  read -p "Are you sure to unrecoverable drop these databases? (y/N) " yn
+  case $yn in
+    [Yy]* ) break;;
+    * ) echo "Aborted."&& exit;;
+  esac
+done
+DATABASES=`mysql --socket=/var/run/mysqld/mysqld.sock -e "SELECT CONCAT('DROP DATABASE ',schema_name,' ;') AS '' FROM information_schema.schemata WHERE schema_name NOT LIKE 'phpmyadmin' AND schema_name NOT LIKE 'mysql' AND schema_name NOT LIKE 'performance_schema' AND schema_name NOT LIKE 'information_schema'"`
+
+# FIXME if a database contains a dot or dash the above command will not work, possible fix is to escape or quote the database name
+
+DROPFILE=`mktemp --suffix=.sql`
+
+for i in $DATABASES; do
+  echo "$i" >> $DROPFILE ;
+done
+
+# DEBUG:
+echo "--------------------------------------------------------------------------------------------"
+echo "SQL-Drop-Script generated:"
+cat $DROPFILE
+echo "--------------------------------------------------------------------------------------------"
+
+RESULT=`mysql --socket=/var/run/mysqld/mysqld.sock < $DROPFILE`
+
+rm -f $DROPFILE
+
+if [[ $RESULT == "" ]]; then
+  echo "All found databases dropped."
+  exit 0
+fi
+
+echo $RESULT
+echo "Something bad happened! See the error message above."
+exit 1

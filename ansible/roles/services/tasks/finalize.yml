@@ -1,0 +1,25 @@
+---
+# vim: syntax=yaml
+
+- name: enable services
+  shell: rc-update add "{{ item.service }}" "{{ item.level }}" || /bin/true
+  become: yes
+  with_items:
+    - { level: "default", service: "elogind" }
+    - { level: "default", service: "xdm" }
+    - { level: "default", service: "dnsmasq" }
+    - { level: "default", service: "avahi-daemon" }
+    - { level: "default", service: "avahi-dnsconfd" }
+    - { level: "default", service: "lighttpd" }
+    - { level: "default", service: "apache2" }
+    - { level: "default", service: "nginx" }
+    - { level: "default", service: "varnish" }
+    - { level: "default", service: "postfix" }
+    - { level: "default", service: "rabbitmq" }
+    - { level: "default", service: "couchdb" }
+    - { level: "default", service: "docker" }
+    - { level: "default", service: "mysql" }
+    - { level: "default", service: "postgres" }
+    - { level: "default", service: "redis" }
+    - { level: "default", service: "redis-commander" }
+    - { level: "default", service: "solr" }

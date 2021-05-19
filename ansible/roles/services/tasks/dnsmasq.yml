@@ -1,0 +1,30 @@
+---
+# vim: syntax=yaml
+
+- name: dnsmasq - add conf.d directory
+  file:
+    path: /etc/dnsmasq.d
+    state: directory
+    owner: root
+    group: root
+    mode: 0750
+
+- name: dnsmasq - enable conf.d directory
+  lineinfile: 
+     dest: /etc/dnsmasq.conf
+     regexp: "^{{ item.regexpr }}"
+     line: "{{ item.line }}"
+     state: present
+     backup: yes
+     backrefs: yes
+  with_items:
+    #- { regexpr: '#port', line: "port=53" }   # FIXME set to port 53? maybe into extra .conf file in /etc/dnsmasq.d/
+    - { regexpr: '#conf-dir=\/etc\/dnsmasq.d\/,\*\.conf', line: "conf-dir=/etc/dnsmasq.d/,*.conf" }
+
+- name: dnsmasq - custom config
+  copy:
+    src: dnsmasq/default.conf
+    dest: /etc/dnsmasq.d/00_default.conf
+    mode: 0644
+    owner: root
+    group: root

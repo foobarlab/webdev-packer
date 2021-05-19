@@ -1,0 +1,68 @@
+---
+# vim: syntax=yaml
+# minica - provides dynamic SSL keys and certificates
+
+- name: minica - ensure executable is installed
+  shell: go get github.com/jsha/minica
+  args:
+    creates: /opt/go/bin/minica
+    executable: /bin/bash
+
+- name: minica - copy cert script
+  copy:
+    src: minica/minica-create-cert
+    dest: /usr/local/bin/minica-create-cert
+    mode: 0755
+    owner: root
+    group: root
+
+- name: minica - ensure cert dir exists
+  file:
+    path: /etc/ssl/minica
+    state: directory
+    mode: 0755
+    owner: root
+    group: root
+
+- name: minica - copy pre-created root ca
+  copy:
+    src: "minica/{{ item }}"
+    dest: "/etc/ssl/minica/{{ item }}"
+    mode: 0755
+    owner: root
+    group: root
+  with_items:
+    - minica-key.pem
+    - minica.pem
+  ignore_errors: true
+
+- name: minica - execute cert script for "{{ ansible_hostname }}.local" (including defaults)
+  shell: /usr/local/bin/minica-create-cert "{{ ansible_hostname }}.local,{{ default_cert_domains }}" >> /var/log/minica.log
+  args:
+    chdir: /etc/ssl/minica
+    executable: /bin/bash
+
+- name: minica - remove old symlink (if existant)
+  file:
+    path: "/etc/ssl/minica/{{ item }}"
+    state: absent
+  with_items:
+    - cert.pem
+    - key.pem
+
+- name: minica - symlink for generic usage
+  file:
+    src: "/etc/ssl/minica/{{ ansible_hostname }}.local/{{ item }}"
+    dest: "/etc/ssl/minica/{{ item }}"
+    state: link
+  with_items:
+    - cert.pem
+    - key.pem
+
+- name: minica - relax ssl cert permissions for deployment ({{ ansible_hostname }}.local)
+  file:
+    dest: "/etc/ssl/minica/{{ ansible_hostname }}.local"
+    owner: root
+    group: root
+    mode: 0755
+    recurse: yes

@@ -1,0 +1,71 @@
+---
+# vim: syntax=yaml
+# TODO tweak ssl, see: https://haydenjames.io/nginx-tuning-tips-tls-ssl-https-ttfb-latency/
+# LOGS: todo (root:root,644) error_log  localhost.access_log  localhost.error_log
+
+- name: nginx - ensure log dir exists
+  file:
+    path: /var/log/nginx
+    state: directory
+    owner: nginx
+    group: www-data
+    mode: 0700
+
+- name: nginx - copy default error pages (includes maintenance page)
+  copy:
+    src: "nginx/error-docs/{{ item }}"
+    dest: "/var/www/vhosts/default/error/{{ item }}"
+    mode: 0755
+  with_items:
+    - 401.html
+    - 404.html
+    - 50x.html
+    - unspecified.html
+    - maintenance.html
+
+- name: nginx - add config file
+  template:
+    src: nginx/nginx.conf.j2
+    dest: /etc/nginx/nginx.conf
+    backup: yes
+    mode: 0755
+
+- name: nginx - ensure sites config dirs exist
+  file:
+    path: /etc/nginx/{{ item }}
+    state: directory
+    mode: 0755
+  with_items:
+    - sites-available
+    - sites-enabled
+
+- name: nginx - deactivate 'localhost' conf (remove symlink)
+  file:
+    path: /etc/nginx/sites-enabled/localhost
+    state: absent
+
+- name: nginx - add conf for sites
+  template:
+    src: "nginx/sites-available/{{ item }}.j2"
+    dest: "/etc/nginx/sites-available/{{ item }}"
+    backup: yes
+    mode: 0644
+  with_items:
+    - default
+    - default-ssl
+
+- name: nginx - ensure sites are enabled
+  file:
+    path: "/etc/nginx/sites-enabled/{{ item }}"
+    src: "/etc/nginx/sites-available/{{ item }}"
+    state: link
+    mode: 0644
+  with_items:
+    - default
+    - default-ssl
+
+- name: nginx - add user 'nginx' to group 'www-data'
+  user:
+    name: nginx
+    groups: www-data
+    append: yes

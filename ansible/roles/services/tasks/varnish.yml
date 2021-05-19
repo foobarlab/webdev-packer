@@ -1,0 +1,33 @@
+---
+# vim: syntax=yaml
+# varnish - see: https://varnish-cache.org
+# LOGS: todo
+
+- name: varnish - ensure log dir exists
+  file:
+    path: /var/log/varnish
+    state: directory
+    owner: root
+    group: root
+    mode: 0750
+
+- name: varnish - copy config file
+  copy:
+    src: files/varnish/etc/default.vcl
+    dest: /etc/varnish/default.vcl
+
+- name: varnish - modify /etc/conf.d/varnishd (comment default VARNISHD_OPTS)
+  lineinfile:
+    path: /etc/conf.d/varnishd
+    regexp: '^VARNISHD_OPTS="-a 127.0.0.1:8080"'
+    line: '#VARNISHD_OPTS="-a 127.0.0.1:8080"'
+    state: present
+
+- name: varnish - modify /etc/conf.d/varnishd (set new VARNISHD_OPTS)
+  blockinfile:
+    path: /etc/conf.d/varnishd
+    block: |
+      # Listen on 127.0.0.1:6080 w/o backend
+      #VARNISHD_OPTS="-a 127.0.0.1:6080"
+      # optimized for c10k: see: https://www.funtoo.org/Package:Varnish
+      VARNISHD_OPTS="-a 127.0.0.1:6080 -p thread_pool_min=20 -p thread_pool_max=1000 -p thread_pool_add_delay=2 -s malloc,500M"

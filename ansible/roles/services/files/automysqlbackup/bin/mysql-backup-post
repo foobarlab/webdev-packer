@@ -1,0 +1,12 @@
+#!/bin/sh
+
+echo "POSTPROCESS BACKUP ..."
+
+# remove "daily_" from backup filenames ...
+clean_filename() {
+  mv "$1" "$(echo "$1" | sed -re 's/daily_//g')"
+}
+export -f clean_filename
+
+# process all files
+find "${CONFIG_backup_dir}"/latest/ -type f -exec bash -c 'clean_filename "$@"' -- {} \;

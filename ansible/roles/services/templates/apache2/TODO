@@ -1,0 +1,7 @@
+TODO Apache => Sendfile off:
+
+EnableSendfile Off
+
+set in /etc/apache2/modules.d/...conf ?
+
+see https://www.vagrantup.com/docs/synced-folders/virtualbox#caveats

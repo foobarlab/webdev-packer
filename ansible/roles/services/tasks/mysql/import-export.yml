@@ -1,0 +1,26 @@
+---
+# vim: syntax=yaml
+
+- name: mysql - import/export - copy scripts
+  copy:
+    src: "mysql-import-export/{{ item }}"
+    dest: "/usr/local/bin/{{ item }}"
+    backup: no
+    mode: 0755
+    owner: root
+    group: root
+  with_items:
+    - mysql-drop-databases
+    - mysql-dump-databases
+    - mysql-import-databases
+
+- name: mysql - import/export - create dirs
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: 0755
+    owner: root
+    group: root
+  with_items:
+    - "/var/local/automysqlbackup"
+    #- "/var/www/htdocs/dbdumps"

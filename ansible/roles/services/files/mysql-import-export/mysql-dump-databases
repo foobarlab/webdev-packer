@@ -1,0 +1,55 @@
+#!/bin/bash
+
+# NOTE: mysql_config_editor no more supported by MariaDB, see: https://mariadb.com/kb/en/library/mysql_config_editor-compatibility/
+# you might need to execute once:
+# mysql_config_editor set --login-path=development --host=127.0.0.1 --user=root --password
+
+# remove old backups
+rm -rf /tmp/automysqlbackup
+
+# dump databases to /tmp/automysqlbackup
+echo "Invoking automysqlbackup ..."
+echo "---------------------------------------------------------"
+/usr/local/bin/automysqlbackup
+echo "---------------------------------------------------------"
+echo "Checking if automysqlbackup produced any dumps ..."
+
+# we check if we got any files, see: https://stackoverflow.com/questions/6363441/check-if-a-file-exists-with-wildcard-in-shell-script
+DUMPS_CREATED=false
+for f in /var/backup/dbdumps/latest/*.sql.gz; do
+
+  ## Check if the glob gets expanded to existing files.
+  ## If not, f here will be exactly the pattern above
+  ## and the exists test will evaluate to false.
+  #[ -e "$f" ] && echo "Yes, we created some dumps ..." || { echo "No dumps generated. Done."; exit 0; }
+  [ -e "$f" ] && DUMPS_CREATED=true || continue
+
+    ## This is all we needed to know, so we can break after the first iteration
+    break
+
+done
+
+if $DUMPS_CREATED; then
+  #echo "Some dumps were being generated."
+
+  # copy to local save dir
+  echo "Storing to local save location ..."
+  cp -u -v /var/backup/dbdumps/latest/*.sql.gz /var/local/automysqlbackup
+  chown www-data.www-data /var/local/automysqlbackup/*.sql.gz
+  chmod 755 /var/local/automysqlbackup/*.sql.gz
+
+  # now we tr to put it to the htdocs dir, if it exists
+  if [ -d "/var/www/htdocs/dbdumps" ]; then
+    echo "Dump directory inside htdocs exist, therefore moving dumps to that location ..."
+    mv -v /var/local/automysqlbackup/*.sql.gz /var/www/htdocs/dbdumps/
+  fi  
+
+else
+  echo "No dump files have been generated."
+  #echo "Seems like automysqlbackup has no backup for the configured databases generated."
+fi
+
+# cleanup
+rm -rf /tmp/automysqlbackup
+
+echo "Done."

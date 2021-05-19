@@ -1,0 +1,3 @@
+#!/bin/sh
+echo "PREPARE BACKUP ..."
+echo "Nothing to do."

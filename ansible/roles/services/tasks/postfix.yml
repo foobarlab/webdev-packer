@@ -1,0 +1,6 @@
+---
+# vim: syntax=yaml
+# TODO: setup postfix to deliver to mailcatcher
+# ensure compatibility_levl is uncommented
+# change: inet_interfaces = localhost ???
+# TODO enable catchall and relay to mailcatcher ...

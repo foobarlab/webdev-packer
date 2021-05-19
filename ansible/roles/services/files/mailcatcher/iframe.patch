@@ -1,0 +1,10 @@
+--- /usr/local/lib64/ruby/gems/2.3.0/gems/mailcatcher-cors-0.7.1/lib/mail_catcher/web/application.rb
++++ /vagrant/files/mailcatcher-cors/application.rb.mod
+@@ -17,6 +17,7 @@
+     class Application < Sinatra::Base
+       set :development, ENV["MAILCATCHER_ENV"] == "development"
+       set :root, File.expand_path("#{__FILE__}/../../../..")
++      set :protection, except: [:frame_options]
+ 
+       if development?
+         require "sprockets-helpers"
