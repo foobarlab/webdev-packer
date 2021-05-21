@@ -154,7 +154,6 @@ sudo cat /etc/portage/make.conf
 
 sudo mkdir -p /etc/portage/package.use
 cat <<'DATA' | sudo tee -a /etc/portage/package.use/webdev-curl
-#net-misc/curl rtmp http2 brotli    # FIXME 'http2' requires '-bindist'
 net-misc/curl rtmp brotli
 DATA
 cat <<'DATA' | sudo tee -a /etc/portage/package.use/webdev-ghostscript
@@ -182,9 +181,6 @@ DATA
 cat <<'DATA' | sudo tee -a /etc/portage/package.use/webdev-nginx
 www-servers/nginx threads vim-syntax
 DATA
-#cat <<'DATA' | sudo tee -a /etc/portage/package.use/webdev-redis
-#dev-db/redis luajit
-#DATA
 cat <<'DATA' | sudo tee -a /etc/portage/package.use/webdev-php
 dev-lang/php curl pdo mysql mysqli xmlwriter xmlreader apache2 argon2 bcmath calendar cgi enchant flatfile fpm inifile mhash odbc postgres soap sockets sodium spell xmlrpc xslt zip zip-encryption sqlite phar opcache tidy xpm gmp ftp
 # required by www-apps/postfixadmin:
@@ -195,17 +191,14 @@ DATA
 cat <<'DATA' | sudo tee -a /etc/portage/package.use/webdev-erlang
 >=dev-lang/erlang-22.3 hipe kpoll odbc sctp -wxwidgets -tk doc
 DATA
-#cat <<'DATA' | sudo tee -a /etc/portage/package.use/webdev-kafka
-## use embedded zookeeper for kafka:
-#net-misc/kafka-bin internal-zookeeper
-#DATA
-cat <<'DATA' | sudo tee -a /etc/portage/package.use/webdev-imagick
+cat <<'DATA' | sudo tee -a /etc/portage/package.use/webdev-imagemagick
 # customize gnome-base/librsvg (pulled by media-gfx/imagemagick): prevent emerge of X11
 gnome-base/librsvg -tools
 # customize media-gfx/imagemagick (required by dev-php/pecl-imagick):
 media-gfx/imagemagick -openmp
-# additional supported libs for imagick:
-# FIXME 'heif' fails to compile
+# additional supported libs for imagemagick:
+#media-gfx/imagemagick -corefonts fontconfig graphviz jpeg2k postscript wmf raw hdri fpx lqr heif
+# FIXME libheif failed to compile
 media-gfx/imagemagick -corefonts fontconfig graphviz jpeg2k postscript wmf raw hdri fpx lqr
 # required by media-gfx/graphviz, dev-php/phpDocumentor, dev-php/phing:
 media-libs/gd fontconfig
@@ -213,35 +206,27 @@ DATA
 cat <<'DATA' | sudo tee -a /etc/portage/package.use/webdev-ffmpeg
 media-video/ffmpeg -bluray -frei0r -ieee1394 cpudetection
 DATA
-#cat <<'DATA' | sudo tee -a /etc/portage/package.use/webdev-wireshark
-## customize wireshark:
-#net-analyzer/wireshark -qt5 androiddump sshdump brotli tfshark adns lua smi
-#DATA
+cat <<'DATA' | sudo tee -a /etc/portage/package.use/webdev-wireshark
+# customize wireshark:
+net-analyzer/wireshark -qt5 nghttp2 androiddump sshdump brotli tfshark adns lua smi
+DATA
 cat <<'DATA' | sudo tee -a /etc/portage/package.use/webdev-rust
 dev-lang/rust clippy libressl rls rustfmt wasm
 DATA
 cat <<'DATA' | sudo tee -a /etc/portage/package.use/webdev-krb5
 app-crypt/mit-krb5 keyutils libressl
 DATA
-#cat <<'DATA' | sudo tee -a /etc/portage/package.use/webdev-ant
-## FIXME temporary added here, pulls in jython (build failing)
-#dev-java/ant -bsf
-#DATA
 cat <<'DATA' | sudo tee -a /etc/portage/package.use/webdev-alsa-plugins
 # required by firefox-bin:
 >=media-plugins/alsa-plugins-1.1.9 pulseaudio
 DATA
-
-## temporary fixes (removed in 90-postprocess.sh)
-#cat <<'DATA' | sudo tee -a /etc/portage/package.use/temp-circular-fix
-## resolve circular dependency during install:
-#>=media-libs/libwebp-1.0.2 -tiff
-#>=media-libs/libjpeg-turbo-2.0.2 -java
-#DATA
-
 cat <<'DATA' | sudo tee -a /etc/portage/package.use/webdev-libjpeg-turbo
 # disable java
 media-libs/libjpeg-turbo -java
+DATA
+cat <<'DATA' | sudo tee -a /etc/portage/package.use/webdev-openssl
+# TLSv1.3 support (nginx):
+dev-libs/openssl sslv3 tls-heartbeat
 DATA
 
 # ---- package.license
@@ -297,14 +282,6 @@ cat <<'DATA' | sudo tee -a /etc/portage/package.unmask/dev-couchdb
 # Pacho Ramos <pacho@gentoo.org> (11 Nov 2018): Unmaintained, security issues (#630796, #663164). Removal in a month.
 >=dev-db/couchdb-2.3.0
 DATA
-
-# ---- package.accept_keywords
-
-#sudo mkdir -p /etc/portage/package.accept_keywords
-#cat <<'DATA' | sudo tee -a /etc/portage/package.accept_keywords/dev-linux-headers
-## needed for dev-util/perf:
-#sys-kernel/linux-headers **
-#DATA
 
 # ---- always copy kernel.config to current kernel src
 
