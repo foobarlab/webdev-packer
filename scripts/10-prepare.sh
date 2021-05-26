@@ -285,11 +285,11 @@ DATA
 
 # ---- package.accept_keywords
 
-sudo mkdir -p /etc/portage/package.accept_keywords
-cat <<'DATA' | sudo tee -a /etc/portage/package.accept_keywords/dev-linux-headers
-# needed for dev-util/perf:
-sys-kernel/linux-headers **
-DATA
+#sudo mkdir -p /etc/portage/package.accept_keywords
+#cat <<'DATA' | sudo tee -a /etc/portage/package.accept_keywords/dev-linux-headers
+## needed for dev-util/perf:
+#sys-kernel/linux-headers **
+#DATA
 
 # ---- always copy kernel.config to current kernel src
 

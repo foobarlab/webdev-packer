@@ -147,8 +147,9 @@ sudo emerge -nuvtND --with-bdeps=y \
     dev-util/strace \
     dev-util/systemtap \
     sys-apps/lnxhc \
-    app-admin/dio \
-	dev-util/perf
+    app-admin/dio
+    
+    #dev-util/perf  # FIXME
 
 sudo emerge -nuvtND --with-bdeps=y \
     dev-db/mysql-super-smack
