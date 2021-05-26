@@ -283,6 +283,14 @@ cat <<'DATA' | sudo tee -a /etc/portage/package.unmask/dev-couchdb
 >=dev-db/couchdb-2.3.0
 DATA
 
+# ---- package.accept_keywords
+
+sudo mkdir -p /etc/portage/package.accept_keywords
+cat <<'DATA' | sudo tee -a /etc/portage/package.accept_keywords/dev-linux-headers
+# needed for dev-util/perf:
+sys-kernel/linux-headers **
+DATA
+
 # ---- always copy kernel.config to current kernel src
 
 sudo cp -f /usr/src/kernel.config /usr/src/linux/.config
