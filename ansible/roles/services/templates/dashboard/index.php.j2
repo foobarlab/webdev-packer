@@ -1,4 +1,13 @@
-<!DOCTYPE html>
+<?php
+
+  // disable caching
+  header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+  header("Cache-Control: post-check=0, pre-check=0", false);
+  header("Pragma: no-cache");
+
+  $actual_base_url = str_replace(":".$_SERVER['SERVER_PORT'],"","//".$_SERVER['HTTP_HOST']);
+
+?><!DOCTYPE html>
 <html>
 <head>
     <title>Dashboard</title>
@@ -70,7 +79,7 @@
         <div>CONTENT</div>
     </main>
     <footer>
-        <div>FOOTER</div>
+        <div><p>Box version { box_version }, Dashboard running on PHP <?php echo phpversion(); ?><br><small><?php echo str_replace("\n","<br>","{{ lookup('pipe','cat /home/vagrant/.release_webdev') }}"); ?></small></p></div>
     </footer>
 </body>
 </html>
