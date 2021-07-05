@@ -41,6 +41,7 @@ $script_cleanup = <<SCRIPT
 # debug: list running services
 rc-status
 # stop services
+/etc/init.d/mysql stop || true
 /etc/init.d/xdm stop || true
 /etc/init.d/xdm-setup stop || true
 /etc/init.d/elogind stop || true
