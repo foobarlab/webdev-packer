@@ -38,7 +38,7 @@ Get the latest experimental build from Vagrant Cloud: [foobarlab/webdev](https:/
 
  - Run ```./test_ansible.sh```
 
-#### Upload the box to Vagrant Cloud (experimental)
+#### Upload the box to Vagrant Cloud (account required)
 
  - Run ```./upload.sh```
 
