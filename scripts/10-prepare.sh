@@ -213,8 +213,11 @@ DATA
 cat <<'DATA' | sudo tee -a /etc/portage/package.use/webdev-rust
 dev-lang/rust clippy libressl rls rustfmt wasm
 DATA
-cat <<'DATA' | sudo tee -a /etc/portage/package.use/webdev-krb5
+cat <<'DATA' | sudo tee -a /etc/portage/package.use/webdev-kerberos
 app-crypt/mit-krb5 keyutils libressl
+# required for xdebug:
+virtual/imap-c-client kerberos
+net-libs/c-client kerberos
 DATA
 cat <<'DATA' | sudo tee -a /etc/portage/package.use/webdev-alsa-plugins
 # required by firefox-bin:
