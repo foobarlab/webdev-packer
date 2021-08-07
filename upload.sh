@@ -18,7 +18,6 @@ fi
 command -v curl >/dev/null 2>&1 || { echo "Command 'curl' required but it's not installed.  Aborting." >&2; exit 1; }
 command -v jq >/dev/null 2>&1 || { echo "Command 'jq' required but it's not installed.  Aborting." >&2; exit 1; }
 
-echo "This script is marked as EXPERIMENTAL! Use at your own risk."
 echo "This script will upload the current build box to Vagrant Cloud."
 echo
 echo "User:     $BUILD_BOX_USERNAME"
@@ -41,6 +40,19 @@ esac
 
 . vagrant_cloud_token.sh
 
+# check if a latest version does exist
+LATEST_VERSION_HTTP_CODE=$( \
+  curl -sS -w "%{http_code}" -o /dev/null \
+    --header "Authorization: Bearer $VAGRANT_CLOUD_TOKEN" \
+    https://app.vagrantup.com/api/v1/box/$BUILD_BOX_USERNAME/$BUILD_BOX_NAME \
+)
+
+case "$LATEST_VERSION_HTTP_CODE" in
+  200) printf "Received: HTTP $LATEST_VERSION_HTTP_CODE ==> One or more boxes found, will continue ...\n" ;;
+  404) printf "Received HTTP $LATEST_VERSION_HTTP_CODE (file not found) ==> There is no current box.\n" ;;
+  *) printf "Received: HTTP $LATEST_VERSION_HTTP_CODE ==> Unhandled status code while trying to get latest box meta info, aborting.\n" ; exit 1 ;;
+esac
+
 # check version match on cloud and abort if same
 echo "Checking existing cloud version ..."
 LATEST_CLOUD_VERSION=$( \
@@ -49,18 +61,14 @@ curl -sS \
   https://app.vagrantup.com/api/v1/box/$BUILD_BOX_USERNAME/$BUILD_BOX_NAME \
 )
 
-# FIXME handle curl exit code, check if box exists (should give us a 200 HTTP response, if not we will get a 404)
-#echo "curl exit code: $?"
-
 LATEST_CLOUD_VERSION=$(echo $LATEST_CLOUD_VERSION | jq .current_version.version | tr -d '"')
 echo "Our version: $BUILD_BOX_VERSION"
 echo "Latest cloud version: $LATEST_CLOUD_VERSION"
 
 if [[ $BUILD_BOX_VERSION = $LATEST_CLOUD_VERSION ]]; then
-	echo "Same version will not be uploaded. Aborting upload."
-	exit 0
+  echo "Same version already exists."
 else 
-	echo "Looks like we got a new version to provide. Proceeding to upload ..."
+  echo "Looks like we got a new version to provide."
 fi
 
 # Create a new box
@@ -133,6 +141,7 @@ if [ $UPLOAD_NEW_PROVIDER_SUCCESS == 'false' ]; then
 	UPLOAD_PROVIDER_ALREADY_EXISTS=`echo $UPLOAD_NEW_PROVIDER | jq '.errors' | jq 'contains(["Metadata provider must be unique for version"])'`
 	if [ $UPLOAD_PROVIDER_ALREADY_EXISTS == 'true' ]; then
 		echo "OK, the provider '$BUILD_BOX_PROVIDER' seems already taken. No need to create a new provider."
+		# TODO check if file was uploaded succesfully in previous run
 	else
 		echo "Error response from API:"
 		echo $UPLOAD_NEW_PROVIDER | jq '.errors'
@@ -165,11 +174,13 @@ UPLOAD_URL=$(echo "$UPLOAD_PREPARE_UPLOADURL" | jq '.upload_path' | tr -d '"')
 
 # Perform the upload
 echo "Trying to upload ... This may take a while ..."
-curl $UPLOAD_URL \
+curl -f $UPLOAD_URL \
+     --progress-bar \
      --request PUT \
-     --upload-file $BUILD_OUTPUT_FILE_FINAL
+     --upload-file $BUILD_OUTPUT_FILE_FINAL \
+| tee
 
-# FIXME: validate successful upload (curl exit code?)
+# TODO: validate successful upload?
 echo "Upload finished with exit code $?."
 
 # Release the version
