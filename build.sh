@@ -1,16 +1,16 @@
-#!/bin/bash -e
+#!/bin/bash -ue
 
-echo "Executing $0 ..."
+start=`date +%s`
 
 export BUILD_PARENT_BOX_CHECK=true
 
 . config.sh quiet
-
 . distfiles.sh
 
-command -v vagrant >/dev/null 2>&1 || { echo "Command 'vagrant' required but it's not installed.  Aborting." >&2; exit 1; }
-command -v packer >/dev/null 2>&1 || { echo "Command 'packer' required but it's not installed.  Aborting." >&2; exit 1; }
-command -v wget >/dev/null 2>&1 || { echo "Command 'wget' required but it's not installed.  Aborting." >&2; exit 1; }
+
+require_commands vagrant packer wget
+
+header "Building box '$BUILD_BOX_NAME'"
 
 BUILD_PARENT_BOX_OVF="$HOME/.vagrant.d/boxes/$BUILD_PARENT_BOX_NAME/0/virtualbox/box.ovf"
 BUILD_PARENT_BOX_VAGRANTCLOUD_PATHNAME=`echo "$BUILD_PARENT_BOX_VAGRANTCLOUD_NAME" | sed "s|/|-VAGRANTSLASH-|"`
@@ -77,20 +77,18 @@ mkdir -p packages || true
 export PACKER_LOG_PATH="$PWD/packer.log"
 export PACKER_LOG="1"
 packer validate virtualbox.json
-packer build virtualbox.json
+packer build -force -on-error=abort virtualbox.json
 
-echo "------------------------------------------------------------------------"
-echo "                         OPTIMIZING BOX SIZE"
-echo "------------------------------------------------------------------------"
+title "OPTIMIZING BOX SIZE"
 
 if [ -f "$BUILD_OUTPUT_FILE_TEMP" ]; then
-    echo "Suspending any running instances ..."
+    step "Suspending any running instances ..."
     vagrant suspend
-    echo "Destroying current box ..."
+    step "Destroying current box ..."
     vagrant destroy -f || true
-    echo "Removing '$BUILD_BOX_NAME' ..."
+    step "Removing '$BUILD_BOX_NAME' ..."
     vagrant box remove -f "$BUILD_BOX_NAME" 2>/dev/null || true
-    echo "Adding '$BUILD_BOX_NAME' ..."
+    step "Adding '$BUILD_BOX_NAME' ..."
     vagrant box add --name "$BUILD_BOX_NAME" "$BUILD_OUTPUT_FILE_TEMP"
     echo "Powerup and provision '$BUILD_BOX_NAME' (running only 'shell' scripts) ..."
     vagrant --provision up --provision-with net_debug,export_packages,cleanup_kernel,cleanup || { echo "Unable to startup '$BUILD_BOX_NAME'."; exit 1; }

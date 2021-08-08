@@ -1,12 +1,15 @@
 #!/bin/bash
 
-command -v git >/dev/null 2>&1 || { echo "Command 'git' required but it's not installed.  Aborting." >&2; exit 1; }
-command -v nproc >/dev/null 2>&1 || { echo "Command 'nproc' from coreutils required but it's not installed.  Aborting." >&2; exit 1; }
+. ./lib/functions.sh
+require_commands git nproc
+set -a
 
 . version.sh
 
-export BUILD_BOX_USERNAME="foobarlab"
+# ----------------------------!  edit settings below  !----------------------------
+
 export BUILD_BOX_NAME="webdev"
+export BUILD_BOX_USERNAME="foobarlab"
 
 export BUILD_BOX_PROVIDER="virtualbox"
 
@@ -85,8 +88,11 @@ export BUILD_OUTPUT_FILE_FINAL="$BUILD_BOX_NAME-$BUILD_BOX_VERSION.box"
 . parent_version.sh
 
 if [ $# -eq 0 ]; then
-	echo "Executing $0 ..."
-	echo "=== Build settings ============================================================="
-	env | grep BUILD_ | sort
-	echo "================================================================================"
+	title "BUILD SETTINGS"
+	if [ "$ANSI" = "true" ]; then
+		env | grep BUILD_ | sort | awk -F"=" '{ printf("'${white}${bold}'%.40s '${default}'%s\n",  $1 "'${dark_grey}'........................................'${default}'" , $2) }'
+	else
+	  env | grep BUILD_ | sort | awk -F"=" '{ printf("%.40s %s\n",  $1 "........................................" , $2) }'
+	fi
+	title_divider
 fi
