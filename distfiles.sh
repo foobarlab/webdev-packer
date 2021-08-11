@@ -3,7 +3,6 @@
 
 create_sum() {
     # TODO check given param(s)
-    #find "$PWD" -type d |\
     find "$PWD/$1" -type d |\
     sort |\
     while read dir; \
@@ -16,7 +15,6 @@ create_sum() {
 
 check_sum() {
     # TODO check given param(s)
-    #find "$PWD" -name @md5Sum.md5 | \
     find "$PWD/$1" -name checksums.b2 | \
     sort | \
     while read file; \
@@ -25,21 +23,21 @@ check_sum() {
     done > checksums.log
 }
 
-echo "TODO check distfiles"
+todo "check distfiles"
 
 check_sum distfiles
 cat checksums.log
 
-echo "TODO download distfiles if missing file checksums found (count files) ..."
+todo "download distfiles if missing file checksums found (count files) ..."
 
 # ant-1.10.9-gentoo.tar.bz2: https://dev.gentoo.org/~fordfrog/distfiles/ant-1.10.9-gentoo.tar.bz2
 # mariadb-10.5.9.tar.gz: https://downloads.mariadb.org/interstitial/mariadb-10.5.9/source/mariadb-10.5.9.tar.gz/from/https%3A//archive.mariadb.org/
 
-echo "TODO re-create checksum if needed ..."
+todo "re-create checksum if needed ..."
 
 create_sum distfiles
 
-echo "TODO re-check checksums, abort/continue if distfiles were still missing or download failed."
+todo "re-check checksums, abort/continue if distfiles were still missing or download failed."
 
 check_sum distfiles
 cat checksums.log

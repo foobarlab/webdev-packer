@@ -49,7 +49,6 @@ sudo rm -f /etc/resolv.conf.bak
 sudo rc-update -v    # show final runlevels
 sudo genlop -u -l    # show (un)merged packages before logs are cleared
 
-# cleanup remaining data
 sudo /usr/local/sbin/foo-cleanup
 
 # simple way to claim some free space before export

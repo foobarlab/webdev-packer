@@ -34,10 +34,10 @@
         ["modifyvm","{{.Name}}","--vtxvpid","on"],
         ["modifyvm","{{.Name}}","--nested-hw-virt","on"],
         ["modifyvm","{{.Name}}","--largepages","on"],
-        ["modifyvm","{{.Name}}","--spec-ctrl","off"],
         ["modifyvm","{{.Name}}","--graphicscontroller","vmsvga"],
         ["modifyvm","{{.Name}}","--accelerate3d","on"],
-        ["modifyvm","{{.Name}}","--clipboard-mode", "bidirectional"],
+        ["modifyvm","{{.Name}}","--spec-ctrl","off"],
+        ["modifyvm","{{.Name}}","--clipboard-mode","bidirectional"],
         ["sharedfolder","add","{{.Name}}","--name=/vagrant","--hostpath=.","--automount"]
       ]
   }],
@@ -49,7 +49,7 @@
       "type": "shell",
       "script": "provision.sh",
       "environment_vars": [
-          "SCRIPTS=/tmp",
+          "scripts=/tmp",
           "BUILD_RUN=true",
           "BUILD_BOX_NAME={{user `vm_name`}}",
           "BUILD_BOX_USERNAME={{user `vm_username`}}",

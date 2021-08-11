@@ -2,21 +2,24 @@
 # vim: ts=4 sw=4 et
 # NOTE: Vagrant Cloud API see: https://www.vagrantup.com/docs/vagrant-cloud/api.html
 
-. config.sh
+. config.sh quiet
+
+title "CLEAN CLOUD"
+
 . vagrant_cloud_token.sh
 
-command -v curl >/dev/null 2>&1 || { echo "Command 'curl' required but it's not installed.  Aborting." >&2; exit 1; }
-command -v jq >/dev/null 2>&1 || { echo "Command 'jq' required but it's not installed.  Aborting." >&2; exit 1; }
+require_commands curl jq
 
-echo "This script is marked as EXPERIMENTAL! Use at your own risk."
-echo "This script will remove outdated boxes from Vagrant Cloud."
 echo
-echo "A maximum number of $BUILD_KEEP_MAX_CLOUD_BOXES boxes will be kept."
-echo "The current version will always be kept."
+info "This script will remove outdated boxes from Vagrant Cloud."
 echo
-echo "User:     $BUILD_BOX_USERNAME"
-echo "Box:      $BUILD_BOX_NAME"
-echo "Provider: $BUILD_BOX_PROVIDER"
+info "A maximum number of $BUILD_KEEP_MAX_CLOUD_BOXES boxes will be kept."
+info "The current version will always be kept."
+echo
+info "User.......: '$BUILD_BOX_USERNAME'"
+info "Box........: '$BUILD_BOX_NAME'"
+info "Provider...: '$BUILD_BOX_PROVIDER'"
+echo
 
 CLOUD_BOX_INFO=$( \
 curl -sS -f \
@@ -26,21 +29,30 @@ curl -sS -f \
 
 LATEST_CLOUD_VERSION=$(echo $CLOUD_BOX_INFO | jq .current_version.version | tr -d '"')
 if [ $LATEST_CLOUD_VERSION = "null" ]; then
+    success "Successful request, but no boxes were found."
+    result "Nothing to remove. Please upload a box first."
     echo
-    echo "Successful request, but no boxes were found."
-    echo "Nothing to remove. Please upload a box first."
     exit 0
 fi
 
-echo
-echo "Current version (will always be kept):"
-echo "$LATEST_CLOUD_VERSION"
+highlight "Latest version (will always be kept):"
+info "$LATEST_CLOUD_VERSION"
 
-EXISTING_CLOUD_VERSIONS=$(echo $CLOUD_BOX_INFO | jq .versions[] | jq .version | tr -d '"' | sort -r)
-echo
-echo "All found versions:"
-echo "$EXISTING_CLOUD_VERSIONS"
-echo
+EXISTING_CLOUD_VERSIONS=$(echo $CLOUD_BOX_INFO | jq .versions[] | jq .version | tr -d '"' | sort -r )
+
+if [ "$EXISTING_CLOUD_VERSIONS" = "$LATEST_CLOUD_VERSION" ]; then
+    :
+else
+    echo
+    highlight "Additional found versions:"
+    while IFS= read -r line; do
+        if [ "$line" = "$LATEST_CLOUD_VERSION" ]; then
+            :
+        else
+            info "$line"
+        fi
+    done <<< "$EXISTING_CLOUD_VERSIONS"
+fi
 
 COUNT=0
 for ITEM in $EXISTING_CLOUD_VERSIONS; do
@@ -48,19 +60,22 @@ for ITEM in $EXISTING_CLOUD_VERSIONS; do
 done
 
 if [ $COUNT -eq 0 ]; then
-    echo "No box found. Nothing todo."
+    final "No box found. Nothing todo."
     exit 0
 fi
 if [ $COUNT -eq 1 ]; then
-    echo "Found a single box. Nothing todo."
+    final "Found a single box. Nothing todo."
     exit 0
 fi
 
-echo "Total ${COUNT} boxes found."
-
-read -p "Continue (Y/n)? " choice
+echo
+warn "Total ${COUNT} boxes found. Will keep no more than ${BUILD_KEEP_MAX_CLOUD_BOXES} box(es)."
+echo
+read -p "    Continue (Y/n)? " choice
 case "$choice" in
-  n|N ) echo "User cancelled."
+  n|N ) echo
+        warn "User cancelled."
+        echo
         exit 0
         ;;
   * ) echo
@@ -74,12 +89,12 @@ do
     COUNT=$((COUNT+1))
     if [ $COUNT -gt $BUILD_KEEP_MAX_CLOUD_BOXES ]; then
         if [ "$ITEM" = "$LATEST_CLOUD_VERSION" ]; then
-            echo "Skipping box version $ITEM (latest version will always be kept)."
+            highlight "Skipping box version $ITEM (latest version will always be kept)."
         else
-            echo "Found outdated box version $ITEM ..."
+            warn "Found outdated box version $ITEM ..."
 
             # revoke that version:
-            echo "Revoking version $ITEM ..."
+            highlight "Revoking version $ITEM ..."
             CLOUD_BOX_REVOKE=$( \
 curl -sS \
   --header "Authorization: Bearer $VAGRANT_CLOUD_TOKEN" \
@@ -87,20 +102,20 @@ curl -sS \
   https://app.vagrantup.com/api/v1/box/$BUILD_BOX_USERNAME/$BUILD_BOX_NAME/version/$ITEM/revoke \
 )
             # delete that version:
-            echo "Delete version $ITEM ..."
+            highlight "Delete version $ITEM ..."
             CLOUD_BOX_DELETE=$( \
 curl -sS \
   --header "Authorization: Bearer $VAGRANT_CLOUD_TOKEN" \
   --request DELETE \
   https://app.vagrantup.com/api/v1/box/$BUILD_BOX_USERNAME/$BUILD_BOX_NAME/version/$ITEM \
 )
-            echo "Done."
+            result "Deleted."
         fi
     else
         if [ "$ITEM" = "$LATEST_CLOUD_VERSION" ]; then
-            echo "Skipping box version $ITEM (latest version will always be kept) ..."
+            highlight "Skipping box version $ITEM (latest version will always be kept) ..."
         else
-            echo "Skipping box version $ITEM ..."
+            highlight "Skipping box version $ITEM ..."
         fi
     fi
 done
@@ -114,6 +129,6 @@ curl -sS -f \
 
 EXISTING_CLOUD_VERSIONS=$(echo $CLOUD_BOX_INFO | jq .versions[] | jq .version | tr -d '"' | sort -r)
 echo
-echo "Remaining box versions:"
-echo "$EXISTING_CLOUD_VERSIONS"
+highlight "Remaining box versions:"
+info "$EXISTING_CLOUD_VERSIONS"
 echo

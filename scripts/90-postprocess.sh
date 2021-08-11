@@ -15,12 +15,12 @@ for dir in /etc/portage/package.*; do
 done
 sudo emerge -vtuDN --with-bdeps=y @world
 
-# net-mail/mailbase: adjust permissions as recommended during install
-sudo chown root:mail /var/spool/mail/
+## net-mail/mailbase: adjust permissions as recommended during install
+#sudo chown root:mail /var/spool/mail/
 sudo chmod 03775 /var/spool/mail/
 
 # sys-apps/mlocate: add shared folders to /etc/updatedb.conf prune paths to avoid leaking shared files
-sudo sed -i 's/PRUNEPATHS="/PRUNEPATHS="\/srv \/data /g' /etc/updatedb.conf
+sudo sed -i 's/PRUNEPATHS="/PRUNEPATHS="\/srv \/data \/vagrant /g' /etc/updatedb.conf
 
 sudo emerge -vt @preserved-rebuild
 

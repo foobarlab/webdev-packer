@@ -55,7 +55,7 @@ rc-status
 /etc/init.d/local stop || true
 /etc/init.d/acpid stop || true
 # let it settle
-sync && sleep 10
+sync && sleep 15
 # run cleanup script (from funtoo-base box)
 /usr/local/sbin/foo-cleanup
 # delete some logfiles
@@ -65,19 +65,19 @@ for i in "${logfiles[@]}"; do
 done
 rm -f /var/log/portage/elog/*.log
 # let it settle
-sync && sleep 10
+sync && sleep 15
 # debug: list running services
 rc-status
 # clean shell history
 set +o history
 rm -f /home/vagrant/.bash_history
 rm -f /root/.bash_history
-sync
+sync && sleep 5
 # run zerofree at last to squeeze the last bit
 # /boot
 mount -v -n -o remount,ro /dev/sda1
 zerofree /dev/sda1 && echo "zerofree: success on /dev/sda1 (boot)"
-# /
+# / (root fs)
 mount -v -n -o remount,ro /dev/sda4
 zerofree /dev/sda4 && echo "zerofree: success on /dev/sda4 (root)"
 # swap
