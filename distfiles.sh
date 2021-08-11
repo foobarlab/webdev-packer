@@ -1,13 +1,15 @@
 #!/bin/bash
 # vim: ts=4 sw=4 et
 
+. ./lib/functions.sh
+
 create_sum() {
     # TODO check given param(s)
     find "$PWD/$1" -type d |\
     sort |\
     while read dir; \
     do cd "${dir}"; \
-        [ ! -f checksums.b2 ] && echo "Processing " "${dir}" || echo "Skipped " "${dir}" " checksums.b2 allready present" ; \
+        [ ! -f checksums.b2 ] && step "Processing " "${dir}" || result "Skipped " "${dir}" " checksums.b2 allready present" ; \
         [ ! -f checksums.b2 ] &&  b2sum * > checksums.b2 ; \
         chmod a=r "${dir}"/checksums.b2 ; \
     done
