@@ -17,13 +17,14 @@ then
     step "Removing '$BUILD_BOX_NAME' ..."
     vagrant box remove -f "$BUILD_BOX_NAME" 2>/dev/null || true
     step "Adding '$BUILD_BOX_NAME' ..."
-    vagrant box add --name "$BUILD_BOX_NAME" "$BUILD_OUTPUT_FILE_FINAL"
+    vagrant box add --name "$BUILD_BOX_NAME" "$BUILD_OUTPUT_FILE"
     step "Powerup '$BUILD_BOX_NAME' ..."
     vagrant up --no-provision || { echo "Failed to startup '$BUILD_BOX_NAME'. Test failed!"; exit 1; }
     step "Suspending '$BUILD_BOX_NAME' ..."
     vagrant suspend
 else
-    step "There is no box file '$BUILD_OUTPUT_FILE_FINAL' in the current directory. Please place the box file here or use './build.sh' to create a box file."
+    error "There is no box file '$BUILD_OUTPUT_FILE' in the current directory."
+    info "Please place the box file here or use './build.sh' to create a box file."
     if [ $# -eq 0 ]; then
         exit 1  # exit with error when running without param
     else

@@ -11,7 +11,7 @@ header "Finalizing box '$BUILD_BOX_NAME'"
 
 # FIXME if finalized box exists, ask if delete and continue, or abort
 step "Deleting previous finalized box if any ..."
-rm -f $BUILD_OUTPUT_FILE_FINAL
+rm -f $BUILD_OUTPUT_FILE
 
 if [ -f "$BUILD_OUTPUT_FILE_INTERMEDIATE" ]; then
     step "Suspending any running instances ..."
@@ -25,8 +25,8 @@ if [ -f "$BUILD_OUTPUT_FILE_INTERMEDIATE" ]; then
     step "Powerup and provision '$BUILD_BOX_NAME' ..."
     vagrant up --provision --provision-with net_debug || { echo "Unable to startup '$BUILD_BOX_NAME'."; exit 1; }
     vagrant provision --provision-with provision_ansible,remove_kernel,cleanup
-    step "Exporting final box to '$BUILD_OUTPUT_FILE_FINAL' ..."
-    vagrant package --output "$BUILD_OUTPUT_FILE_FINAL"
+    step "Exporting final box to '$BUILD_OUTPUT_FILE' ..."
+    vagrant package --output "$BUILD_OUTPUT_FILE"
     result "Build finalized."
 else
     error "There is no box file '$BUILD_OUTPUT_FILE_INTERMEDIATE' in the current directory."

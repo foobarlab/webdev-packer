@@ -5,10 +5,10 @@
 . config.sh quiet
 
 title "UPLOAD BOX"
-if [ -f "$BUILD_OUTPUT_FILE_FINAL" ]; then
-    result "Found box file '$BUILD_OUTPUT_FILE_FINAL' in the current directory."
+if [ -f "$BUILD_OUTPUT_FILE" ]; then
+    result "Found box file '$BUILD_OUTPUT_FILE' in the current directory."
 else
-    error "There is no box file '$BUILD_OUTPUT_FILE_FINAL' in the current directory."
+    error "There is no box file '$BUILD_OUTPUT_FILE' in the current directory."
     result "Please run './build.sh' to build a box."
     if [ $# -eq 0 ]; then
         exit 1  # exit with error when running without param
@@ -26,7 +26,7 @@ info "User.........: '$BUILD_BOX_USERNAME'"
 info "Box..........: '$BUILD_BOX_NAME'"
 info "Provider.....: '$BUILD_BOX_PROVIDER'"
 info "Version......: '$BUILD_BOX_VERSION'"
-info "File.........: '$BUILD_OUTPUT_FILE_FINAL'"
+info "File.........: '$BUILD_OUTPUT_FILE'"
 #info "Build time...: '$BUILD_RUNTIME'"
 # FIXME show and compare sha1 checksum?
 echo
@@ -134,9 +134,9 @@ fi
 # create hash checksum, supported values: md5, sha1, sha256, sha384 and sha512
 highlight "Creating checksum ..."
 #UPLOAD_CHECKSUM_CALC=`pv $BUILD_OUTPUT_FILE _FINAL| sha1sum`
-UPLOAD_CHECKSUM_CALC=`sha1sum $BUILD_OUTPUT_FILE_FINAL`
+UPLOAD_CHECKSUM_CALC=`sha1sum $BUILD_OUTPUT_FILE`
 UPLOAD_CHECKSUM=`echo $UPLOAD_CHECKSUM_CALC | cut -d " " -f1`
-result "'$BUILD_OUTPUT_FILE_FINAL': SHA-1 [ '$UPLOAD_CHECKSUM' ]"
+result "'$BUILD_OUTPUT_FILE': SHA-1 [ '$UPLOAD_CHECKSUM' ]"
 
 # Create a new provider
 highlight "Trying to create a new provider '$BUILD_BOX_PROVIDER' ..."
@@ -239,7 +239,7 @@ fi
 curl -f $UPLOAD_URL \
      $UPLOAD_PROGRESS \
      --request PUT \
-     --upload-file $BUILD_OUTPUT_FILE_FINAL \
+     --upload-file $BUILD_OUTPUT_FILE \
 | tee /dev/null
 
 result "Upload ended with exit code $?."
