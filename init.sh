@@ -7,18 +7,18 @@ require_commands vagrant
 
 title "INITIALIZE BOX"
 
-if [ -f "$BUILD_OUTPUT_FILE" ]; then
+if [ -f "$BUILD_OUTPUT_FILE_FINAL" ]; then
   highlight "Initializing a fresh '$BUILD_BOX_NAME' box ..."
     step "Suspending any running instances ..."
     vagrant suspend
-    step"Destroying current box ..."
+    step "Destroying current box ..."
     vagrant destroy -f || true
     step "Removing '$BUILD_BOX_NAME' ..."
     vagrant box remove -f "$BUILD_BOX_NAME" 2>/dev/null || true
     step "Adding '$BUILD_BOX_NAME' ..."
-    vagrant box add --name "$BUILD_BOX_NAME" "$BUILD_OUTPUT_FILE"
+    vagrant box add --name "$BUILD_BOX_NAME" "$BUILD_OUTPUT_FILE_FINAL"
 else
-    error "There is no box file '$BUILD_OUTPUT_FILE' in the current directory."
+    error "There is no box file '$BUILD_OUTPUT_FILE_FINAL' in the current directory."
     result "Please run './build.sh' to build a box."
     exit 1
 fi
