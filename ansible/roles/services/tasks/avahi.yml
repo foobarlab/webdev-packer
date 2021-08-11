@@ -1,5 +1,5 @@
 ---
-# vim: syntax=yaml
+# vim: ts=2 sw=2 et syntax=yaml
 # configures zeroconf/bonjour/rendezvous/mDNS to allow service discovery in the local network
 # see: https://www.funtoo.org/Zero_Configuration_Networking
 

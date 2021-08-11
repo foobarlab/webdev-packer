@@ -1,27 +1,28 @@
 #!/bin/bash
+# vim: ts=4 sw=4 et
 
 create_sum() {
-	# TODO check given param(s)
-	#find "$PWD" -type d |\
-	find "$PWD/$1" -type d |\
-	sort |\
-	while read dir; \
-	do cd "${dir}"; \
-		[ ! -f checksums.b2 ] && echo "Processing " "${dir}" || echo "Skipped " "${dir}" " checksums.b2 allready present" ; \
-		[ ! -f checksums.b2 ] &&  b2sum * > checksums.b2 ; \
-		chmod a=r "${dir}"/checksums.b2 ; \
-	done
+    # TODO check given param(s)
+    #find "$PWD" -type d |\
+    find "$PWD/$1" -type d |\
+    sort |\
+    while read dir; \
+    do cd "${dir}"; \
+        [ ! -f checksums.b2 ] && echo "Processing " "${dir}" || echo "Skipped " "${dir}" " checksums.b2 allready present" ; \
+        [ ! -f checksums.b2 ] &&  b2sum * > checksums.b2 ; \
+        chmod a=r "${dir}"/checksums.b2 ; \
+    done
 }
 
 check_sum() {
-	# TODO check given param(s)
-	#find "$PWD" -name @md5Sum.md5 | \
-	find "$PWD/$1" -name checksums.b2 | \
-	sort | \
-	while read file; \
-		do cd "${file%/*}"; \
-		b2sum -c checksums.b2; \
-	done > checksums.log
+    # TODO check given param(s)
+    #find "$PWD" -name @md5Sum.md5 | \
+    find "$PWD/$1" -name checksums.b2 | \
+    sort | \
+    while read file; \
+        do cd "${file%/*}"; \
+        b2sum -c checksums.b2; \
+    done > checksums.log
 }
 
 echo "TODO check distfiles"

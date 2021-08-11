@@ -1,5 +1,5 @@
 ---
-# vim: syntax=yaml
+# vim: ts=2 sw=2 et syntax=yaml
 
 - name: update system - refresh overlays and ego sync
   shell: /usr/local/sbin/foo-sync && sleep 5 && sync

@@ -1,5 +1,5 @@
 ---
-# vim: syntax=yaml
+# vim: ts=2 sw=2 et syntax=yaml
 # see: https://github.com/freedev/solr-import-export-json
 # export 'somedata': /usr/local/bin/solr-import-export-json -- -s http://localhost:8983/solr/somedata -a export -o /vagrant/somedata_collection.json
 # import 'somedata': /usr/local/bin/solr-import-export-json -- -s http://localhost:8983/solr/somedata -a import -o /vagrant/somedata_collection.json

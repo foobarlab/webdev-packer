@@ -1,5 +1,5 @@
 ---
-# vim: syntax=yaml
+# vim: ts=2 sw=2 et syntax=yaml
 # rabbitmq - see: https://www.rabbitmq.com/
 # LOGS: (rabbitmq:rabbitmq,644) rabbit.log rabbitmq@localhost_upgrade.log log/crash.log (root:root,644) startup.err startup.log
 # rabbitmqadmin see: https://www.rabbitmq.com/management-cli.html
@@ -70,5 +70,5 @@
 - name: rabbitmq - ensure rabbitmq is started (needed for rabbitmqadmin)
   shell: rc-service -q rabbitmq start
 
-- name: rabbitmq - install rabbitmq-cli admin tool (rabbitmqadmin)  
+- name: rabbitmq - install rabbitmq-cli admin tool (rabbitmqadmin)
   shell: cd /usr/local/bin && wget http://127.0.0.1:15672/cli/rabbitmqadmin && chmod 755 /usr/local/bin/rabbitmqadmin && /usr/local/bin/rabbitmqadmin --bash-completion > /usr/share/bash-completion/completions/rabbitmqadmin

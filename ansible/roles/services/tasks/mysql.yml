@@ -1,5 +1,5 @@
 ---
-# vim: syntax=yaml
+# vim: ts=2 sw=2 et syntax=yaml
 # mariadb (mysql) - see: https://mariadb.org/
 # LOGS: todo (mysql:mysql,660) mysqld.err
 

@@ -1,4 +1,5 @@
 #!/bin/bash -ue
+# vim: ts=4 sw=4 et
 
 command -v vagrant >/dev/null 2>&1 || { echo "Command 'vagrant' required but it's not installed.  Aborting." >&2; exit 1; }
 

@@ -53,7 +53,7 @@ server {
     	return 503;
     }
 
-    # deny access to ".ht*" files (.htpasswd, .htaccess, ...) 
+    # deny access to ".ht*" files (.htpasswd, .htaccess, ...)
     location ~ /\.ht {
 		deny all;
 	}

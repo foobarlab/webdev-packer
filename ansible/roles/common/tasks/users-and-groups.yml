@@ -1,5 +1,5 @@
 ---
-# vim: syntax=yaml
+# vim: ts=2 sw=2 et syntax=yaml
 # use "mkpasswd --method=sha-512" to generate password hash for users, see: https://serversforhackers.com/c/create-user-in-ansible
 
 - name: create users and groups - add 'www-data' group

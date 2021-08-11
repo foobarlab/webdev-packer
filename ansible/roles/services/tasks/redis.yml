@@ -1,5 +1,5 @@
 ---
-# vim: syntax=yaml
+# vim: ts=2 sw=2 et syntax=yaml
 # LOGS: (redis:redis,644) redis.log (/var/log/redis/redis.log)
 
 - name: redis - ensure log dir exists

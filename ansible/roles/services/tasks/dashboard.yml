@@ -1,9 +1,9 @@
 ---
-# vim: syntax=yaml
+# vim: ts=2 sw=2 et syntax=yaml
 
 - name: dashboard - html index - delete obsolete file
   file: path=/var/www/localhost/htdocs/index.html state=absent
-  
+
 - name: dashboard - html index - create the default file
   template: src=dashboard/index.php.j2 dest=/var/www/localhost/htdocs/index.php
-  
+

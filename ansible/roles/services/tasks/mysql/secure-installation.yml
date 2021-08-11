@@ -1,6 +1,6 @@
 ---
-# vim: syntax=yaml
- 
+# vim: ts=2 sw=2 et syntax=yaml
+
 - name: mysql_secure_installation - set root user password
   mysql_user:
       host: "{{ item }}"

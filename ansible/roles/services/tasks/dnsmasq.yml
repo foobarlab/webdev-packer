@@ -1,5 +1,5 @@
 ---
-# vim: syntax=yaml
+# vim: ts=2 sw=2 et syntax=yaml
 
 - name: dnsmasq - add conf.d directory
   file:
@@ -10,7 +10,7 @@
     mode: 0750
 
 - name: dnsmasq - enable conf.d directory
-  lineinfile: 
+  lineinfile:
      dest: /etc/dnsmasq.conf
      regexp: "^{{ item.regexpr }}"
      line: "{{ item.line }}"

@@ -11,51 +11,51 @@ ServerTokens Full
 
 <IfDefine DEFAULT_VHOST>
 
-	Listen 0.0.0.0:8080
+    Listen 0.0.0.0:8080
 
-	<VirtualHost *:8080>
-		ServerName localhost
-		ServerAlias {{ default_domainname }}
+    <VirtualHost *:8080>
+        ServerName localhost
+        ServerAlias {{ default_domainname }}
 
-		ServerAdmin root@localhost
+        ServerAdmin root@localhost
 
-		DocumentRoot "{{ htdocs_path }}"
-		
+        DocumentRoot "{{ htdocs_path }}"
+
         DirectoryIndex index.php index.html index.htm
 
-		<Directory "{{ htdocs_path }}">
-			Options Indexes FollowSymLinks
-			AllowOverride All
-			Require all granted
-		</Directory>
+        <Directory "{{ htdocs_path }}">
+            Options Indexes FollowSymLinks
+            AllowOverride All
+            Require all granted
+        </Directory>
 
-		<IfModule alias_module>
-			ScriptAlias /cgi-bin/ "{{ default_hosting_path }}/cgi-bin/"
-		</IfModule>
+        <IfModule alias_module>
+            ScriptAlias /cgi-bin/ "{{ default_hosting_path }}/cgi-bin/"
+        </IfModule>
 
-		<Directory "{{ default_hosting_path }}/cgi-bin">
-			AllowOverride None
-			Options None
-			Require all granted
-		</Directory>
+        <Directory "{{ default_hosting_path }}/cgi-bin">
+            AllowOverride None
+            Options None
+            Require all granted
+        </Directory>
 
-		<IfModule mpm_peruser_module>
-			ServerEnvironment www-data www-data
-		</IfModule>
-
-		# set dashboard alias (not needed for production)
-		Alias /dashboard {{ dashboard_path }}
-		<Directory "{{ dashboard_path }}">
-			Options Indexes FollowSymLinks
-			AllowOverride All
-			Require all granted
-		</Directory>
-		
-		# TODO configure logging
-		
-		<IfModule mpm_peruser_module>
+        <IfModule mpm_peruser_module>
             ServerEnvironment www-data www-data
         </IfModule>
 
-	</VirtualHost>
+        # set dashboard alias (not needed for production)
+        Alias /dashboard {{ dashboard_path }}
+        <Directory "{{ dashboard_path }}">
+            Options Indexes FollowSymLinks
+            AllowOverride All
+            Require all granted
+        </Directory>
+
+        # TODO configure logging
+
+        <IfModule mpm_peruser_module>
+            ServerEnvironment www-data www-data
+        </IfModule>
+
+    </VirtualHost>
 </IfDefine>

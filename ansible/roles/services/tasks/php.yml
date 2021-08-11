@@ -1,5 +1,5 @@
 ---
-# vim: syntax=yaml
+# vim: ts=2 sw=2 et syntax=yaml
 
 - name: php - set default versions
   shell: "eselect php set {{ item }} php{{ global_php_version }}"
@@ -10,13 +10,13 @@
     - cgi
 
 - name: php - create folder for logs
-  file: 
+  file:
     path: /var/log/php
     state: directory
     mode: 0775
-   
+
 - name: php logs - create empty initial logs
-  file: 
+  file:
     path: "/var/log/php/{{ item }}"
     state: touch
     owner: www-data

@@ -1,4 +1,5 @@
 #!/bin/bash -e
+# vim: ts=4 sw=4 et
 
 echo "Executing $0 ..."
 
@@ -11,11 +12,11 @@ command -v vagrant >/dev/null 2>&1 || { echo "Command 'vagrant' required but it'
 echo "Testing Ansible provisioning ..."
 
 if [ -f "$BUILD_OUTPUT_FILE_INTERMEDIATE" ]; then
-	read -p "Do you want to initialize a new intermediate box (Y/n)? " choice
-	case "$choice" in 
-	  n|N ) echo "User skipped box initialization."
-	  		;;
-	    * ) echo "Suspending any running instances ..."
+    read -p "Do you want to initialize a new intermediate box (Y/n)? " choice
+    case "$choice" in
+      n|N ) echo "User skipped box initialization."
+            ;;
+        * ) echo "Suspending any running instances ..."
             vagrant suspend
             echo "Destroying current box ..."
             vagrant destroy -f || true
@@ -23,8 +24,8 @@ if [ -f "$BUILD_OUTPUT_FILE_INTERMEDIATE" ]; then
             vagrant box remove -f "$BUILD_BOX_NAME" 2>/dev/null || true
             echo "Adding '$BUILD_BOX_NAME' ..."
             vagrant box add --name "$BUILD_BOX_NAME" "$BUILD_OUTPUT_FILE_INTERMEDIATE"
-	        ;;
-	esac
+            ;;
+    esac
     echo "Powerup and provision '$BUILD_BOX_NAME' (only 'ansible_local' is executed) ..."
     vagrant --provision up --provision-with ansible_local || { echo "Unable to startup '$BUILD_BOX_NAME'."; exit 1; }
     echo "Logging in ..."

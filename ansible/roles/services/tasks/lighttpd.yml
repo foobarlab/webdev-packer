@@ -1,5 +1,5 @@
 ---
-# vim: syntax=yaml
+# vim: ts=2 sw=2 et syntax=yaml
 # lighttpd is used for the dashboard only
 # LOG FILES: todo
 

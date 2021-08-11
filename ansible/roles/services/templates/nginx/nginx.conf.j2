@@ -46,10 +46,10 @@ http {
 
 #	 # catch default names
 #    server {
-#        listen   80; 
+#        listen   80;
 #        server_name _;
 #
-#        #limit_conn  gulag 50; 
+#        #limit_conn  gulag 50;
 #
 #        # don't use server name
 #        server_name_in_redirect  off;
@@ -58,7 +58,7 @@ http {
 #        error_log /var/log/nginx/server_error.log error;
 #
 #        # pass all to default
-#        location / { 
+#        location / {
 #
 #                # return "site not available"
 #                #root   /var/www/default/htdocs;
@@ -66,7 +66,7 @@ http {
 #
 #                # return empty page
 #                #return 444;
-#                
+#
 #                #root /usr/share/nginx/html;
 #    			#root /var/www/localhost/htdocs;
 #				root {{ htdocs_path }};
@@ -79,27 +79,27 @@ http {
 #        #        deny  all;
 #        #}
 #    }
-    
+
 # TODO add ssl default
 #    # catch default names (ssl redirect to http)
 #    server {
 #        listen   443;
 #        server_name _;
 #
-#        limit_conn  gulag 50; 
+#        limit_conn  gulag 50;
 #
 #        # don't use server name
 #        #server_name_in_redirect  off;
 #
 #        access_log  off;
 #
-#        # immeadeatly return no content 
+#        # immeadeatly return no content
 #        #return 444;
 #
 #        # relocate to http
 #        rewrite ^/(.*) http://$host$request_uri permanent;
 #
-#        ssl on; 
+#        ssl on;
 #        ssl_certificate /etc/ssl/apache/server.pem;
 #        ssl_certificate_key /etc/ssl/apache/server.pem;
 #        ssl_ciphers HIGH:!ADH:!MD5;

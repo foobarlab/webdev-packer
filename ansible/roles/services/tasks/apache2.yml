@@ -1,5 +1,5 @@
 ---
-# vim: syntax=yaml
+# vim: ts=2 sw=2 et syntax=yaml
 # LOG FILES: (root:root,644) access_log  error_log  ssl_access_log  ssl_error_log  ssl_request_log
 
 - name: apache2 - ensure log dir exists

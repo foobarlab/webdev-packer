@@ -1,4 +1,5 @@
 #!/bin/bash -uex
+# vim: ts=2 sw=2 et
 
 if [ -z ${BUILD_RUN:-} ]; then
   echo "This script can not be run directly! Aborting."
@@ -17,7 +18,7 @@ sudo emerge -vt @preserved-rebuild
 sudo bash -c "sed -i '/^MAKEOPTS/d' /etc/portage/make.conf"           # delete MAKEOPTS (make.conf)
 #sudo bash -c "sed -i 's/^\(MAKEOPTS.*\)/#\1/g' /etc/genkernel.conf"   # comment-in MAKEOPTS (genkernel) # FIXME do when genkernel was invoked in 20-kernel.sh
 
-sudo find /etc/ -name '._cfg*'				# DEBUG: list all config files needing an update
+sudo find /etc/ -name '._cfg*'        # DEBUG: list all config files needing an update
 sudo find /etc/ -name '._cfg*' -print -exec cat -n '{}' \;  # DEBUG: cat all config files needing an update
 
 # prevent replacement of our modified configs:
@@ -30,10 +31,10 @@ sudo rm -f /etc/conf.d/._cfg0000_hostname
 
 sudo etc-update --verbose --preen    # auto-merge trivial changes
 
-sudo find /etc/ -name '._cfg*'				# DEBUG: list all remaining config files needing an update
+sudo find /etc/ -name '._cfg*'        # DEBUG: list all remaining config files needing an update
 sudo find /etc/ -name '._cfg*' -print -exec cat -n '{}' \;  # DEBUG: cat all config files needing an update
 
-sudo etc-update --verbose --automode -5		# force 'auto-merge' for remaining configs
+sudo etc-update --verbose --automode -5   # force 'auto-merge' for remaining configs
 
 sudo eselect kernel list
 sudo eclean-kernel -l

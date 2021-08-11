@@ -1,10 +1,11 @@
 #!/bin/bash -e
+# vim: ts=4 sw=4 et
 # import all *.jsonl files from given folder into CouchDB (ignoring _id, _rev)
 
 command -v couchimport >/dev/null 2>&1 || { echo "Command 'couchimport' required but it's not installed.  Aborting." >&2; exit 1; }
 command -v curl >/dev/null 2>&1 || { echo "Command 'curl' required but it's not installed.  Aborting." >&2; exit 1; }
 
-COUCH_URL_SCHEME="{{ couchdb_url_scheme }}"      
+COUCH_URL_SCHEME="{{ couchdb_url_scheme }}"
 COUCH_URL_HOST="{{ couchdb_url_host }}"
 COUCH_URL_PORT="{{ couchdb_url_port }}"
 COUCH_USER="{{ couchdb_admin_user }}"

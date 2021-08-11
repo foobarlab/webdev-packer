@@ -33,10 +33,10 @@
 server {
 
     listen 80;
-    
+
     #server_name localhost {{ default_domainname }};
     #server_name $http_host;
-    
+
     # see: https://nginx.org/en/docs/http/server_names.html
     #server_name   ~^(www\.)?(.+)$;
     #server_name $hostname;
@@ -46,7 +46,7 @@ server {
     #    #root   /sites/$2;
     #    root    /var/www/vhosts/$2/htdocs;
     #}
-    
+
     root {{ htdocs_path }};    # is this needed?
     index index.php index.html index.htm;
 
@@ -77,22 +77,22 @@ server {
     #}
 
     # Deny illegal Host headers
-    #if ($host !~* ^(domain.tld|www.domain.tld)$ ) { 
+    #if ($host !~* ^(domain.tld|www.domain.tld)$ ) {
     #    return 444;
     #}
 
     # Deny certain User-Agents (case insensitive)
     # The ~* makes it case insensitive as opposed to just a ~
-    #if ($http_user_agent ~* (Baiduspider|Sosospider|panscient|Jullo|w00t|Morfeus|Toata) ) { 
+    #if ($http_user_agent ~* (Baiduspider|Sosospider|panscient|Jullo|w00t|Morfeus|Toata) ) {
 	  #	return 444;
     #}
 
     # Deny certain Referers (case insensitive)
     # The ~* makes it case insensitive as opposed to just a ~
-    #if ($http_referer ~* (babes|click|diamond|forsale|girl|jewelry|love|nudit|organic|poker|porn|poweroversoftware|sex|teen|video|webcam|zippo) ) { 
+    #if ($http_referer ~* (babes|click|diamond|forsale|girl|jewelry|love|nudit|organic|poker|porn|poweroversoftware|sex|teen|video|webcam|zippo) ) {
 	  #	return 444;
     #}
-    
+
 	  # include php manual
     location /manual {
 		  # note this is a special path pointing to localhost not vhosts!
@@ -122,17 +122,17 @@ server {
     if (-f $document_root/.maintenance) {
     	return 503;
     }
-    
-    # deny access to ".ht*" files (.htpasswd, .htaccess, ...) 
+
+    # deny access to ".ht*" files (.htpasswd, .htaccess, ...)
     location ~ /\.ht {
     	deny all;
 	  }
-    
+
 	  # Serve an empty 1x1 gif
     location = /images/empty.gif {
     	empty_gif;
 	  }
-	  
+
 	  # FIXME ignore if not present, otherwise serve happily
 	  # silent drop missing favicon requests
 	  location = /favicon.ico {

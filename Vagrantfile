@@ -1,5 +1,5 @@
 # -*- mode: ruby -*-
-# vi: set ft=ruby :
+# vim: ts=2 sw=2 et ft=ruby
 
 system("./config.sh >/dev/null")
 
@@ -139,15 +139,15 @@ Vagrant.configure("2") do |config|
 
   # adapter 2 (eth1): public network (bridged)
   config.vm.network "public_network",
-  	type: "dhcp",
-  	mac: "0800276c6237",  # fixed, pattern: 080027xxxxxx
-  	use_dhcp_assigned_default_route: true,
-  	bridge: [
-  		"eth0",
-  		"wlan0",
-  		"en0: Wi-Fi (Airport)",
-  		"en1: Wi-Fi (AirPort)"
-  	]
+    type: "dhcp",
+    mac: "0800276c6237",  # fixed, pattern: 080027xxxxxx
+    use_dhcp_assigned_default_route: true,
+    bridge: [
+      "eth0",
+      "wlan0",
+      "en0: Wi-Fi (Airport)",
+      "en1: Wi-Fi (AirPort)"
+    ]
 
   config.ssh.insert_key = false
   config.ssh.connect_timeout = 60

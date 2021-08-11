@@ -1,5 +1,5 @@
 ---
-# vim: syntax=yaml
+# vim: ts=2 sw=2 et syntax=yaml
 
 # debug ansible_vars:
 #- name: Display all variables/facts known for a host

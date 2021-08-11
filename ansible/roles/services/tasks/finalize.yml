@@ -1,5 +1,5 @@
 ---
-# vim: syntax=yaml
+# vim: ts=2 sw=2 et syntax=yaml
 
 - name: enable services
   shell: rc-update add "{{ item.service }}" "{{ item.level }}" || /bin/true

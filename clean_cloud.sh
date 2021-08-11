@@ -1,4 +1,5 @@
 #!/bin/bash -e
+# vim: ts=4 sw=4 et
 # NOTE: Vagrant Cloud API see: https://www.vagrantup.com/docs/vagrant-cloud/api.html
 
 . config.sh
@@ -25,10 +26,10 @@ curl -sS -f \
 
 LATEST_CLOUD_VERSION=$(echo $CLOUD_BOX_INFO | jq .current_version.version | tr -d '"')
 if [ $LATEST_CLOUD_VERSION = "null" ]; then
-	echo
-	echo "Successful request, but no boxes were found."
-	echo "Nothing to remove. Please upload a box first."
-	exit 0
+    echo
+    echo "Successful request, but no boxes were found."
+    echo "Nothing to remove. Please upload a box first."
+    exit 0
 fi
 
 echo
@@ -43,65 +44,65 @@ echo
 
 COUNT=0
 for ITEM in $EXISTING_CLOUD_VERSIONS; do
-	COUNT=$((COUNT+1))
+    COUNT=$((COUNT+1))
 done
 
 if [ $COUNT -eq 0 ]; then
-	echo "No box found. Nothing todo."
-	exit 0
+    echo "No box found. Nothing todo."
+    exit 0
 fi
 if [ $COUNT -eq 1 ]; then
-	echo "Found a single box. Nothing todo."
-	exit 0
+    echo "Found a single box. Nothing todo."
+    exit 0
 fi
 
 echo "Total ${COUNT} boxes found."
 
 read -p "Continue (Y/n)? " choice
-case "$choice" in 
+case "$choice" in
   n|N ) echo "User cancelled."
-  		exit 0
+        exit 0
         ;;
   * ) echo
-  		;;
+        ;;
 esac
 
 IFS=$'\n'
 COUNT=0
 for ITEM in $EXISTING_CLOUD_VERSIONS
 do
-	COUNT=$((COUNT+1))
-	if [ $COUNT -gt $BUILD_KEEP_MAX_CLOUD_BOXES ]; then
-		if [ "$ITEM" = "$LATEST_CLOUD_VERSION" ]; then
-			echo "Skipping box version $ITEM (latest version will always be kept)."
-		else
-			echo "Found outdated box version $ITEM ..."
-					
-			# revoke that version:
-			echo "Revoking version $ITEM ..."
-			CLOUD_BOX_REVOKE=$( \
+    COUNT=$((COUNT+1))
+    if [ $COUNT -gt $BUILD_KEEP_MAX_CLOUD_BOXES ]; then
+        if [ "$ITEM" = "$LATEST_CLOUD_VERSION" ]; then
+            echo "Skipping box version $ITEM (latest version will always be kept)."
+        else
+            echo "Found outdated box version $ITEM ..."
+
+            # revoke that version:
+            echo "Revoking version $ITEM ..."
+            CLOUD_BOX_REVOKE=$( \
 curl -sS \
   --header "Authorization: Bearer $VAGRANT_CLOUD_TOKEN" \
   --request PUT \
   https://app.vagrantup.com/api/v1/box/$BUILD_BOX_USERNAME/$BUILD_BOX_NAME/version/$ITEM/revoke \
 )
-			# delete that version:
-			echo "Delete version $ITEM ..."
-			CLOUD_BOX_DELETE=$( \
+            # delete that version:
+            echo "Delete version $ITEM ..."
+            CLOUD_BOX_DELETE=$( \
 curl -sS \
   --header "Authorization: Bearer $VAGRANT_CLOUD_TOKEN" \
   --request DELETE \
   https://app.vagrantup.com/api/v1/box/$BUILD_BOX_USERNAME/$BUILD_BOX_NAME/version/$ITEM \
 )
-			echo "Done."			
-		fi
-	else
-		if [ "$ITEM" = "$LATEST_CLOUD_VERSION" ]; then
-			echo "Skipping box version $ITEM (latest version will always be kept) ..."
-		else
-			echo "Skipping box version $ITEM ..."
-		fi
-	fi
+            echo "Done."
+        fi
+    else
+        if [ "$ITEM" = "$LATEST_CLOUD_VERSION" ]; then
+            echo "Skipping box version $ITEM (latest version will always be kept) ..."
+        else
+            echo "Skipping box version $ITEM ..."
+        fi
+    fi
 done
 
 # re-read box infos, show summary

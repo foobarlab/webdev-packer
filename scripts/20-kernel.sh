@@ -1,4 +1,5 @@
 #!/bin/bash -uex
+# vim: ts=2 sw=2 et
 
 if [ -z ${BUILD_RUN:-} ]; then
   echo "This script can not be run directly! Aborting."
@@ -18,11 +19,11 @@ else
 fi
 
 if [ -f ${SCRIPTS}/scripts/kernel.config ]; then
-	if [ -f /usr/src/kernel.config ]; then
-		KERNEL_RELEASE=$(uname -r)
-		sudo mv -f /usr/src/kernel.config /usr/src/kernel.config.${KERNEL_RELEASE}
-	fi
-	sudo cp ${SCRIPTS}/scripts/kernel.config /usr/src
+  if [ -f /usr/src/kernel.config ]; then
+    KERNEL_RELEASE=$(uname -r)
+    sudo mv -f /usr/src/kernel.config /usr/src/kernel.config.${KERNEL_RELEASE}
+  fi
+  sudo cp ${SCRIPTS}/scripts/kernel.config /usr/src
 fi
 
 sudo eselect kernel list
@@ -59,7 +60,7 @@ boot {
     timeout 1
 }
 display {
-	gfxmode 800x600
+  gfxmode 800x600
 }
 "Funtoo Linux" {
     kernel kernel[-v]
