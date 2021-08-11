@@ -5,7 +5,7 @@
 
 require_commands vagrant
 
-title "Starting '$BUILD_BOX_NAME'"
+title "STARTUP BOX"
 step "Powering up '$BUILD_BOX_NAME' ..."
 vagrant up --no-provision || { error "Unable to start '$BUILD_BOX_NAME'."; exit 1; }
 step "Establishing SSH connection to '$BUILD_BOX_NAME' ..."
