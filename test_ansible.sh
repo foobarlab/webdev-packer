@@ -1,36 +1,37 @@
 #!/bin/bash -e
 # vim: ts=4 sw=4 et
 
-echo "Executing $0 ..."
-
 export BUILD_PARENT_BOX_CHECK=false
 
-. config.sh
+. config.sh quiet
 
-command -v vagrant >/dev/null 2>&1 || { echo "Command 'vagrant' required but it's not installed.  Aborting." >&2; exit 1; }
+require_commands vagrant
 
-echo "Testing Ansible provisioning ..."
+title "TESTING ANSIBLE PROVISIONER"
 
 if [ -f "$BUILD_OUTPUT_FILE_INTERMEDIATE" ]; then
-    read -p "Do you want to initialize a new intermediate box (Y/n)? " choice
+    echo
+    read -p "    Do you want to initialize a new intermediate box (Y/n)? " choice
+    echo
     case "$choice" in
-      n|N ) echo "User skipped box initialization."
+      n|N ) step "User skipped box initialization."
             ;;
-        * ) echo "Suspending any running instances ..."
+        * ) step "Suspending any running instances ..."
             vagrant suspend
-            echo "Destroying current box ..."
+            step "Destroying current box ..."
             vagrant destroy -f || true
-            echo "Removing '$BUILD_BOX_NAME' ..."
+            step "Removing '$BUILD_BOX_NAME' ..."
             vagrant box remove -f "$BUILD_BOX_NAME" 2>/dev/null || true
-            echo "Adding '$BUILD_BOX_NAME' ..."
+            step "Adding '$BUILD_BOX_NAME' ..."
             vagrant box add --name "$BUILD_BOX_NAME" "$BUILD_OUTPUT_FILE_INTERMEDIATE"
             ;;
     esac
-    echo "Powerup and provision '$BUILD_BOX_NAME' (only 'ansible_local' is executed) ..."
+    highlight "Powerup and provision '$BUILD_BOX_NAME' (only 'ansible_local' is executed) ..."
     vagrant --provision up --provision-with ansible_local || { echo "Unable to startup '$BUILD_BOX_NAME'."; exit 1; }
-    echo "Logging in ..."
+    step "Logging in ..."
     vagrant ssh
 else
-    echo "There is no box file '$BUILD_OUTPUT_FILE_INTERMEDIATE' in the current directory. You may need to run 'build.sh' first."
+    error "There is no box file '$BUILD_OUTPUT_FILE_INTERMEDIATE' in the current directory."
+    info "You may need to run 'build.sh' first."
     exit 1
 fi

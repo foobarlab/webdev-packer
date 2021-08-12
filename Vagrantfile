@@ -167,7 +167,8 @@ Vagrant.configure("2") do |config|
     ansible.install = false
     ansible.verbose = true
     ansible.compatibility_mode = "2.0"
-    ansible.playbook = "provision.yml"
+    ansible.playbook = "ansible/provision.yml"
+    ansible.config_file = "ansible/ansible.cfg"
     ansible.extra_vars = {
       mysql_root_password: "#{ENV['BUILD_MYSQL_ROOT_PASSWORD']}"
     }
