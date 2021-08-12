@@ -79,8 +79,8 @@ fi
 mkdir -p packages || true
 export PACKER_LOG_PATH="$PWD/packer.log"
 export PACKER_LOG="1"
-packer validate $PWD/packer/virtualbox.json
-packer build -force -on-error=abort $PWD/packer/virtualbox.json
+packer validate "$PWD/packer/virtualbox.json"
+packer build -force -on-error=abort "$PWD/packer/virtualbox.json"
 
 title "OPTIMIZING BOX SIZE"
 
