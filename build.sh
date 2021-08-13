@@ -82,15 +82,11 @@ mkdir -p packages || true
 
 todo "Resize parent box to $BUILD_BOX_DISKSIZE MB ..."
 
-#info "Reading parent box OVF: '$BUILD_PARENT_BOX_CLOUD_OVF' ..."
-#cat $BUILD_PARENT_BOX_CLOUD_OVF
-
 todo "Show hdds"
 $vboxmanage list hdds
 
 todo "Remove previous resized vdi from Media Manager"
 vbox_hdd_found=$( $vboxmanage list hdds | grep "$BUILD_PARENT_BOX_CLOUD_VDI" || echo )
-#echo $vbox_hdd_found
 
 if [[ -z "$vbox_hdd_found" || "$vbox_hdd_found" = "" ]]; then
     info "No HDDs named '"$BUILD_PARENT_BOX_CLOUD_VDI"' found."
@@ -103,28 +99,27 @@ else
     #$vboxmanage list hdds | grep -on "^UUID.*"
     #$vboxmanage list hdds | grep -on "^State:.*"
     #$vboxmanage list hdds | grep -on "^Location:.*"
-    $vboxmanage list hdds | grep -o "^UUID.*"
-    $vboxmanage list hdds | grep -o "^State:.*"
-    $vboxmanage list hdds | grep -o "^Location:.*"
+#    $vboxmanage list hdds | grep -o "^UUID.*"
+#    $vboxmanage list hdds | grep -o "^State:.*"
+#    $vboxmanage list hdds | grep -o "^Location:.*"
         
     declare -a vbox_hdd_uuids=( $( $vboxmanage list hdds | grep -o "^UUID:.*" | sed -e "s/^UUID: //g" ) )
-    echo ${vbox_hdd_uuids[@]}
+#    echo ${vbox_hdd_uuids[@]}
     
     vbox_hdd_locations=$( $vboxmanage list hdds | grep -o "^Location:.*" | sed -e "s/^Location:[[:space:]]*//g" | sed -e "s/\ /\\\ /g" ) #| sed -e "s/^/\"/g" | sed -e "s/$/\"/g"  )
-    echo $vbox_hdd_locations
+#    echo $vbox_hdd_locations
     # split string into array (preserving spaces in path)
     eval "declare -a vbox_hdd_locations2=($(echo "$vbox_hdd_locations" ))"
-    echo ${vbox_hdd_locations2[@]}
+#    echo ${vbox_hdd_locations2[@]}
     
     declare -a vbox_hdd_states=( $( $vboxmanage list hdds | grep -o "^State:.*" | sed -e "s/^State: //g" ) )
-    echo ${vbox_hdd_states[@]}
+#    echo ${vbox_hdd_states[@]}
     
-    #for (( i=0; i<=${#vbox_hdd_uuids[@]}; i++ )); do
     for (( i=0; i<$vbox_found_hdd_count; i++ )); do
-        echo "---"
-        echo "UUID: ${vbox_hdd_uuids[$i]}"
-        echo "Location: ${vbox_hdd_locations2[$i]}"
-        echo "State: ${vbox_hdd_states[$i]}"
+        #echo "---"
+        #echo "UUID: ${vbox_hdd_uuids[$i]}"
+        #echo "Location: ${vbox_hdd_locations2[$i]}"
+        #echo "State: ${vbox_hdd_states[$i]}"
         
         if [[ "${vbox_hdd_locations2[$i]}" = "$BUILD_PARENT_BOX_CLOUD_VDI" ]]; then
             result "Found $BUILD_PARENT_BOX_CLOUD_VDI:"
@@ -134,7 +129,6 @@ else
             $vboxmanage closemedium disk ${vbox_hdd_uuids[$i]} --delete
         fi
     done
-    
 fi
 
 todo "Remove previous resized vdi file"
@@ -146,36 +140,20 @@ $vboxmanage clonehd "$BUILD_PARENT_BOX_CLOUD_VMDK" "$BUILD_PARENT_BOX_CLOUD_VDI"
 todo "Resize vdi to $BUILD_BOX_DISKSIZE MB"
 $vboxmanage modifyhd "$BUILD_PARENT_BOX_CLOUD_VDI" --resize $BUILD_BOX_DISKSIZE
 
-todo "Attach vdi to parent box"
-todo "Remove vmdk?"
+todo "Show hdds"
+$vboxmanage list hdds
 
-#todo "Attach new disk (rewrite parent ovf?)"
+#todo "Attach vdi to parent box"
 #cat $BUILD_PARENT_BOX_CLOUD_OVF
 
-#todo "Unattach old disk (rewrite parent ovf?)"
-#cat $BUILD_PARENT_BOX_CLOUD_OVF
-
-#todo "Remove VMDK"
-#rm -f "$BUILD_PARENT_BOX_CLOUD_VMDK"
-#
-#todo "Clone VDI to VMDK"
-##$vboxmanage clonemedium "$BUILD_PARENT_BOX_CLOUD_VDI" "$BUILD_PARENT_BOX_CLOUD_VMDK" --format vmdk
-#$vboxmanage clonehd "$BUILD_PARENT_BOX_CLOUD_VDI" "$BUILD_PARENT_BOX_CLOUD_VMDK" --format vmdk
-#
-#todo "Remove VDI"
-#rm -f "$BUILD_PARENT_BOX_CLOUD_VDI"
-#
-#todo "Cleanup Media Manager"
-#
 #todo "Resize disk (do in scripts)"
-##resize2fs -p -F /dev/sda1
-
+##resize2fs -p -F /dev/sda4
 # see: https://github.com/sprotheroe/vagrant-disksize/blob/master/lib/vagrant/disksize/actions.rb
 
 . config.sh
 
 # DEBUG: stop here
-exit 0
+#exit 0
 
 step "Invoking packer ..."
 export PACKER_LOG_PATH="$PWD/packer.log"
