@@ -27,7 +27,7 @@ info "Box..........: '$BUILD_BOX_NAME'"
 info "Provider.....: '$BUILD_BOX_PROVIDER'"
 info "Version......: '$BUILD_BOX_VERSION'"
 info "File.........: '$BUILD_OUTPUT_FILE'"
-#info "Build time...: '$BUILD_RUNTIME'"
+info "Build time...: '$BUILD_RUNTIME'"
 # FIXME show and compare sha1 checksum?
 echo
 info "Please verify if above information is correct."
@@ -133,7 +133,7 @@ fi
 
 # create hash checksum, supported values: md5, sha1, sha256, sha384 and sha512
 highlight "Creating checksum ..."
-#UPLOAD_CHECKSUM_CALC=`pv $BUILD_OUTPUT_FILE _FINAL| sha1sum`
+#UPLOAD_CHECKSUM_CALC=`pv $BUILD_OUTPUT_FILE | sha1sum`
 UPLOAD_CHECKSUM_CALC=`sha1sum $BUILD_OUTPUT_FILE`
 UPLOAD_CHECKSUM=`echo $UPLOAD_CHECKSUM_CALC | cut -d " " -f1`
 result "'$BUILD_OUTPUT_FILE': SHA-1 [ '$UPLOAD_CHECKSUM' ]"

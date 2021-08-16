@@ -29,7 +29,7 @@
 - include: mailcatcher.yml
 #- include: rabbitmq.yml
 - include: automysqlbackup.yml
-- include: phpmyadmin.yml
+#- include: phpmyadmin.yml
 #- include: redis-commander.yml
 #- include: docker.yml
 #- include: theia.yml

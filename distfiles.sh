@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -ue
 # vim: ts=4 sw=4 et
 
 . ./lib/functions.sh
@@ -9,7 +9,7 @@ create_sum() {
     sort |\
     while read dir; \
     do cd "${dir}"; \
-        [ ! -f checksums.b2 ] && step "Processing " "${dir}" || result "Skipped " "${dir}" " checksums.b2 allready present" ; \
+        [ ! -f checksums.b2 ] && step "Processing " "${dir}" || result "Skipped '" "${dir}" "': checksums.b2 allready present" ; \
         [ ! -f checksums.b2 ] &&  b2sum * > checksums.b2 ; \
         chmod a=r "${dir}"/checksums.b2 ; \
     done
@@ -25,21 +25,27 @@ check_sum() {
     done > checksums.log
 }
 
-todo "check distfiles"
+#highlight "Creating distfiles dir ..."
+#mkdir -p "$PWD/distfiles" || true
 
-check_sum distfiles
-cat checksums.log
+if [[ -d "$PWD/distfiles" ]]; then
+    highlight "Check distfiles ..."
+    check_sum "distfiles"
+    cat "$PWD/checksums.log"
 
-todo "download distfiles if missing file checksums found (count files) ..."
+    highlight "Downloading distfiles ..."
+    todo "Download distfiles if missing file checksums found (count files) ..."
+    # ant-1.10.9-gentoo.tar.bz2: https://dev.gentoo.org/~fordfrog/distfiles/ant-1.10.9-gentoo.tar.bz2
+    # mariadb-10.5.9.tar.gz: https://downloads.mariadb.org/interstitial/mariadb-10.5.9/source/mariadb-10.5.9.tar.gz/from/https%3A//archive.mariadb.org/
 
-# ant-1.10.9-gentoo.tar.bz2: https://dev.gentoo.org/~fordfrog/distfiles/ant-1.10.9-gentoo.tar.bz2
-# mariadb-10.5.9.tar.gz: https://downloads.mariadb.org/interstitial/mariadb-10.5.9/source/mariadb-10.5.9.tar.gz/from/https%3A//archive.mariadb.org/
+    highlight "Re-creating checksum ..."
+    todo "Re-create checksum if needed ..."
+    create_sum "distfiles"
 
-todo "re-create checksum if needed ..."
-
-create_sum distfiles
-
-todo "re-check checksums, abort/continue if distfiles were still missing or download failed."
-
-check_sum distfiles
-cat checksums.log
+    highlight "Re-checking checksum ..."
+    todo "Re-check checksums, abort/continue if distfiles were still missing or download failed."
+    check_sum "distfiles"
+    cat "$PWD/checksums.log"
+else
+    warn "No distfiles dir found."
+fi

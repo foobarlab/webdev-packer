@@ -13,8 +13,10 @@ sudo emerge -nuvtND --with-bdeps=y \
     www-misc/shellinabox \
     www-apps/phpsysinfo \
     www-apps/postfixadmin \
-    dev-db/phpmyadmin \
     dev-db/phppgadmin
+
+# FIXME
+#dev-db/phpmyadmin \
 
 # ---- Sync packages
 

@@ -17,19 +17,12 @@ step "Cleaning packer output dir ..."
 rm -rf output-virtualbox-ovf/ || true
 step "Drop build version ..."
 rm -f build_version || true
-#step "Drop major version ..."
-#rm -f version || true
 step "Drop build runtime ..."
 rm -f build_time || true
 step "Deleting any box file ..."
 rm -f *.box || true
-#step "Cleanup scripts dir ..."
-#rm -f scripts/*.tar.xz || true
-#rm -f scripts/.release_$BUILD_BOX_NAME || true
 step "Cleanup old logs ..."
 rm -f *.log || true
-step "Cleanup old release info ..."
-rm -f release || true
 step "Dropping build version ..."
 rm -f build_version || true
 step "Dropping build runtime ..."

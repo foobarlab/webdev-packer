@@ -46,8 +46,11 @@
       "type": "shell",
       "script": "resize.sh",
       "expect_disconnect": true,
-      "pause_before": "10s",
-      "timeout": "10s"
+      "pause_before": "1s",
+      "pause_after": "30s",
+      "timeout": "10m",
+      "environment_vars": [ "BUILD_RUN=true" ],
+      "valid_exit_codes": [ 0 ]
   },{
       "destination": "/tmp",
       "source": "scripts",

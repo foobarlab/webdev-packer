@@ -61,9 +61,12 @@ sudo emerge -nuvtND --with-bdeps=y \
     dev-php/xdebug \
     dev-php/composer \
     dev-php/pecl-oauth \
+    dev-php/xhprof \
     dev-php/igbinary
 
-# extensions:
+# TODO add dev-php/php-spx
+
+# more extensions:
 #sudo emerge -nuvtND --with-bdeps=y dev-php/pecl-taint dev-php/pecl-memcached
 #sudo emerge -nuvtND --with-bdeps=y dev-php/pecl-geoip dev-php/pecl-timezonedb
 #sudo emerge -nuvtND --with-bdeps=y dev-php/pecl-yaml dev-php/pecl-raphf dev-php/pecl-mailparse dev-php/pecl-event dev-php/pecl-eio dev-php/pecl-redis

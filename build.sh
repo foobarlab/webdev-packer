@@ -2,7 +2,6 @@
 # vim: ts=4 sw=4 et
 
 start=`date +%s`
-
 export BUILD_PARENT_BOX_CHECK=true
 
 vboxmanage=VBoxManage
@@ -11,16 +10,9 @@ command -v $vboxmanage >/dev/null 2>&1 || vboxmanage=vboxmanage   # try alternat
 . config.sh quiet
 . distfiles.sh
 
-
 require_commands vagrant packer wget $vboxmanage
 
 header "Building box '$BUILD_BOX_NAME'"
-
-BUILD_PARENT_BOX_OVF="$HOME/.vagrant.d/boxes/$BUILD_PARENT_BOX_NAME/0/virtualbox/box.ovf"
-BUILD_PARENT_BOX_CLOUD_PATHNAME=`echo "$BUILD_PARENT_BOX_CLOUD_NAME" | sed "s|/|-VAGRANTSLASH-|"`
-BUILD_PARENT_BOX_CLOUD_OVF="$HOME/.vagrant.d/boxes/$BUILD_PARENT_BOX_CLOUD_PATHNAME/$BUILD_PARENT_BOX_CLOUD_VERSION/virtualbox/box.ovf"
-BUILD_PARENT_BOX_CLOUD_VMDK="$HOME/.vagrant.d/boxes/$BUILD_PARENT_BOX_CLOUD_PATHNAME/$BUILD_PARENT_BOX_CLOUD_VERSION/virtualbox/box-disk001.vmdk"
-BUILD_PARENT_BOX_CLOUD_VDI="$HOME/.vagrant.d/boxes/$BUILD_PARENT_BOX_CLOUD_PATHNAME/$BUILD_PARENT_BOX_CLOUD_VERSION/virtualbox/box-disk001.vdi"
 
 if [ -f $BUILD_PARENT_BOX_OVF ]; then
     export BUILD_PARENT_OVF=$BUILD_PARENT_BOX_OVF
@@ -29,7 +21,7 @@ else
     export BUILD_PARENT_OVF=$BUILD_PARENT_BOX_CLOUD_OVF
     if [ -f $BUILD_PARENT_BOX_CLOUD_OVF ]; then
         echo
-        warn "The '$BUILD_PARENT_BOX_CLOUD_NAME' parent box with version '$BUILD_PARENT_BOX_CLOUD_VERSION' has been previously downloaded."
+        info "The '$BUILD_PARENT_BOX_CLOUD_NAME' parent box with version '$BUILD_PARENT_BOX_CLOUD_VERSION' has been previously downloaded."
         echo
         read -p "    Do you want to delete it and download again (y/N)? " choice
         case "$choice" in
@@ -62,7 +54,7 @@ else
     wget -c https://raw.githubusercontent.com/hashicorp/vagrant/master/keys/vagrant -O keys/vagrant
     if [ $? -ne 0 ]; then
         error "Could not download the private key. Exit code from wget was $?."
-        exit 1
+        exit $?
     fi
 fi
 
@@ -80,80 +72,47 @@ fi
 step "Create packages dir ..."
 mkdir -p packages || true
 
-todo "Resize parent box to $BUILD_BOX_DISKSIZE MB ..."
+# TODO check when not resizing disk: do not storageattach in virtualbox.json! use 'only' conditionals in packer json ...
 
-todo "Show hdds"
-$vboxmanage list hdds
-
-todo "Remove previous resized vdi from Media Manager"
+step "Searching for vdi file ..."
 vbox_hdd_found=$( $vboxmanage list hdds | grep "$BUILD_PARENT_BOX_CLOUD_VDI" || echo )
-
 if [[ -z "$vbox_hdd_found" || "$vbox_hdd_found" = "" ]]; then
-    info "No HDDs named '"$BUILD_PARENT_BOX_CLOUD_VDI"' found."
+    result "No vdi file found."
 else
     vbox_found_hdd_count=$( $vboxmanage list hdds | grep -o "^UUID" | wc -l )
-    result "Found $vbox_found_hdd_count hdd(s)."
-    todo "Searching for HDD UUID ..."
-    # DEBUG:
-    #$vboxmanage list hdds
-    #$vboxmanage list hdds | grep -on "^UUID.*"
-    #$vboxmanage list hdds | grep -on "^State:.*"
-    #$vboxmanage list hdds | grep -on "^Location:.*"
-#    $vboxmanage list hdds | grep -o "^UUID.*"
-#    $vboxmanage list hdds | grep -o "^State:.*"
-#    $vboxmanage list hdds | grep -o "^Location:.*"
-        
+    info "Found $vbox_found_hdd_count hdd(s)."
+    step "Collecting data ..."
     declare -a vbox_hdd_uuids=( $( $vboxmanage list hdds | grep -o "^UUID:.*" | sed -e "s/^UUID: //g" ) )
-#    echo ${vbox_hdd_uuids[@]}
-    
     vbox_hdd_locations=$( $vboxmanage list hdds | grep -o "^Location:.*" | sed -e "s/^Location:[[:space:]]*//g" | sed -e "s/\ /\\\ /g" ) #| sed -e "s/^/\"/g" | sed -e "s/$/\"/g"  )
-#    echo $vbox_hdd_locations
-    # split string into array (preserving spaces in path)
-    eval "declare -a vbox_hdd_locations2=($(echo "$vbox_hdd_locations" ))"
-#    echo ${vbox_hdd_locations2[@]}
-    
+    eval "declare -a vbox_hdd_locations2=($(echo "$vbox_hdd_locations" ))"  # split string into array (preserving spaces in path)
     declare -a vbox_hdd_states=( $( $vboxmanage list hdds | grep -o "^State:.*" | sed -e "s/^State: //g" ) )
-#    echo ${vbox_hdd_states[@]}
-    
     for (( i=0; i<$vbox_found_hdd_count; i++ )); do
-        #echo "---"
-        #echo "UUID: ${vbox_hdd_uuids[$i]}"
-        #echo "Location: ${vbox_hdd_locations2[$i]}"
-        #echo "State: ${vbox_hdd_states[$i]}"
-        
         if [[ "${vbox_hdd_locations2[$i]}" = "$BUILD_PARENT_BOX_CLOUD_VDI" ]]; then
-            result "Found $BUILD_PARENT_BOX_CLOUD_VDI:"
+            result "Found '$BUILD_PARENT_BOX_CLOUD_VDI'"
+            # FIXME check state?
             result "State: ${vbox_hdd_states[$i]}"
-            result "UUID: ${vbox_hdd_uuids[$i]}"
-            todo "Removing HDD from Media Manager ..."
-            $vboxmanage closemedium disk ${vbox_hdd_uuids[$i]} --delete
+            #result "UUID: ${vbox_hdd_uuids[$i]}"
+            highlight "Removing HDD from Media Manager ..."
+            $vboxmanage closemedium disk "${vbox_hdd_uuids[$i]}" --delete
+            highlight "Removing previous resized vdi file ..."
+            rm -f "$BUILD_PARENT_BOX_CLOUD_VDI" || true
         fi
     done
 fi
 
-todo "Remove previous resized vdi file"
-rm -f "$BUILD_PARENT_BOX_CLOUD_VDI" || true
-
-todo "Clone parent box hdd to vdi file"
-$vboxmanage clonehd "$BUILD_PARENT_BOX_CLOUD_VMDK" "$BUILD_PARENT_BOX_CLOUD_VDI" --format VDI
-
-todo "Resize vdi to $BUILD_BOX_DISKSIZE MB"
-$vboxmanage modifyhd "$BUILD_PARENT_BOX_CLOUD_VDI" --resize $BUILD_BOX_DISKSIZE
-
-todo "Show hdds"
-$vboxmanage list hdds
-
-#todo "Attach vdi to parent box"
-#cat $BUILD_PARENT_BOX_CLOUD_OVF
-
-#todo "Resize disk (do in scripts)"
-##resize2fs -p -F /dev/sda4
-# see: https://github.com/sprotheroe/vagrant-disksize/blob/master/lib/vagrant/disksize/actions.rb
+if [[ ! -f "$BUILD_PARENT_BOX_CLOUD_VDI" ]]; then
+    highlight "Cloning parent box hdd to vdi file ..."
+    $vboxmanage clonehd "$BUILD_PARENT_BOX_CLOUD_VMDK" "$BUILD_PARENT_BOX_CLOUD_VDI" --format VDI
+    if [ -z ${BUILD_BOX_DISKSIZE:-} ]; then
+        result "BUILD_BOX_DISKSIZE is unset, skipping disk resize ..."
+    else
+        highlight "Resizing vdi to $BUILD_BOX_DISKSIZE MB ..."
+        $vboxmanage modifyhd "$BUILD_PARENT_BOX_CLOUD_VDI" --resize $BUILD_BOX_DISKSIZE
+    fi
+fi
+sync
 
 . config.sh
-
-# DEBUG: stop here
-#exit 0
 
 step "Invoking packer ..."
 export PACKER_LOG_PATH="$PWD/packer.log"
@@ -176,8 +135,11 @@ if [ -f "$BUILD_OUTPUT_FILE_TEMP" ]; then
     vagrant --provision up --provision-with net_debug,export_packages,cleanup_kernel,cleanup || { echo "Unable to startup '$BUILD_BOX_NAME'."; exit 1; }
     step "Halting '$BUILD_BOX_NAME' ..."
     vagrant halt
-    # TODO vboxmanage modifymedium --compact <path to vdi>
+    # TODO vboxmanage modifymedium --compact <path to vdi> ?
     step "Exporting intermediate box to '$BUILD_OUTPUT_FILE_INTERMEDIATE' ..."
+	# TODO package additional optional files with --include ?
+    # TODO use configuration values inside template (BUILD_BOX_MEMORY, etc.)
+    #vagrant package --vagrantfile "Vagrantfile.template" --output "$BUILD_OUTPUT_FILE"
     vagrant package --output "$BUILD_OUTPUT_FILE_INTERMEDIATE"
     step "Removing temporary box file ..."
     rm -f  "$BUILD_OUTPUT_FILE_TEMP"

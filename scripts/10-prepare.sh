@@ -234,6 +234,10 @@ cat <<'DATA' | sudo tee -a /etc/portage/package.use/webdev-openssl
 # TLSv1.3 support (nginx):
 dev-libs/openssl sslv3 tls-heartbeat
 DATA
+#cat <<'DATA' | sudo tee -a /etc/portage/package.use/webdev-phpmyadmin
+## FIXME allow unsecure installation?
+#>=dev-db/phpmyadmin-5.1.1 setup
+#DATA
 
 # ---- package.license
 
