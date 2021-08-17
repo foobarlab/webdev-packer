@@ -25,7 +25,7 @@ export BUILD_GUEST_TYPE="Gentoo_64"
 # default memory/cpus used for final created box:
 export BUILD_BOX_CPUS="2"
 export BUILD_BOX_MEMORY="2048"
-export BUILD_BOX_DISKSIZE="30000" # resize disk in MB, comment-in to disable
+export BUILD_BOX_DISKSIZE="51200" # resize disk in MB, comment-in to disable
 
 # add a custom overlay?
 export BUILD_CUSTOM_OVERLAY=false
