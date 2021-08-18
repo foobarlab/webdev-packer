@@ -118,9 +118,11 @@ else
         $vboxmanage clonehd "$BUILD_PARENT_BOX_CLOUD_VMDK" "$BUILD_PARENT_BOX_CLOUD_VDI" --format VDI
         if [ -z ${BUILD_BOX_DISKSIZE:-} ]; then
             result "BUILD_BOX_DISKSIZE is unset, skipping disk resize ..."
+            # TODO set flag for packer (use another provisioner)
         else
             highlight "Resizing vdi to $BUILD_BOX_DISKSIZE MB ..."
             $vboxmanage modifyhd "$BUILD_PARENT_BOX_CLOUD_VDI" --resize $BUILD_BOX_DISKSIZE
+            # TODO set flag for packer (use another provisioner)
         fi
     fi
     sync
@@ -132,7 +134,7 @@ step "Invoking packer ..."
 export PACKER_LOG_PATH="$PWD/packer.log"
 export PACKER_LOG="1"
 packer validate "$PWD/packer/virtualbox.json"
-# TODO check when not resizing disk: do not storageattach in virtualbox.json! use 'only' conditionals in packer json ...
+# TODO use 'only' conditionals in packer json ...
 packer build -force -on-error=abort "$PWD/packer/virtualbox.json"
 
 title "OPTIMIZING BOX SIZE"

@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash -ue
 # vim: ts=4 sw=4 et
 
 export BUILD_PARENT_BOX_CHECK=false
