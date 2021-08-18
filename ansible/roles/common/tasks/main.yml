@@ -1,5 +1,5 @@
 ---
-# vim: syntax=yaml
+# vim: ts=2 sw=2 et syntax=yaml
 
 # debug ansible_vars:
 #- name: Display all variables/facts known for a host
@@ -11,6 +11,7 @@
 - include: sysctl.yml
 - include: users-and-groups.yml
 - include: fix-dirs.yml
+- include: nsswitch.yml
 - include: update-system.yml
 #- include: java.yml
 

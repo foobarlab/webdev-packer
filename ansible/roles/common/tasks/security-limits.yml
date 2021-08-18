@@ -1,5 +1,5 @@
 ---
-# vim: syntax=yaml
+# vim: ts=2 sw=2 et syntax=yaml
 # custom /etc/security/limits.conf settings
 # see: https://docs.ansible.com/ansible/latest/modules/pam_limits_module.html
 

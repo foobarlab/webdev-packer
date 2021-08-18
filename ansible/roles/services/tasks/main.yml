@@ -1,0 +1,41 @@
+---
+# vim: ts=2 sw=2 et syntax=yaml
+
+# base services
+- include: etc-hosts.yml
+- include: minica.yml
+- include: postfix.yml
+
+# languages
+- include: php.yml
+- include: nodejs.yml
+
+# web servers
+- include: apache2.yml
+- include: nginx.yml
+- include: varnish.yml
+- include: lighttpd.yml
+
+# databases
+- include: mysql.yml
+- include: postgres.yml
+#- include: couchdb.yml
+#- include: solr.yml
+#- include: redis.yml
+
+# other services
+- include: dnsmasq.yml
+- include: avahi.yml
+- include: mailcatcher.yml
+#- include: rabbitmq.yml
+- include: automysqlbackup.yml
+#- include: phpmyadmin.yml
+#- include: redis-commander.yml
+#- include: docker.yml
+#- include: theia.yml
+
+# integrate dashboard
+- include: dashboard.yml
+
+# configure service startup
+- include: finalize.yml

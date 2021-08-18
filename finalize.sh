@@ -1,35 +1,35 @@
-#!/bin/bash -e
-
-echo "Executing $0 ..."
+#!/bin/bash -ue
+# vim: ts=4 sw=4 et
 
 export BUILD_PARENT_BOX_CHECK=false
 
-. config.sh
+. config.sh quiet
 
-command -v vagrant >/dev/null 2>&1 || { echo "Command 'vagrant' required but it's not installed.  Aborting." >&2; exit 1; }
+require_commands vagrant
 
-echo "Finalizing box ..."
+header "Finalizing box '$BUILD_BOX_NAME'"
 
 # FIXME if finalized box exists, ask if delete and continue, or abort
-echo "Deleting previous finalized box if any ..."
-rm -f $BUILD_OUTPUT_FILE_FINAL
+step "Deleting previous finalized box if any ..."
+rm -f $BUILD_OUTPUT_FILE
 
 if [ -f "$BUILD_OUTPUT_FILE_INTERMEDIATE" ]; then
-    echo "Suspending any running instances ..."
+    step "Suspending any running instances ..."
     vagrant suspend || true
-    echo "Destroying current box ..."
+    step "Destroying current box ..."
     vagrant destroy -f || true
-    echo "Removing '$BUILD_BOX_NAME' ..."
+    step "Removing '$BUILD_BOX_NAME' ..."
     vagrant box remove -f "$BUILD_BOX_NAME" 2>/dev/null || true
-    echo "Adding '$BUILD_BOX_NAME' ..."
+    step "Adding '$BUILD_BOX_NAME' ..."
     vagrant box add --name "$BUILD_BOX_NAME" "$BUILD_OUTPUT_FILE_INTERMEDIATE"
-    echo "Powerup and provision '$BUILD_BOX_NAME' ..."
+    step "Powerup and provision '$BUILD_BOX_NAME' ..."
     vagrant up --provision --provision-with net_debug || { echo "Unable to startup '$BUILD_BOX_NAME'."; exit 1; }
-    vagrant provision --provision-with provision_ansible,cleanup
-    echo "Exporting final box to '$BUILD_OUTPUT_FILE_FINAL' ..."
-    vagrant package --output "$BUILD_OUTPUT_FILE_FINAL"
-    echo "Build finalized."
+    vagrant provision --provision-with provision_ansible,remove_kernel,cleanup
+    step "Exporting final box to '$BUILD_OUTPUT_FILE' ..."
+    vagrant package --output "$BUILD_OUTPUT_FILE"
+    result "Build finalized."
 else
-    echo "There is no box file '$BUILD_OUTPUT_FILE_INTERMEDIATE' in the current directory. You may need to run 'build.sh' first."
+    error "There is no box file '$BUILD_OUTPUT_FILE_INTERMEDIATE' in the current directory."
+    warn "You may need to run 'build.sh' first."
     exit 1
 fi

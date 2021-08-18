@@ -1,0 +1,8 @@
+---
+# vim: ts=2 sw=2 et syntax=yaml
+
+- name: nsswitch - set DNS fallbacks
+  lineinfile:
+    path: /etc/sysctl.conf
+    regexp: '^(#)?hosts:'
+    line: 'hosts: files mdns4_minimal [NOTFOUND=return] resolve [!UNAVAIL=return] mdns4 dns'

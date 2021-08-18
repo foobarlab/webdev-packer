@@ -1,0 +1,26 @@
+# custom mariadb modifications
+# see: https://www.funtoo.org/Package:MariaDB
+
+[mysqld]
+
+# default to 'utf-8':
+character-set-server = utf8
+
+# disable binary logs (only useful for replication):
+skip-log-bin
+
+# disable dns resolving for speedup
+skip-name-resolve = 1
+
+# bind to all interfaces (insecure)
+bind-address = 0.0.0.0
+
+# fine-tuning: enable cache
+query_cache_size = 16M
+query_cache_limit = 1M
+query_cache_type = 1
+
+# log slow queries
+long_query_time = 5
+slow_query_log_file = /var/log/mysql/slow-query.log
+slow_query_log = 1

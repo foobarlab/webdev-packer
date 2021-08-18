@@ -1,0 +1,2 @@
+# default options, see: https://github.com/joeferner/redis-commander
+REDISCOMMANDER_OPTS="--redis-host 127.0.0.1 --redis-port 6379 --address 0.0.0.0 --port 8181"

@@ -1,0 +1,18 @@
+#!/sbin/openrc-run
+# written by eyesee, september 2018
+# see: https://github.com/OpenRC/openrc/blob/master/service-script-guide.md
+
+name="mailcatcher"
+description="Mailcatcher is a daemon that catches mails locally"
+
+command="/usr/local/bin/mailcatcher"
+command_args="${MAILCATCHER_OPTS}"
+pidfile="/var/run/${RC_SVCNAME}.pid"
+command_user="nobody:nogroup"
+command_background=true
+
+depend() {
+    need net
+    use logger dns
+    provide mta
+}

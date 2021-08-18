@@ -1,25 +1,59 @@
 #!/bin/bash -uex
+# vim: ts=2 sw=2 et
 
 if [ -z ${BUILD_RUN:-} ]; then
   echo "This script can not be run directly! Aborting."
   exit 1
 fi
 
-# ---- MariaDB
+# ---- MariaDB (MySQL)
 
-# TODO
+sudo emerge -nuvtND --with-bdeps=y \
+    dev-db/mariadb \
+    dev-db/mariadb-connector-c \
+    dev-db/mysqltuner
 
-# ---- Postgres
+#sudo rc-update add mysql default
 
-# TODO make this optional
+# initially configure mariadb (create initial databases, set root passwd)
+cat <<'DATA' | sudo tee -a /root/.my.cnf
+[client]
+host     = localhost
+user     = root
+password = BUILD_MYSQL_ROOT_PASSWORD
+DATA
+sudo sed -i 's/BUILD_MYSQL_ROOT_PASSWORD/'"$BUILD_MYSQL_ROOT_PASSWORD"'/g' /root/.my.cnf
+sudo emerge --config dev-db/mariadb || true    # FIXME this actually fails, but /var/lib/mysql is populated ...
+sudo rm -f /root/.my.cnf
 
-# ---- CouchDB
+# various mysql integrations (pymysql needed for Ansible mysql_* modules)
+sudo emerge -nuvtND --with-bdeps=y \
+    dev-python/pymysql \
+    dev-python/mysqlclient
 
-# TODO make this optional
+# ---- PostgreSQL
+
+sudo emerge -nuvtND --with-bdeps=y \
+    dev-db/postgresql \
+    app-eselect/eselect-postgresql
+
+# basic configuration
+sudo emerge --config dev-db/postgresql || true
+
+# ---- Sqlite
+
+sudo emerge -nuvtND --with-bdeps=y \
+    dev-db/sqlite
+
+# ---- Couchdb
+
+sudo emerge -nuvtND --with-bdeps=y \
+    dev-db/couchdb
 
 # ---- MongoDB
 
-# TODO make this optional
+sudo emerge -nuvtND --with-bdeps=y \
+    dev-db/mongodb
 
 # ---- Sync packages
 

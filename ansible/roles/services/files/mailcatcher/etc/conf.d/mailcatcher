@@ -1,0 +1,2 @@
+# should always run in foreground (because openrc), no-quit disables the in-app "quit" button
+MAILCATCHER_OPTS="--http-ip 0.0.0.0 --foreground --no-quit"

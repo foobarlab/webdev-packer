@@ -1,5 +1,5 @@
 ---
-# vim: syntax=yaml
+# vim: ts=2 sw=2 et syntax=yaml
 # local sysctl config in /etc/sysctl.d/local.conf
 
 - name: sysctl - local - touch config file

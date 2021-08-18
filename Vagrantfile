@@ -1,11 +1,11 @@
 # -*- mode: ruby -*-
-# vi: set ft=ruby :
+# vim: ts=2 sw=2 et ft=ruby
 
 system("./config.sh >/dev/null")
 
 $script_export_packages = <<SCRIPT
 # sync any guest packages to host (vboxsf)
-rsync -avzh --delete /var/cache/portage/packages /vagrant/packages
+rsync -avzh --delete /var/cache/portage/packages/* /vagrant/packages/
 # clean guest packages
 rm -rf /var/cache/portage/packages/*
 # let it settle
@@ -28,10 +28,20 @@ make olddefconfig
 make modules_prepare
 SCRIPT
 
+$script_remove_kernel = <<SCRIPT
+emerge --unmerge debian-sources
+# clean stale kernel files
+mount /boot || true
+eclean-kernel -l
+eclean-kernel -n 1
+ego boot update
+SCRIPT
+
 $script_cleanup = <<SCRIPT
 # debug: list running services
 rc-status
 # stop services
+/etc/init.d/mysql stop || true
 /etc/init.d/xdm stop || true
 /etc/init.d/xdm-setup stop || true
 /etc/init.d/elogind stop || true
@@ -45,7 +55,7 @@ rc-status
 /etc/init.d/local stop || true
 /etc/init.d/acpid stop || true
 # let it settle
-sync && sleep 10
+sync && sleep 15
 # run cleanup script (from funtoo-base box)
 /usr/local/sbin/foo-cleanup
 # delete some logfiles
@@ -55,19 +65,19 @@ for i in "${logfiles[@]}"; do
 done
 rm -f /var/log/portage/elog/*.log
 # let it settle
-sync && sleep 10
+sync && sleep 15
 # debug: list running services
 rc-status
 # clean shell history
 set +o history
 rm -f /home/vagrant/.bash_history
 rm -f /root/.bash_history
-sync
+sync && sleep 5
 # run zerofree at last to squeeze the last bit
 # /boot
 mount -v -n -o remount,ro /dev/sda1
 zerofree /dev/sda1 && echo "zerofree: success on /dev/sda1 (boot)"
-# /
+# / (root fs)
 mount -v -n -o remount,ro /dev/sda4
 zerofree /dev/sda4 && echo "zerofree: success on /dev/sda4 (root)"
 # swap
@@ -92,8 +102,8 @@ Vagrant.configure("2") do |config|
     vb.customize ["modifyvm", :id, "--audioin", "on"]
     vb.customize ["modifyvm", :id, "--audioout", "on"]
     vb.customize ["modifyvm", :id, "--usb", "on"]
-    vb.customize ["modifyvm", :id, "--usbehci", "on"]
-    vb.customize ["modifyvm", :id, "--usbxhci", "on"]
+    vb.customize ["modifyvm", :id, "--usbehci", "off"]
+    vb.customize ["modifyvm", :id, "--usbxhci", "off"]
     vb.customize ["modifyvm", :id, "--rtcuseutc", "on"]
     vb.customize ["modifyvm", :id, "--chipset", "ich9"]
     vb.customize ["modifyvm", :id, "--vram", "64"]
@@ -125,19 +135,21 @@ Vagrant.configure("2") do |config|
   config.vm.base_mac = "080027344abc"
 
   # adapter 1 (eth0): private network (NAT with forwarding)
-  config.vm.network "forwarded_port", guest: 80, host: 8000
+  config.vm.network "forwarded_port", guest: 80, host: 8080
+  config.vm.network "forwarded_port", guest: 8000, host: 8000
+  config.vm.network "forwarded_port", guest: 3306, host: 3306
 
   # adapter 2 (eth1): public network (bridged)
   config.vm.network "public_network",
-  	type: "dhcp",
-  	mac: "0800276c6237",  # fixed, pattern: 080027xxxxxx
-  	use_dhcp_assigned_default_route: true,
-  	bridge: [
-  		"eth0",
-  		"wlan0",
-  		"en0: Wi-Fi (Airport)",
-  		"en1: Wi-Fi (AirPort)"
-  	]
+    type: "dhcp",
+    mac: "0800276c6237",  # fixed, pattern: 080027xxxxxx
+    use_dhcp_assigned_default_route: true,
+    bridge: [
+      "eth0",
+      "wlan0",
+      "en0: Wi-Fi (Airport)",
+      "en1: Wi-Fi (AirPort)"
+    ]
 
   config.ssh.insert_key = false
   config.ssh.connect_timeout = 60
@@ -157,13 +169,15 @@ Vagrant.configure("2") do |config|
     ansible.install = false
     ansible.verbose = true
     ansible.compatibility_mode = "2.0"
-    ansible.playbook = "provision.yml"
-    #ansible.extra_vars = {
-    #  my_var: "#{ENV['MY_VAR']}"
-    #}
+    ansible.playbook = "ansible/provision.yml"
+    ansible.config_file = "ansible/ansible.cfg"
+    ansible.extra_vars = {
+      mysql_root_password: "#{ENV['BUILD_MYSQL_ROOT_PASSWORD']}"
+    }
   end
 
   config.vm.provision "export_packages", type: "shell", inline: $script_export_packages, privileged: true
   config.vm.provision "clean_kernel", type: "shell", inline: $script_clean_kernel, privileged: true
+  config.vm.provision "remove_kernel", type: "shell", inline: $script_remove_kernel, privileged: true
   config.vm.provision "cleanup", type: "shell", inline: $script_cleanup, privileged: true
 end

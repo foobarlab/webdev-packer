@@ -1,0 +1,50 @@
+---
+# vim: ts=2 sw=2 et syntax=yaml
+# mariadb (mysql) - see: https://mariadb.org/
+# LOGS: todo (mysql:mysql,660) mysqld.err
+
+- name: mysql - ensure log dir exists
+  file:
+    path: /var/log/mysql
+    state: directory
+    owner: mysql
+    group: mysql
+    mode: 0750
+
+- name: mysql - add local customizations (local.cnf)
+  template:
+    src: mysql/75-local.cnf.j2
+    dest: /etc/mysql/mariadb.d/75-local.cnf
+    backup: yes
+    mode: 0644
+    owner: root
+    group: root
+
+- name: mysql - add .my.cnf to root dir
+  template:
+     src: mysql/my.cnf.j2
+     dest: /root/.my.cnf
+     owner: root
+     group: root
+     mode: 0600
+
+- name: mysql - configure initial installation
+  shell: emerge --config dev-db/mariadb
+
+- name: mysql - ensure service is started for basic configuring
+  shell: rc-service -q mysql start
+
+- name: mysql - set initial root@localhost password
+  command: mysql -ne "ALTER USER 'root'@'localhost' IDENTIFIED BY '{{ mysql_root_password }}';flush privileges;"
+
+- include: mysql/secure-installation.yml
+  when: mysql_secure_installation and mysql_root_password is defined
+
+#- name: mysql - collect all info
+#  mysql_info:
+#    login_unix_socket: /var/run/mysqld/mysqld.sock
+#    #login_user: root
+#    #login_password: "{{ mysql_root_password }}"
+#    #filter:
+
+- include: mysql/import-export.yml
