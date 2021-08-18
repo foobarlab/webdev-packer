@@ -49,7 +49,7 @@ rm -rf "$vboxmachinefolder/$BUILD_BOX_NAME/" || true
 
 step "Checking VirtualBox hdds ..."
 vbox_hdd_found_count=$( $vboxmanage list hdds | grep -o "^UUID" | wc -l )
-$vboxmanage list hdds
+#$vboxmanage list hdds
 info "Total $vbox_hdd_found_count hdd(s) found."
 
 # FIXME if $vbox_hdd_found_count is zero skip hdd check ...
