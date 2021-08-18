@@ -85,7 +85,7 @@ for (( i=0; i<$vbox_hdd_found_count; i++ )); do
         info "Found '${vbox_hdd_locations2[$i]}'"
         if [[ "${vbox_hdd_states[$i]}" = "inaccessible" ]]; then
             step "Removing hdd from Media Manager ..."
-            $vboxmanage closemedium disk ${vbox_hdd_uuids[$i]} --delete
+            $vboxmanage closemedium disk "${vbox_hdd_uuids[$i]}" --delete
             step "Removing hdd image file ..."
             rm -f "$vbox_hdd_locations2[$i]" || true
         else
@@ -93,10 +93,11 @@ for (( i=0; i<$vbox_hdd_found_count; i++ )); do
         fi
     elif [[ "${vbox_hdd_states[$i]}" = "inaccessible" ]]; then
         warn "Found inaccessible hdd: '${vbox_hdd_locations2[$i]}'"
-        step "Removing hdd from Media Manager ..."
-        $vboxmanage closemedium disk ${vbox_hdd_uuids[$i]} --delete
-        step "Removing hdd image file ..."
-        rm -f "$vbox_hdd_locations2[$i]" || true
+        # TODO check if location is related to current or parent box
+        #step "Removing hdd from Media Manager ..."
+        #$vboxmanage closemedium disk ${vbox_hdd_uuids[$i]} --delete
+        #step "Removing hdd image file ..."
+        #rm -f "$vbox_hdd_locations2[$i]" || true
     fi
 done
 
