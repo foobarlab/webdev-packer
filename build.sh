@@ -12,6 +12,21 @@ command -v $vboxmanage >/dev/null 2>&1 || vboxmanage=vboxmanage   # try alternat
 header "Building box '$BUILD_BOX_NAME'"
 require_commands vagrant packer wget $vboxmanage
 
+highlight "Checking presence of box '$BUILD_BOX_NAME' ..."
+vbox_machine_id=$( $vboxmanage list vms | grep $BUILD_BOX_NAME | grep -Eo '{[0-9a-f\-]+}' | sed -n 's/[{}]//p' || echo )
+if [[ -z "$vbox_machine_id" || "$vbox_machine_id" = "" ]]; then
+    info "No machine named '$BUILD_BOX_NAME' found."
+else
+    warn "The box '$BUILD_BOX_NAME' already exists!"
+    info "Machine UUID: ["$vbox_machine_id"]"
+    echo
+    info "Either this box is still powered on or you have a previous build"
+    info "VirtualBox machine lying around."
+    echo
+    error "Can not continue, please run './clean_env.sh' to shutdown and remove the box, then try again."
+    exit 1
+fi
+
 highlight "Checking presence of parent box '$BUILD_PARENT_BOX_NAME' ..."
 vbox_hdd_found=$( $vboxmanage list hdds | grep "$BUILD_PARENT_BOX_CLOUD_VDI" || echo )
 if [ -f $BUILD_PARENT_BOX_OVF ] && [[ -z "$vbox_hdd_found" || "$vbox_hdd_found" = "" ]]; then
@@ -47,11 +62,6 @@ else
         vagrant box add -f "$BUILD_PARENT_BOX_CLOUD_NAME" --box-version "$BUILD_PARENT_BOX_CLOUD_VERSION" --provider virtualbox
     fi
 fi
-
-highlight "Checking presence of box '$BUILD_BOX_NAME' ..."
-todo "Check if box is present"
-$vboxmanage list vms
-todo "If present please run './clean_env.sh' and try again."
 
 highlight "Downloading default ssh keys ..."
 if [ -d "keys" ]; then
@@ -138,12 +148,12 @@ if [[ -f $BUILD_PARENT_BOX_CLOUD_VMDK ]] && [[ ! -f "$BUILD_PARENT_BOX_CLOUD_VDI
     highlight "Cloning parent box hdd to vdi file ..."
     $vboxmanage clonehd "$BUILD_PARENT_BOX_CLOUD_VMDK" "$BUILD_PARENT_BOX_CLOUD_VDI" --format VDI
     if [ -z ${BUILD_BOX_DISKSIZE:-} ]; then
-        result "BUILD_BOX_DISKSIZE is unset, skipping disk resize ..."
-        # TODO set flag for packer (use another provisioner)
+        info "BUILD_BOX_DISKSIZE is unset, skipping disk resize ..."
+        # TODO set flag for packer (use another provisioner) ?
     else
         highlight "Resizing vdi to $BUILD_BOX_DISKSIZE MB ..."
         $vboxmanage modifyhd "$BUILD_PARENT_BOX_CLOUD_VDI" --resize "$BUILD_BOX_DISKSIZE"
-        # TODO set flag for packer (use another provisioner)
+        # TODO set flag for packer (use another provisioner) ?
     fi
 else
     error "Unable to clone parent box to vdi file. Please run './clean_env.sh' and try again."
@@ -157,7 +167,7 @@ step "Invoking packer ..."
 export PACKER_LOG_PATH="$PWD/packer.log"
 export PACKER_LOG="1"
 packer validate "$PWD/packer/virtualbox.json"
-# TODO use 'only' conditionals in packer json for distinct provisioner
+# TODO use 'only' conditionals in packer json for distinct provisioner ?
 packer build -force -on-error=abort "$PWD/packer/virtualbox.json"
 
 title "OPTIMIZING BOX SIZE"

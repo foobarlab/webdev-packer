@@ -1,7 +1,7 @@
 #!/bin/bash -ue
 # vim: ts=4 sw=4 et
 
-. ./lib/functions.sh
+. ./lib/functions.sh "$*"
 require_commands git nproc
 set -a
 
@@ -111,7 +111,7 @@ BUILD_OUTPUT_FILE="$BUILD_BOX_NAME-$BUILD_BOX_VERSION.box"
 BUILD_PARENT_BOX_CHECK=true
 
 # get the latest parent version from Vagrant Cloud API call:
-. parent_version.sh
+. parent_version.sh "$*"
 
 BUILD_PARENT_BOX_OVF="$HOME/.vagrant.d/boxes/$BUILD_PARENT_BOX_NAME/0/virtualbox/box.ovf"
 BUILD_PARENT_BOX_CLOUD_PATHNAME=`echo "$BUILD_PARENT_BOX_CLOUD_NAME" | sed "s|/|-VAGRANTSLASH-|"`
