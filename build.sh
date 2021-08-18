@@ -16,6 +16,8 @@ header "Building box '$BUILD_BOX_NAME'"
 
 highlight "Checking existing boxes ..."
 vbox_hdd_found=$( $vboxmanage list hdds | grep "$BUILD_PARENT_BOX_CLOUD_VDI" || echo )
+vbox_hdd_found_count=$( $vboxmanage list hdds | grep -o "^UUID" | wc -l )
+info "Total $vbox_hdd_found_count hdd(s) found."
 
 highlight "Checking presence of parent box ..."
 if [ -f $BUILD_PARENT_BOX_OVF ] && [[ -z "$vbox_hdd_found" || "$vbox_hdd_found" = "" ]]; then
@@ -85,48 +87,54 @@ fi
 highlight "Create packages dir ..."
 mkdir -p packages || true
 
-highlight "Searching for parent box vdi file ..."
+highlight "Cleanup existing parent box vdi file ..."
 vbox_hdd_found=$( $vboxmanage list hdds | grep "$BUILD_PARENT_BOX_CLOUD_VDI" || echo )
 if [[ -z "$vbox_hdd_found" || "$vbox_hdd_found" = "" ]]; then
-    error "No vdi file found for parent box '${BUILD_PARENT_BOX_CLOUD_NAME}-${BUILD_PARENT_BOX_CLOUD_VERSION}'!"
-    result "Please restart for trying again."
-    exit 1
+    info "No vdi file found for parent box '${BUILD_PARENT_BOX_CLOUD_NAME}-${BUILD_PARENT_BOX_CLOUD_VERSION}'"  
 else
-    vbox_found_hdd_count=$( $vboxmanage list hdds | grep -o "^UUID" | wc -l )
-    info "Found $vbox_found_hdd_count hdd(s)."
-    step "Collecting data ..."
+    step "Scanning VirtualBox hdds ..."
+    vbox_hdd_found_count=$( $vboxmanage list hdds | grep -o "^UUID" | wc -l )
+    $vboxmanage list hdds
+    info "Total $vbox_hdd_found_count hdd(s) found."
+    step "Collecting VirtualBox hdd data ..."
     declare -a vbox_hdd_uuids=( $( $vboxmanage list hdds | grep -o "^UUID:.*" | sed -e "s/^UUID: //g" ) )
     vbox_hdd_locations=$( $vboxmanage list hdds | grep -o "^Location:.*" | sed -e "s/^Location:[[:space:]]*//g" | sed -e "s/\ /\\\ /g" ) #| sed -e "s/^/\"/g" | sed -e "s/$/\"/g"  )
     eval "declare -a vbox_hdd_locations2=($(echo "$vbox_hdd_locations" ))"  # split string into array (preserving spaces in path)
     declare -a vbox_hdd_states=( $( $vboxmanage list hdds | grep -o "^State:.*" | sed -e "s/^State: //g" ) )
-    for (( i=0; i<$vbox_found_hdd_count; i++ )); do
+    for (( i=0; i<$vbox_hdd_found_count; i++ )); do
         if [[ "${vbox_hdd_locations2[$i]}" = "$BUILD_PARENT_BOX_CLOUD_VDI" ]]; then
-            result "Found '$BUILD_PARENT_BOX_CLOUD_VDI'"
+            result "Found vdi file '$BUILD_PARENT_BOX_CLOUD_VDI'"
             
             # FIXME check state?
             result "State: ${vbox_hdd_states[$i]}"
             #result "UUID: ${vbox_hdd_uuids[$i]}"
+            
             highlight "Removing HDD from Media Manager ..."
             $vboxmanage closemedium disk "${vbox_hdd_uuids[$i]}" --delete
             highlight "Removing previous resized vdi file ..."
             rm -f "$BUILD_PARENT_BOX_CLOUD_VDI" || true
-        
+        elif [[ "${vbox_hdd_states[$i]}" = "inaccessible" ]]; then
+            warn "Found inaccessible hdd: '${vbox_hdd_locations2[$i]}'"
         fi
     done
-    if [[ ! -f "$BUILD_PARENT_BOX_CLOUD_VDI" ]]; then
-        highlight "Cloning parent box hdd to vdi file ..."
-        $vboxmanage clonehd "$BUILD_PARENT_BOX_CLOUD_VMDK" "$BUILD_PARENT_BOX_CLOUD_VDI" --format VDI
-        if [ -z ${BUILD_BOX_DISKSIZE:-} ]; then
-            result "BUILD_BOX_DISKSIZE is unset, skipping disk resize ..."
-            # TODO set flag for packer (use another provisioner)
-        else
-            highlight "Resizing vdi to $BUILD_BOX_DISKSIZE MB ..."
-            $vboxmanage modifyhd "$BUILD_PARENT_BOX_CLOUD_VDI" --resize $BUILD_BOX_DISKSIZE
-            # TODO set flag for packer (use another provisioner)
-        fi
-    fi
-    sync
 fi
+
+if [[ -f $BUILD_PARENT_BOX_CLOUD_VMDK ]] && [[ ! -f "$BUILD_PARENT_BOX_CLOUD_VDI" ]]; then
+    highlight "Cloning parent box hdd to vdi file ..."
+    $vboxmanage clonehd "$BUILD_PARENT_BOX_CLOUD_VMDK" "$BUILD_PARENT_BOX_CLOUD_VDI" --format VDI
+    if [ -z ${BUILD_BOX_DISKSIZE:-} ]; then
+        result "BUILD_BOX_DISKSIZE is unset, skipping disk resize ..."
+        # TODO set flag for packer (use another provisioner)
+    else
+        highlight "Resizing vdi to $BUILD_BOX_DISKSIZE MB ..."
+        $vboxmanage modifyhd "$BUILD_PARENT_BOX_CLOUD_VDI" --resize $BUILD_BOX_DISKSIZE
+        # TODO set flag for packer (use another provisioner)
+    fi
+else
+    error "Unable to clone parent box to vdi file. Please run './clean_env.sh' and try again."
+    exit 1
+fi
+sync
 
 . config.sh
 
