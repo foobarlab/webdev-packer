@@ -5,8 +5,6 @@
 require_commands git nproc
 set -a
 
-. version.sh
-
 # ----------------------------!  edit settings below  !----------------------------
 
 BUILD_BOX_NAME="webdev"
@@ -46,6 +44,8 @@ BUILD_KEEP_MAX_CLOUD_BOXES=1       # set the maximum number of boxes to keep in 
 
 # ----------------------------!  do not edit below this line  !----------------------------
 
+. version.sh "$*"   # determine build version
+
 # detect number of system cpus available (select half of cpus for best performance)
 BUILD_CPUS=$((`nproc --all` / 2))
 let "jobs = $BUILD_CPUS + 1"       # calculate number of jobs (threads + 1)
@@ -65,11 +65,7 @@ BUILD_BOX_RELEASE_NOTES="Web development environment based on Funtoo Linux. See 
 BUILD_TIMESTAMP="$(date --iso-8601=seconds)"
 
 BUILD_BOX_DESCRIPTION="$BUILD_BOX_NAME version $BUILD_BOX_VERSION"
-if [ -z ${BUILD_TAG+x} ]; then
-    # without build tag
-    BUILD_BOX_DESCRIPTION="$BUILD_BOX_DESCRIPTION"
-else
-    # with env var BUILD_TAG set
+if [ ! -z ${BUILD_TAG+x} ]; then
     # NOTE: for Jenkins builds we got some additional information: BUILD_NUMBER, BUILD_ID, BUILD_DISPLAY_NAME, BUILD_TAG, BUILD_URL
     BUILD_BOX_DESCRIPTION="$BUILD_BOX_DESCRIPTION ($BUILD_TAG)"
 fi
@@ -85,7 +81,7 @@ fi
 BUILD_BOX_DESCRIPTION="$BUILD_BOX_RELEASE_NOTES<br><br>$BUILD_BOX_DESCRIPTION<br>created @$BUILD_TIMESTAMP<br>"
 
 # check if in git environment and collect git data (if any)
-export BUILD_GIT=$(echo `git rev-parse --is-inside-work-tree 2>/dev/null || echo "false"`)
+BUILD_GIT=$(echo `git rev-parse --is-inside-work-tree 2>/dev/null || echo "false"`)
 if [ $BUILD_GIT == "true" ]; then
     BUILD_GIT_COMMIT_REPO=`git config --get remote.origin.url`
     BUILD_GIT_COMMIT_BRANCH=`git rev-parse --abbrev-ref HEAD`

@@ -36,6 +36,7 @@ if [[ -d "$PWD/distfiles" ]]; then
 
     highlight "Downloading distfiles ..."
     todo "Download distfiles if missing file checksums found (count files) ..."
+    #result "Nothing to download yet."
     # ant-1.10.9-gentoo.tar.bz2: https://dev.gentoo.org/~fordfrog/distfiles/ant-1.10.9-gentoo.tar.bz2
     # mariadb-10.5.9.tar.gz: https://downloads.mariadb.org/interstitial/mariadb-10.5.9/source/mariadb-10.5.9.tar.gz/from/https%3A//archive.mariadb.org/
 
