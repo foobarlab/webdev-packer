@@ -98,7 +98,7 @@ mkdir -p packages || true
 
 . distfiles.sh quiet
 
-# TODO add cloud version check (see stage3)
+# TODO add cloud version check (see stage3), automatically generate initial build number?
 
 # FIXME refactor clean parent vdi part (see clean_env)
 highlight "Cleanup existing parent box vdi file ..."
