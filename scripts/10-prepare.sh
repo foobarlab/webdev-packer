@@ -280,9 +280,9 @@ cat <<'DATA' | sudo tee -a /etc/portage/package.mask/dev-rabbitmq-server
 # since version 3.8.16 erlang 23 is needed
 >=net-misc/rabbitmq-server-3.8.16
 DATA
-cat <<'DATA' | sudo tee -a /etc/portage/package.mask/dev-php
->=dev-lang/php-7.4
-DATA
+#cat <<'DATA' | sudo tee -a /etc/portage/package.mask/dev-php
+#>=dev-lang/php-7.4
+#DATA
 
 # ---- package.unmask
 
