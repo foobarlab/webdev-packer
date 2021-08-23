@@ -10,9 +10,9 @@ fi
 
 sf_vagrant="`sudo df | grep vagrant | tail -1 | awk '{ print $6 }'`"
 if [[ -d "$sf_vagrant/distfiles" ]]; then
-    sudo rsync -urv $sf_vagrant/distfiles /var/cache/portage/
-    sudo chown portage:portage /var/cache/portage/distfiles/*
-    sudo chmod 664 /var/cache/portage/distfiles/*
+  sudo rsync -urv $sf_vagrant/distfiles /var/cache/portage/
+  sudo chown portage:portage /var/cache/portage/distfiles/*
+  sudo chmod 664 /var/cache/portage/distfiles/*
 fi
 
 # ---- import binary packages
@@ -62,17 +62,17 @@ sudo cat /etc/issue
 # ---- custom overlay
 
 if [ "$BUILD_CUSTOM_OVERLAY" = true ]; then
-    cd /var/git
-    sudo mkdir -p overlay
-    cd overlay
-    # example: git clone --depth 1 -b development "https://github.com/foobarlab/foobarlab-overlay.git" ./foobarlab
-    sudo git clone --depth 1 -b $BUILD_CUSTOM_OVERLAY_BRANCH "$BUILD_CUSTOM_OVERLAY_URL" ./$BUILD_CUSTOM_OVERLAY_NAME
-    cd ./$BUILD_CUSTOM_OVERLAY_NAME
-    # set default strategy:
-    #sudo git config pull.rebase true  # merge
-    sudo git config pull.ff only       # fast forward only (recommended)
-    sudo chown -R portage.portage /var/git/overlay
-    cat <<'DATA' | sudo tee -a /etc/portage/repos.conf/$BUILD_CUSTOM_OVERLAY_NAME
+  cd /var/git
+  sudo mkdir -p overlay
+  cd overlay
+  # example: git clone --depth 1 -b development "https://github.com/foobarlab/foobarlab-overlay.git" ./foobarlab
+  sudo git clone --depth 1 -b $BUILD_CUSTOM_OVERLAY_BRANCH "$BUILD_CUSTOM_OVERLAY_URL" ./$BUILD_CUSTOM_OVERLAY_NAME
+  cd ./$BUILD_CUSTOM_OVERLAY_NAME
+  # set default strategy:
+  #sudo git config pull.rebase true  # merge
+  sudo git config pull.ff only       # fast forward only (recommended)
+  sudo chown -R portage.portage /var/git/overlay
+  cat <<'DATA' | sudo tee -a /etc/portage/repos.conf/$BUILD_CUSTOM_OVERLAY_NAME
 [DEFAULT]
 main-repo = core-kit
 
@@ -81,7 +81,7 @@ location = /var/git/overlay/BUILD_CUSTOM_OVERLAY_NAME
 auto-sync = no
 priority = 10
 DATA
-    sudo sed -i 's/BUILD_CUSTOM_OVERLAY_NAME/'"$BUILD_CUSTOM_OVERLAY_NAME"'/g' /etc/portage/repos.conf/$BUILD_CUSTOM_OVERLAY_NAME
+  sudo sed -i 's/BUILD_CUSTOM_OVERLAY_NAME/'"$BUILD_CUSTOM_OVERLAY_NAME"'/g' /etc/portage/repos.conf/$BUILD_CUSTOM_OVERLAY_NAME
 fi
 
 # ---- make.conf
@@ -185,7 +185,8 @@ cat <<'DATA' | sudo tee -a /etc/portage/package.use/webdev-nginx
 www-servers/nginx threads vim-syntax
 DATA
 cat <<'DATA' | sudo tee -a /etc/portage/package.use/webdev-php
-dev-lang/php curl pdo mysql mysqli xmlwriter xmlreader apache2 argon2 bcmath calendar cgi enchant flatfile fpm inifile mhash odbc postgres soap sockets sodium spell xmlrpc xslt zip zip-encryption sqlite phar opcache tidy xpm gmp ftp ldap ldap-sasl kerberos
+# see: https://forums.funtoo.org/topic/4872-%E2%80%8B-php74-dev-langphp-741174core-server-kit-wont-compile/?do=findComment&comment=17014
+dev-lang/php curl pdo mysql mysqli xmlwriter xmlreader apache2 argon2 bcmath calendar cgi enchant flatfile fpm inifile iodbc mhash odbc postgres soap sockets sodium spell xmlrpc xslt zip zip-encryption sqlite phar opcache tidy xpm gmp ftp ldap ldap-sasl kerberos
 # required by www-apps/postfixadmin:
 >=dev-lang/php-5.6 imap
 # various extensions: FIXME check for PHP 7.4 compatibility
@@ -242,17 +243,17 @@ DATA
 # ---- package.license
 
 sudo mkdir -p /etc/portage/package.license
-cat <<'DATA' | sudo tee -a /etc/portage/package.license/dev-libpng
+cat <<'DATA' | sudo tee -a /etc/portage/package.license/webdev-libpng
 # required by openjdk:
 >=media-libs/libpng-1.6.37 libpng2
 DATA
-cat <<'DATA' | sudo tee -a /etc/portage/package.license/dev-dnswalk
+cat <<'DATA' | sudo tee -a /etc/portage/package.license/webdev-dnswalk
 >=net-dns/dnswalk-2.0.2 freedist
 DATA
-cat <<'DATA' | sudo tee -a /etc/portage/package.license/dev-ffmpeg
+cat <<'DATA' | sudo tee -a /etc/portage/package.license/webdev-ffmpeg
 >=media-libs/quirc-1.0 AS-IS
 DATA
-cat <<'DATA' | sudo tee -a /etc/portage/package.license/dev-llvm
+cat <<'DATA' | sudo tee -a /etc/portage/package.license/webdev-llvm
 >=sys-devel/clang-9.0 Apache-2.0-with-LLVM-exceptions
 >=sys-devel/clang-common-9.0 Apache-2.0-with-LLVM-exceptions
 >=sys-libs/compiler-rt-sanitizers-9.0 Apache-2.0-with-LLVM-exceptions
@@ -262,32 +263,29 @@ cat <<'DATA' | sudo tee -a /etc/portage/package.license/dev-llvm
 >=sys-devel/lld-9.0 Apache-2.0-with-LLVM-exceptions
 >=dev-util/lldb-9.0 Apache-2.0-with-LLVM-exceptions
 DATA
-cat <<'DATA' | sudo tee -a /etc/portage/package.license/dev-subversion
+cat <<'DATA' | sudo tee -a /etc/portage/package.license/webdev-subversion
 >=dev-vcs/subversion-1.14.0-r1 FSFAP
 DATA
-cat <<'DATA' | sudo tee -a /etc/portage/package.license/dev-mongodb
+cat <<'DATA' | sudo tee -a /etc/portage/package.license/webdev-mongodb
 >=dev-db/mongodb-4.0.20 SSPL-1
 DATA
 
 # ---- package.mask
 
 sudo mkdir -p /etc/portage/package.mask
-cat <<'DATA' | sudo tee -a /etc/portage/package.mask/dev-erlang
+cat <<'DATA' | sudo tee -a /etc/portage/package.mask/webdev-erlang
 # masked for couchdb 3.1.1
 >=dev-lang/erlang-23.0
 DATA
-cat <<'DATA' | sudo tee -a /etc/portage/package.mask/dev-rabbitmq-server
+cat <<'DATA' | sudo tee -a /etc/portage/package.mask/webdev-rabbitmq-server
 # since version 3.8.16 erlang 23 is needed
 >=net-misc/rabbitmq-server-3.8.16
-DATA
-cat <<'DATA' | sudo tee -a /etc/portage/package.mask/dev-php
->=dev-lang/php-7.4
 DATA
 
 # ---- package.unmask
 
 sudo mkdir -p /etc/portage/package.unmask
-cat <<'DATA' | sudo tee -a /etc/portage/package.unmask/dev-couchdb
+cat <<'DATA' | sudo tee -a /etc/portage/package.unmask/webdev-couchdb
 # unmask dev-db/couchdb as we use our own version (foobarlab overlay):
 # Pacho Ramos <pacho@gentoo.org> (11 Nov 2018): Unmaintained, security issues (#630796, #663164). Removal in a month.
 >=dev-db/couchdb-2.3.0
@@ -296,7 +294,7 @@ DATA
 # ---- package.accept_keywords
 
 #sudo mkdir -p /etc/portage/package.accept_keywords
-#cat <<'DATA' | sudo tee -a /etc/portage/package.accept_keywords/dev-linux-headers
+#cat <<'DATA' | sudo tee -a /etc/portage/package.accept_keywords/webdev-linux-headers
 ## needed for dev-util/perf:
 #sys-kernel/linux-headers **
 #DATA
