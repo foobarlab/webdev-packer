@@ -14,9 +14,9 @@ title "ENVIRONMENT CLEANUP"
 
 highlight "Housekeeping Vagrant environment ..."
 step "Prune old versions of parent box '${BUILD_PARENT_BOX_NAME}' ..."
-vagrant box prune -f -k --name ${BUILD_PARENT_BOX_NAME}
+vagrant box prune -f -k --name "${BUILD_PARENT_BOX_NAME}"
 step "Prune previous versions of box '${BUILD_BOX_NAME}' ..."
-vagrant box prune -f -k --name ${BUILD_BOX_NAME}
+vagrant box prune -f -k --name "${BUILD_BOX_NAME}"
 step "Prune invalid Vagrant entries ..."
 vagrant global-status --prune >/dev/null
 step "Delete temporary Vagrant files ..."
@@ -24,9 +24,11 @@ rm -rf ~/.vagrant.d/tmp/* || true
 
 highlight "Housekeeping VirtualBox environment ..."
 step "Forcibly shutdown any running VirtualBox machine named '$BUILD_BOX_NAME' ..."
-vbox_running_id=$( $vboxmanage list runningvms | grep "\"$BUILD_BOX_NAME\"" | sed -r 's/.*\{(.*)\}/\1/' )
-$vboxmanage controlvm "$vbox_running_id" acpipowerbutton >/dev/null 2>&1 || true
-$vboxmanage controlvm "$vbox_running_id" poweroff >/dev/null 2>&1 || true
+vbox_running_ids=$( $vboxmanage list runningvms | grep "\"$BUILD_BOX_NAME\"" | sed -r 's/.*\{(.*)\}/\1/' )
+for vbox_id in $vbox_running_ids; do
+    $vboxmanage controlvm "$vbox_id" acpipowerbutton >/dev/null 2>&1 || true
+    $vboxmanage controlvm "$vbox_id" poweroff >/dev/null 2>&1 || true
+done
 
 step "Searching for VirtualBox named '$BUILD_BOX_NAME' ..."
 vbox_machine_id=$( $vboxmanage list vms | grep $BUILD_BOX_NAME | grep -Eo '{[0-9a-f\-]+}' | sed -n 's/[{}]//p' || echo )
