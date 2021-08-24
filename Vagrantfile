@@ -135,9 +135,10 @@ Vagrant.configure("2") do |config|
   config.vm.base_mac = "080027344abc"
 
   # adapter 1 (eth0): private network (NAT with forwarding)
-  config.vm.network "forwarded_port", guest: 80, host: 8080
-  config.vm.network "forwarded_port", guest: 8000, host: 8000
-  config.vm.network "forwarded_port", guest: 3306, host: 3306
+  config.vm.network "forwarded_port", guest: 80, host: 8080     # apache
+  config.vm.network "forwarded_port", guest: 8000, host: 8000   # lighttpd / dashboard
+  config.vm.network "forwarded_port", guest: 3306, host: 3306   # mysql
+  config.vm.network "forwarded_port", guest: 5432, host: 5432   # postgresql
 
   # adapter 2 (eth1): public network (bridged)
   config.vm.network "public_network",

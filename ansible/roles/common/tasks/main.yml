@@ -14,5 +14,3 @@
 - include: nsswitch.yml
 - include: update-system.yml
 #- include: java.yml
-
-# TODO enable xdm

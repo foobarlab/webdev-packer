@@ -98,8 +98,9 @@ mkdir -p packages || true
 
 . distfiles.sh quiet
 
-# TODO add cloud version check (see stage3)
+# TODO add cloud version check (see stage3), automatically generate initial build number?
 
+# FIXME refactor clean parent vdi part (see clean_env)
 highlight "Cleanup existing parent box vdi file ..."
 vbox_hdd_found=$( $vboxmanage list hdds | grep "$BUILD_PARENT_BOX_CLOUD_VDI" || echo )
 if [[ -z "$vbox_hdd_found" || "$vbox_hdd_found" = "" ]]; then
