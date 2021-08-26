@@ -143,7 +143,7 @@ fi
 highlight "Cleanup existing parent box vdi file ..."
 vbox_hdd_found=$( $vboxmanage list hdds | grep "$BUILD_PARENT_BOX_CLOUD_VDI" || echo )
 if [[ -z "$vbox_hdd_found" || "$vbox_hdd_found" = "" ]]; then
-    info "No vdi file found for parent box '${BUILD_PARENT_BOX_CLOUD_NAME}-${BUILD_PARENT_BOX_CLOUD_VERSION}'"  
+    info "No vdi file found for parent box '${BUILD_PARENT_BOX_CLOUD_NAME}-${BUILD_PARENT_BOX_CLOUD_VERSION}'"
 else
     step "Scanning VirtualBox hdds ..."
     vbox_hdd_found_count=$( $vboxmanage list hdds | grep -o "^UUID" | wc -l )
@@ -165,7 +165,8 @@ else
                     info "State: 'inaccessible'. Will be removed."
                     ;;
                 "locked")
-                    error "Seems like the vdi file is in state 'locked' and can not be removed. Is the box already up and running?"
+                    error "Seems like the vdi file is in state 'locked' and can not be removed easily. Is the box still up and running?"
+                    todo "Detect if box is running and try to forecefully poweroff "
                     result "Please run './clean_env.sh' and try again."
                     exit 1
                     ;;
@@ -186,19 +187,24 @@ else
     done
 fi
 
-if [[ -f $BUILD_PARENT_BOX_CLOUD_VMDK ]] && [[ ! -f "$BUILD_PARENT_BOX_CLOUD_VDI" ]]; then
-    highlight "Cloning parent box hdd to vdi file ..."
+highlight "Trying to clone parent box hdd ..."
+if [ -f $BUILD_PARENT_BOX_CLOUD_VMDK ]; then
+    if [ -f "$BUILD_PARENT_BOX_CLOUD_VDI" ]; then
+        rm -f "$BUILD_PARENT_BOX_CLOUD_VDI" || true
+    fi
+    step "Cloning to vdi file ..."
     $vboxmanage clonemedium disk "$BUILD_PARENT_BOX_CLOUD_VMDK" "$BUILD_PARENT_BOX_CLOUD_VDI" --format VDI
     if [ -z ${BUILD_BOX_DISKSIZE:-} ]; then
         info "BUILD_BOX_DISKSIZE is unset, skipping disk resize ..."
         # TODO set flag for packer (use another provisioner) ?
     else
-        highlight "Resizing vdi to $BUILD_BOX_DISKSIZE MB ..."
+        step "Resizing vdi to $BUILD_BOX_DISKSIZE MB ..."
         $vboxmanage modifymedium disk "$BUILD_PARENT_BOX_CLOUD_VDI" --resize "$BUILD_BOX_DISKSIZE"
         # TODO set flag for packer (use another provisioner) ?
     fi
 else
-    error "Unable to clone parent box to vdi file. Please run './clean_env.sh' and try again."
+    error "Missing vmdk file to clone!"
+    result "Please try again and select 'yes' on downloading the parent box file."
     exit 1
 fi
 sync
