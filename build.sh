@@ -149,13 +149,13 @@ fi
 
 if [[ -f $BUILD_PARENT_BOX_CLOUD_VMDK ]] && [[ ! -f "$BUILD_PARENT_BOX_CLOUD_VDI" ]]; then
     highlight "Cloning parent box hdd to vdi file ..."
-    $vboxmanage clonehd "$BUILD_PARENT_BOX_CLOUD_VMDK" "$BUILD_PARENT_BOX_CLOUD_VDI" --format VDI
+    $vboxmanage clonemedium disk "$BUILD_PARENT_BOX_CLOUD_VMDK" "$BUILD_PARENT_BOX_CLOUD_VDI" --format VDI
     if [ -z ${BUILD_BOX_DISKSIZE:-} ]; then
         info "BUILD_BOX_DISKSIZE is unset, skipping disk resize ..."
         # TODO set flag for packer (use another provisioner) ?
     else
         highlight "Resizing vdi to $BUILD_BOX_DISKSIZE MB ..."
-        $vboxmanage modifyhd "$BUILD_PARENT_BOX_CLOUD_VDI" --resize "$BUILD_BOX_DISKSIZE"
+        $vboxmanage modifymedium disk "$BUILD_PARENT_BOX_CLOUD_VDI" --resize "$BUILD_BOX_DISKSIZE"
         # TODO set flag for packer (use another provisioner) ?
     fi
 else
@@ -183,7 +183,7 @@ if [ -f "$BUILD_OUTPUT_FILE_TEMP" ]; then
     step "Removing '$BUILD_BOX_NAME' ..."
     vagrant box remove -f "$BUILD_BOX_NAME" 2>/dev/null || true
     step "Adding '$BUILD_BOX_NAME' ..."
-    vagrant box add --name "$BUILD_BOX_NAME" "$BUILD_OUTPUT_FILE_TEMP"
+    vagrant box add -f --name "$BUILD_BOX_NAME" "$BUILD_OUTPUT_FILE_TEMP"
     step "Powerup and provision '$BUILD_BOX_NAME' (running only 'shell' scripts) ..."
     vagrant --provision up --provision-with net_debug,export_packages,cleanup_kernel,cleanup || { echo "Unable to startup '$BUILD_BOX_NAME'."; exit 1; }
     step "Halting '$BUILD_BOX_NAME' ..."
