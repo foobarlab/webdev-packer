@@ -98,7 +98,46 @@ mkdir -p packages || true
 
 . distfiles.sh quiet
 
-# TODO add cloud version check (see stage3), automatically generate initial build number?
+# do not build an already existing release on vagrant cloud by default
+
+if [ ! $# -eq 0 ]; then
+    BUILD_SKIP_VERSION_CHECK=true
+else
+    BUILD_SKIP_VERSION_CHECK=false
+fi
+
+if [ "$BUILD_SKIP_VERSION_CHECK" = false ]; then
+
+    # check version match on cloud and abort if same
+    highlight "Comparing local and cloud version ..."
+    # FIXME check if box already exists (should give us a 200 HTTP response, if not we will get a 404)
+    latest_cloud_version=$( \
+    curl -sS \
+      https://app.vagrantup.com/api/v1/box/$BUILD_BOX_USERNAME/$BUILD_BOX_NAME \
+    )
+
+    latest_cloud_version=$(echo $latest_cloud_version | jq .current_version.version | tr -d '"')
+    echo
+    info "Latest cloud version..: '${latest_cloud_version}'"
+    info "This version..........: '${BUILD_BOX_VERSION}'"
+    echo
+
+    if [[ "$BUILD_BOX_VERSION" = "$latest_cloud_version" ]]; then
+        error "An equal version number already exists, please run './clean.sh' to increment your build number and try again."
+        todo "Automatically increase build number?"
+        exit 1
+    else
+        version_too_small=`version_lt $BUILD_BOX_VERSION $latest_cloud_version && echo "true" || echo "false"`
+        if [[ "$version_too_small" = "true" ]]; then
+            warn "This version is smaller than the cloud version!"
+            todo "Automatically increase build_number"
+        fi
+        final "Looks like we have an unreleased version to provide. Proceeding build ..."
+    fi
+else
+    warn "Skipped cloud version check."
+fi
+
 
 # FIXME refactor clean parent vdi part (see clean_env)
 highlight "Cleanup existing parent box vdi file ..."
@@ -164,6 +203,8 @@ else
 fi
 sync
 
+final "All preparations done."
+
 . config.sh
 
 step "Invoking packer ..."
@@ -188,7 +229,7 @@ if [ -f "$BUILD_OUTPUT_FILE_TEMP" ]; then
     vagrant --provision up --provision-with net_debug,export_packages,cleanup_kernel,cleanup || { echo "Unable to startup '$BUILD_BOX_NAME'."; exit 1; }
     step "Halting '$BUILD_BOX_NAME' ..."
     vagrant halt
-    # TODO vboxmanage modifymedium --compact <path to vdi> ?
+    # TODO vboxmanage modifymedium disk --compact <path to vdi> ?
     step "Exporting intermediate box to '$BUILD_OUTPUT_FILE_INTERMEDIATE' ..."
 	# TODO package additional optional files with --include ?
     # TODO use configuration values inside template (BUILD_BOX_MEMORY, etc.)
