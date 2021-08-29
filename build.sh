@@ -132,12 +132,11 @@ if [ "$BUILD_SKIP_VERSION_CHECK" = false ]; then
             warn "This version is smaller than the cloud version!"
             todo "Automatically increase build_number"
         fi
-        final "Looks like we have an unreleased version to provide. Proceeding build ..."
+        result "Looks like we build an unreleased version."
     fi
 else
     warn "Skipped cloud version check."
 fi
-
 
 # FIXME refactor clean parent vdi part (see clean_env)
 highlight "Cleanup existing parent box vdi file ..."
@@ -213,10 +212,17 @@ final "All preparations done."
 
 . config.sh
 
-step "Invoking packer ..."
+
 export PACKER_LOG_PATH="$PWD/packer.log"
 export PACKER_LOG="1"
+
+if [ $PACKER_LOG ]; then
+    info "Logging Packer output to '$PACKER_LOG_PATH' ..."
+fi
+
+step "Invoking Packer build configuration '$PWD/packer/virtualbox.json' ..."
 packer validate "$PWD/packer/virtualbox.json"
+
 # TODO use 'only' conditionals in packer json for distinct provisioner ?
 packer build -force -on-error=abort "$PWD/packer/virtualbox.json"
 
