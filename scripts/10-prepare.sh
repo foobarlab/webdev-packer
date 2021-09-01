@@ -113,6 +113,8 @@ cat <<'DATA' | sudo tee -a /etc/portage/make.conf
 APACHE2_MODULES="actions alias auth_basic auth_digest authn_alias authn_anon authn_core authn_dbm authn_file authz_core authz_dbm authz_groupfile authz_host authz_owner authz_user autoindex cache cgi cgid dav dav_fs dav_lock deflate dir env expires ext_filter file_cache filter headers include info log_config logio mime mime_magic negotiation rewrite setenvif socache_shmcb speling status unique_id unixd userdir usertrack vhost_alias proxy proxy_fcgi"
 APACHE2_MPMS="worker"
 
+# TODO switch from mod_php to php-fpm with apache MPM event, see: https://autoize.com/high-performance-mautic-apache-nginx-php-fpm/
+
 DATA
 
 # Nginx
