@@ -22,6 +22,10 @@ sudo chmod 03775 /var/spool/mail/
 # sys-apps/mlocate: add shared folders to /etc/updatedb.conf prune paths to avoid leaking shared files
 sudo sed -i 's/PRUNEPATHS="/PRUNEPATHS="\/srv \/data \/vagrant /g' /etc/updatedb.conf
 
+# sanitize golang packages
+sudo emerge -vt @golang-rebuild
+
+# rebuild if needed
 sudo emerge -vt @preserved-rebuild
 
 # check dynamic linking consistency
