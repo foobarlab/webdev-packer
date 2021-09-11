@@ -263,3 +263,6 @@ minutes=$(( (runtime % 3600) / 60 ));
 seconds=$(( (runtime % 3600) % 60 ));
 echo "$hours hours $minutes minutes $seconds seconds" >> build_time
 result "Build runtime was $hours hours $minutes minutes $seconds seconds."
+
+# TODO test automatic finalization
+. ./finalize.sh
