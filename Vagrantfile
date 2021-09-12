@@ -135,7 +135,7 @@ Vagrant.configure("2") do |config|
   config.vm.base_mac = "080027344abc"
 
   # adapter 1 (eth0): private network (NAT with forwarding)
-  config.vm.network "forwarded_port", guest: 80, host: 8080     # apache
+  config.vm.network "forwarded_port", guest: 8080, host: 8080   # apache
   config.vm.network "forwarded_port", guest: 8000, host: 8000   # lighttpd / dashboard
   config.vm.network "forwarded_port", guest: 3306, host: 3306   # mysql
   config.vm.network "forwarded_port", guest: 5432, host: 5432   # postgresql
@@ -168,10 +168,12 @@ Vagrant.configure("2") do |config|
   # ansible provisioning executed only in finalizing step (finalize.sh)
   config.vm.provision "provision_ansible", type: "ansible_local" do |ansible|
     ansible.install = false
-    ansible.verbose = true
+    ansible.verbose = "v"
     ansible.compatibility_mode = "2.0"
     ansible.playbook = "ansible/provision.yml"
     ansible.config_file = "ansible/ansible.cfg"
+    ansible.inventory_path = "ansible/environment/#{ENV['BUILD_ENVIRONMENT']}"
+    ansible.raw_arguments  = ["--connection=local"]
     ansible.extra_vars = {
       mysql_root_password: "#{ENV['BUILD_MYSQL_ROOT_PASSWORD']}"
     }

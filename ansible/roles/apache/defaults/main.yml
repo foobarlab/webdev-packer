@@ -1,0 +1,17 @@
+---
+# vim: ts=2 sw=2 et syntax=yaml
+
+apache_user: www-data
+apache_group: www-data
+apache_port_http: 8080
+
+# root for all hosts
+host_root: "/var/www"
+
+# path to all virtual hosts
+vhosts_path: "{{ host_root }}/vhosts"
+
+# path to the default virtual host
+default_vhost_path: "{{ vhosts_path }}/default"
+default_htdocs_path: "{{ default_vhost_path }}/htdocs"
+default_errordocs_path: "{{ default_vhost_path }}/error"

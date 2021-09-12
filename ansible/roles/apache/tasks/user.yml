@@ -1,0 +1,32 @@
+---
+# vim: ts=2 sw=2 et syntax=yaml
+
+- name: add group '{{ apache_group }}'
+  group:
+    name: '{{ apache_group }}'
+    state: present
+    system: yes
+
+- name: add user '{{ apache_user }}'
+  user:
+    name: '{{ apache_user }}'
+    group: '{{ apache_group }}'
+    state: present
+    shell: /sbin/nologin
+    system: yes
+    createhome: no
+    home: /var/www
+
+- name: add user 'vagrant' to group '{{ apache_group }}'
+  user:
+    name: vagrant
+    groups: '{{ apache_group }}'
+    append: yes
+
+- name: set owner and group of /var/www (homedir of '{{ apache_user }}')
+  file:
+    path: /var/www
+    state: directory
+    owner: '{{ apache_user }}'
+    group: '{{ apache_group }}'
+    mode: 0750

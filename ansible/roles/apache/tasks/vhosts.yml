@@ -1,0 +1,26 @@
+---
+# vim: ts=2 sw=2 et syntax=yaml
+
+- name: remove default vhost configs
+  file:
+    state: absent
+    path: '/etc/apache2/vhosts.d/{{ item }}'
+  with_items:
+    - 00_default_ssl_vhost.conf
+    - 00_default_vhost.conf
+    - default_vhost.include
+
+- name: create default vhosts config
+  template:
+    src: '00_default.conf.j2'
+    dest: '/etc/apache2/vhosts.d/00_default.conf'
+    mode: 0644
+
+- name: create default vhosts index html file
+  copy:
+    owner: '{{ apache_user }}'
+    group: '{{ apache_group }}'
+    mode: 0755
+    dest: '{{ default_htdocs_path }}/index.html'
+    content: |
+      <pre>This HTML document is served by Apache and located in {{ default_htdocs_path }}/index.html.</pre>

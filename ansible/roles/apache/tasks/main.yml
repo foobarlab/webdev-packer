@@ -1,0 +1,7 @@
+---
+# vim: ts=2 sw=2 et syntax=yaml
+
+- include: user.yml
+- include: dirs.yml
+- include: config.yml
+- include: vhosts.yml

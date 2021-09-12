@@ -1,0 +1,6 @@
+---
+# vim: ts=2 sw=2 et syntax=yaml
+
+build_environment: production
+default_domainname: prod.test
+php_version: 7.3
