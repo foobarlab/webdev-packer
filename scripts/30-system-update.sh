@@ -6,7 +6,11 @@ if [ -z ${BUILD_RUN:-} ]; then
   exit 1
 fi
 
-sudo emerge -vtuDN --with-bdeps=y @world
+sudo emerge -vtuDN --with-bdeps=y --complete-graph=y @world
+
+sudo emerge -vt @preserved-rebuild
+
+sudo emerge --depclean
 
 sudo emerge -vt @preserved-rebuild
 

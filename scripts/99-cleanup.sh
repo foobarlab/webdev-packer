@@ -10,10 +10,15 @@ user_id=$(id -u)    # FIX: because of "/etc/profile.d/java-config-2.sh: line 22:
 sudo env-update
 source /etc/profile
 
-sudo eclean packages
-
+# check consistency
+sudo emerge -vt @preserved-rebuild
 sudo emerge --depclean
 sudo emerge -vt @preserved-rebuild
+sudo revdep-rebuild
+
+# clean packages
+sudo emaint binhost --fix
+sudo eclean packages
 
 sudo bash -c "sed -i '/^MAKEOPTS/d' /etc/portage/make.conf"           # delete MAKEOPTS (make.conf)
 #sudo bash -c "sed -i 's/^\(MAKEOPTS.*\)/#\1/g' /etc/genkernel.conf"   # comment-in MAKEOPTS (genkernel) # FIXME do when genkernel was invoked in 20-kernel.sh

@@ -26,7 +26,9 @@ highlight "Housekeeping VirtualBox environment ..."
 step "Forcibly shutdown any running VirtualBox machine named '$BUILD_BOX_NAME' ..."
 vbox_running_ids=$( $vboxmanage list runningvms | grep "\"$BUILD_BOX_NAME\"" | sed -r 's/.*\{(.*)\}/\1/' )
 for vbox_id in $vbox_running_ids; do
+    warn "ACPI shutdown '$vbox_id'"
     $vboxmanage controlvm "$vbox_id" acpipowerbutton >/dev/null 2>&1 || true
+    warn "Poweroff '$vbox_id'"
     $vboxmanage controlvm "$vbox_id" poweroff >/dev/null 2>&1 || true
 done
 

@@ -16,7 +16,7 @@ if [[ -f "$PWD/distfiles.list" ]]; then
     IFS=$'\n' # new field separator, the end of line
     for line in $(cat "$PWD/distfiles.list"); do
         line_number=$((line_number+1))
-        shopt -s extglob; line=${line##*( )}; line="${line%%*( )}"; shopt -u extglob # remove leading and trailing spaces 
+        shopt -s extglob; line=${line##*( )}; line="${line%%*( )}"; shopt -u extglob # remove leading and trailing spaces
         [[ $line =~ ^#.* ]] && continue # skip comments
         #info "Line: $line"
         file_hash=""
@@ -69,7 +69,7 @@ if [[ -f "$PWD/distfiles.list" ]]; then
             exit 1
         fi
     done
-    IFS=$old_IFS # restore default field separator 
+    IFS=$old_IFS # restore default field separator
 
 else
     info "File 'distfiles.list' not found."

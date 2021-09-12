@@ -63,8 +63,10 @@ sudo cat /etc/issue
 
 if [ "$BUILD_CUSTOM_OVERLAY" = true ]; then
   cd /var/git
-  sudo mkdir -p overlay
+  sudo mkdir -p overlay || true
   cd overlay
+  # FIXME delete if already existing?
+  #sudo rm -rf ./$BUILD_CUSTOM_OVERLAY_NAME || true
   # example: git clone --depth 1 -b development "https://github.com/foobarlab/foobarlab-overlay.git" ./foobarlab
   sudo git clone --depth 1 -b $BUILD_CUSTOM_OVERLAY_BRANCH "$BUILD_CUSTOM_OVERLAY_URL" ./$BUILD_CUSTOM_OVERLAY_NAME
   cd ./$BUILD_CUSTOM_OVERLAY_NAME
@@ -112,6 +114,8 @@ cat <<'DATA' | sudo tee -a /etc/portage/make.conf
 # Apache config, see: https://www.funtoo.org/Package:Apache
 APACHE2_MODULES="actions alias auth_basic auth_digest authn_alias authn_anon authn_core authn_dbm authn_file authz_core authz_dbm authz_groupfile authz_host authz_owner authz_user autoindex cache cgi cgid dav dav_fs dav_lock deflate dir env expires ext_filter file_cache filter headers include info log_config logio mime mime_magic negotiation rewrite setenvif socache_shmcb speling status unique_id unixd userdir usertrack vhost_alias proxy proxy_fcgi"
 APACHE2_MPMS="worker"
+
+# TODO switch from mod_php to php-fpm with apache MPM event, see: https://autoize.com/high-performance-mautic-apache-nginx-php-fpm/
 
 DATA
 
@@ -234,6 +238,9 @@ DATA
 cat <<'DATA' | sudo tee -a /etc/portage/package.use/webdev-openssl
 # TLSv1.3 support (nginx):
 dev-libs/openssl sslv3 tls-heartbeat
+DATA
+cat <<'DATA' | sudo tee -a /etc/portage/package.use/webdev-gmp
+>=dev-libs/gmp-6.2.1-r1 static-libs
 DATA
 #cat <<'DATA' | sudo tee -a /etc/portage/package.use/webdev-phpmyadmin
 ## FIXME allow unsecure installation?

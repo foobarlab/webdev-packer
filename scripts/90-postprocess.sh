@@ -13,16 +13,14 @@ sudo perl-cleaner --all
 for dir in /etc/portage/package.*; do
   sudo rm -f /etc/portage/${dir##*/}/temp*
 done
-sudo emerge -vtuDN --with-bdeps=y @world
+sudo emerge -vtuDN --with-bdeps=y --complete-graph=y @world
 
 ## net-mail/mailbase: adjust permissions as recommended during install
 #sudo chown root:mail /var/spool/mail/
 sudo chmod 03775 /var/spool/mail/
 
-# sys-apps/mlocate: add shared folders to /etc/updatedb.conf prune paths to avoid leaking shared files
+# sys-apps/mlocate: add shared folder (usually '/vagrant') to /etc/updatedb.conf prune paths to avoid leaking shared files
 sudo sed -i 's/PRUNEPATHS="/PRUNEPATHS="\/srv \/data \/vagrant /g' /etc/updatedb.conf
 
-sudo emerge -vt @preserved-rebuild
-
-# check dynamic linking consistency
-sudo revdep-rebuild
+# sanitize golang packages
+sudo emerge -vt @golang-rebuild
