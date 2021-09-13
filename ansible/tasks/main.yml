@@ -17,6 +17,7 @@
    - webserver
    #- database
    #- email
+   #- ldap
    #- editor
    #- backup
    #- dashboard

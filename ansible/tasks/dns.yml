@@ -1,0 +1,11 @@
+---
+# vim: ts=2 sw=2 et syntax=yaml
+
+- name: Run roles for task '{{ taskinputvar }}'
+  include_role:
+    name: '{{ roleinputvar }}'
+  loop_control:
+    loop_var: roleinputvar
+  loop:
+   - dnsmasq
+   - avahi
