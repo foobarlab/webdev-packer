@@ -15,18 +15,10 @@
     shell: /sbin/nologin
     system: yes
     createhome: no
-    home: /var/www
+    home: '{{ host_root }}'
 
 - name: add user 'vagrant' to group '{{ apache_group }}'
   user:
     name: vagrant
     groups: '{{ apache_group }}'
     append: yes
-
-- name: set owner and group of /var/www (homedir of '{{ apache_user }}')
-  file:
-    path: /var/www
-    state: directory
-    owner: '{{ apache_user }}'
-    group: '{{ apache_group }}'
-    mode: 0750

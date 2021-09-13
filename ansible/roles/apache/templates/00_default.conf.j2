@@ -1,9 +1,7 @@
 # vim: ts=4 filetype=apache
 
 ServerName localhost
-
 IndexOptions FancyIndexing
-
 ServerTokens Full
 
 <IfDefine DEFAULT_VHOST>
@@ -29,10 +27,10 @@ ServerTokens Full
         </Directory>
 
         <IfModule alias_module>
-            ScriptAlias /cgi-bin/ "{{ default_vhost_path }}/cgi-bin/"
+            ScriptAlias /cgi-bin/ "{{ default_cgi_path }}/"
         </IfModule>
 
-        <Directory "{{ default_vhost_path }}/cgi-bin">
+        <Directory "{{ default_cgi_path }}">
             AllowOverride None
             Options None
             Require all granted

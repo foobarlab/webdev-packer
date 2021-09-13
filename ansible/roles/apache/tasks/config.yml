@@ -5,4 +5,3 @@
   template:
     src: httpd.conf.j2
     dest: /etc/apache2/httpd.conf
-    backup: yes

@@ -9,6 +9,14 @@
     group: '{{ apache_group }}'
     mode: 0750
 
+- name: set owner and group of '{{ host_root }}'
+  file:
+    path: '{{ host_root }}'
+    state: directory
+    owner: '{{ apache_user }}'
+    group: '{{ apache_group }}'
+    mode: 0750
+
 - name: created new default hosting dir
   file:
     path: '{{ item }}'
