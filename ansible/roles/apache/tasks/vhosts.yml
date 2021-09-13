@@ -24,3 +24,12 @@
     dest: '{{ default_htdocs_path }}/index.html'
     content: |
       <pre>This HTML document is served by Apache and located in {{ default_htdocs_path }}/index.html.</pre>
+
+- name: create default vhosts index php file
+  copy:
+    owner: '{{ apache_user }}'
+    group: '{{ apache_group }}'
+    mode: 0755
+    dest: '{{ default_htdocs_path }}/index.php'
+    content: |
+      <?php phpinfo();
