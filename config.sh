@@ -40,9 +40,7 @@ BUILD_HEADLESS=true                   # if true, gui will be uninstalled, otherw
 # TODO flag for xorg (BUILD_WINDOW_SYSTEM)?
 
 BUILD_MYSQL_ROOT_PASSWORD="changeme"  # set the root password for MySQL/MariaDB
-
 BUILD_ENVIRONMENT="development"       # set box purpose to 'development' or 'production'
-
 BUILD_KEEP_MAX_CLOUD_BOXES=1          # set the maximum number of boxes to keep in Vagrant Cloud
 
 # ----------------------------!  do not edit below this line  !----------------------------
