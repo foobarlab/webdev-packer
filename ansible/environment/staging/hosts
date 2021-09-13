@@ -1,4 +1,0 @@
-all:
-  hosts:
-    default:
-      #build_environment: staging
