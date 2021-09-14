@@ -1,5 +1,5 @@
 ---
 # vim: ts=2 sw=2 et syntax=yaml
 
-apache_port_http: 8000
-host_root: "/srv"
+#apache_port_http: 8000
+#host_root: "/srv"

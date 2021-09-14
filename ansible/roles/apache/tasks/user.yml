@@ -1,12 +1,14 @@
 ---
 # vim: ts=2 sw=2 et syntax=yaml
 
+# FIXME add only if non-existant
 - name: Add group '{{ apache_group }}'
   group:
     name: '{{ apache_group }}'
     state: present
     system: yes
 
+# FIXME add only if non-existant
 - name: Add user '{{ apache_user }}'
   user:
     name: '{{ apache_user }}'
@@ -17,6 +19,7 @@
     createhome: no
     home: '{{ host_root }}'
 
+# FIXME add only if not done already
 - name: Add user 'vagrant' to group '{{ apache_group }}'
   user:
     name: vagrant

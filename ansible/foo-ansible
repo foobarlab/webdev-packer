@@ -1,0 +1,2 @@
+#!/bin/bash
+ansible-playbook -i /vagrant/ansible/environment/development/ --limit all -c local /vagrant/ansible/provision.yml
