@@ -1,2 +1,23 @@
 ---
 # vim: ts=2 sw=2 et syntax=yaml
+# see: https://docs.ansible.com/ansible/latest/modules/pam_limits_module.html
+
+# changes:
+# *  soft  nofile  16000  =>  65000
+# *  hard  nofile  64000  =>  2097152 (from sysctl.conf)
+
+- name: increase nofile (soft)
+  pam_limits:
+    dest: /etc/security/limits.d/local.conf
+    domain: '*'
+    limit_type: soft
+    limit_item: nofile
+    value: "65000"
+
+- name: increase nofile (hard)
+  pam_limits:
+    dest: /etc/security/limits.d/local.conf
+    domain: '*'
+    limit_type: hard
+    limit_item: nofile
+    value: "2097152"

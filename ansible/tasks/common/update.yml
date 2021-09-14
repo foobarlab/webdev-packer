@@ -1,0 +1,14 @@
+---
+# vim: ts=2 sw=2 et syntax=yaml
+
+- name: refresh overlays and ego sync
+  shell: /usr/local/sbin/foo-sync && sleep 2 && sync
+
+- name: run world update
+  shell: emerge -uDN --color=n --with-bdeps=y --complete-graph=y @world
+
+- name: preserved rebuilds
+  shell: emerge @preserved-rebuild
+
+- name: show (un)merged pkgs
+  shell: genlop -l -u -n

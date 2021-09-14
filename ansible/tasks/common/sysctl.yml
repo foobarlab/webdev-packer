@@ -1,2 +1,8 @@
 ---
 # vim: ts=2 sw=2 et syntax=yaml
+
+- include: sysctl/defaults.yml
+- include: sysctl/local.yml
+
+- name: sysctl - reload configuration
+  shell: sysctl --system -p

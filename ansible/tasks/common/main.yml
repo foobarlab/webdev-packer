@@ -1,7 +1,7 @@
 ---
 # vim: ts=2 sw=2 et syntax=yaml
 
-- include: world_update.yml
 - include: sysctl.yml
 - include: limits.yml
-- include: nftables.yml
+- include: nsswitch.yml
+#- include: update.yml
