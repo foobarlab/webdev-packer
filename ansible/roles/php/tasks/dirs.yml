@@ -1,7 +1,7 @@
 ---
 # vim: ts=2 sw=2 et syntax=yaml
 
-- name: create log folder
+- name: Create log folder
   file:
     path: '{{ php_log_path }}'
     state: directory

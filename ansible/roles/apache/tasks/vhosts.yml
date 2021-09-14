@@ -1,7 +1,7 @@
 ---
 # vim: ts=2 sw=2 et syntax=yaml
 
-- name: remove default vhost configs
+- name: Remove default vhost configs
   file:
     state: absent
     path: '/etc/apache2/vhosts.d/{{ item }}'
@@ -10,13 +10,13 @@
     - 00_default_vhost.conf
     - default_vhost.include
 
-- name: create default vhosts config
+- name: Create default vhosts config
   template:
     src: '00_default.conf.j2'
     dest: '/etc/apache2/vhosts.d/00_default.conf'
     mode: 0644
 
-- name: create default vhosts index html file
+- name: Create default vhosts index html file
   copy:
     owner: '{{ apache_user }}'
     group: '{{ apache_group }}'
@@ -25,7 +25,7 @@
     content: |
       <pre>This HTML document is served by Apache and located in {{ default_htdocs_path }}/index.html.</pre>
 
-- name: create default vhosts index php file
+- name: Create default vhosts index php file
   copy:
     owner: '{{ apache_user }}'
     group: '{{ apache_group }}'

@@ -1,8 +1,8 @@
 ---
 # vim: ts=2 sw=2 et syntax=yaml
 
-apache_user: www-data
-apache_group: www-data
+apache_user: '{{ web_user }}'
+apache_group: '{{ web_group }}'
 apache_port_http: 8080
 
 # root for all hosts

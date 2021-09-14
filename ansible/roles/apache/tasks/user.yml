@@ -1,13 +1,13 @@
 ---
 # vim: ts=2 sw=2 et syntax=yaml
 
-- name: add group '{{ apache_group }}'
+- name: Add group '{{ apache_group }}'
   group:
     name: '{{ apache_group }}'
     state: present
     system: yes
 
-- name: add user '{{ apache_user }}'
+- name: Add user '{{ apache_user }}'
   user:
     name: '{{ apache_user }}'
     group: '{{ apache_group }}'
@@ -17,7 +17,7 @@
     createhome: no
     home: '{{ host_root }}'
 
-- name: add user 'vagrant' to group '{{ apache_group }}'
+- name: Add user 'vagrant' to group '{{ apache_group }}'
   user:
     name: vagrant
     groups: '{{ apache_group }}'

@@ -6,6 +6,9 @@
   become: yes
   become_method: sudo
   user: vagrant
+  vars:
+    web_user: "www-data"
+    web_group: "www-data"
   tasks:
     - name: Include task list in play
       include_tasks: tasks/main.yml

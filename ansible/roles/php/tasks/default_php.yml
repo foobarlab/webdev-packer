@@ -1,7 +1,7 @@
 ---
 # vim: ts=2 sw=2 et syntax=yaml
 
-- name: set default php version
+- name: Set default php version
   shell: 'eselect php set {{ item }} php{{ php_version }}'
   with_items:
    - cli

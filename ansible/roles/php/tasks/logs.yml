@@ -1,12 +1,12 @@
 ---
 # vim: ts=2 sw=2 et syntax=yaml
 
-- name: create empty initial logs
+- name: Create initial empty logs
   file:
     path: '{{ php_log_path }}/{{ item }}'
     state: touch
-    owner: www-data
-    group: www-data
+    owner: '{{ web_user }}'
+    group: '{{ web_group }}'
     mode: 0750
   with_items:
     - error.log

@@ -1,7 +1,7 @@
 ---
 # vim: ts=2 sw=2 et syntax=yaml
 
-- name: create php.ini for all PHP versions
+- name: Update php.ini for all php versions
   include_tasks: php_ini/update.yml
   loop:
     - 7.3
