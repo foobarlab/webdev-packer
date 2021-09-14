@@ -7,9 +7,13 @@
       - "Inventory hostname...: {{ inventory_hostname }}"
       - "Inventory hostfile...: {{ inventory_file }}"
       - "Build environment....: {{ hostvars[inventory_hostname].build_environment }}"
+# TODO print inventory settings
+
+- name: Common system settings
+  include: common/main.yml
 
 - name: Looping over tasks
-  include: '{{ taskinputvar }}.yml'
+  include: 'rolegroups/{{ taskinputvar }}.yml'
   loop_control:
     loop_var: taskinputvar
   loop:
