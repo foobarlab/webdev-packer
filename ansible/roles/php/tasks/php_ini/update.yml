@@ -1,6 +1,8 @@
 ---
 # vim: ts=2 sw=2 et syntax=yaml
 
+# TODO rewrite for looping "apache2", "cgi", "cli", "fpm"
+
 # --------------------------- APACHE2 -------------------------------
 
 - name: php.ini - apache2 - default settings - PHP {{ php_version_inputvar }}
