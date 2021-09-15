@@ -1,0 +1,41 @@
+dnsmasq notes config
+
+# read alternate host sources, and cache them for an hour
+addn-hosts=/etc/dnsmasq.hosts/mylist
+local-ttl=3600
+
+#localise-queries
+no-resolv
+cache-size=1000
+
+log-queries
+log-facility=/var/log/dnsmasq.log
+log-async
+
+interface=<main interface like 'eth0'>
+server=<externalip '10.10.0.1'>#53
+rev-server=< local network like 10.10.0.0/16,<externalip '10.10.0.1'>
+
+domain-needed
+expand-hosts
+bogus-priv
+
+# local domain server
+server=/test/...# add local ip
+
+# local domain address
+#address=/test/... # add local ip
+
+#---------------------------------------------------
+# RFC6761 included configuration file for dnsmasq
+#
+# includes a list of domains that should not be forwarded to Internet name servers
+# to reduce burden on them, asking questions that they won't know the answer to.
+
+server=/bind/
+server=/invalid/
+server=/local/
+server=/localhost/
+server=/onion/
+#server=/test/
+#----------------------------------------------------
