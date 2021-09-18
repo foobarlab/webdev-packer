@@ -43,4 +43,7 @@ else
     : #if_not_silent info "Reusing previous set version: '$BUILD_BOX_VERSION'"
 fi
 
+# extract major version
+export BUILD_BOX_MAJOR_VERSION=`echo $BUILD_BOX_VERSION | sed -e "s/[^0-9]*\([0-9]*\)[.].*/\1/"`
+
 if_not_silent result "Build version is '$BUILD_BOX_VERSION'"
