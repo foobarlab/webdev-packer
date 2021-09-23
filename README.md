@@ -18,7 +18,7 @@ It is based on the [Funtoo Base Vagrant box](https://github.com/foobarlab/funtoo
 
 ### Download pre-build images
 
-Get the latest experimental build from Vagrant Cloud: [foobarlab/webdev](https://app.vagrantup.com/foobarlab/webdev)
+Get the latest build from Vagrant Cloud: [foobarlab/webdev](https://app.vagrantup.com/foobarlab/webdev)
 
 ### Build your own using Packer
 

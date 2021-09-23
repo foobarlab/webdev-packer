@@ -62,7 +62,7 @@ esac
 # check version match on cloud and abort if same
 highlight "Checking existing cloud version ..."
 LATEST_CLOUD_VERSION=$( \
-curl -sS \
+  curl -sS \
   --header "Authorization: Bearer $VAGRANT_CLOUD_TOKEN" \
   https://app.vagrantup.com/api/v1/box/$BUILD_BOX_USERNAME/$BUILD_BOX_NAME \
 )
@@ -141,11 +141,11 @@ result "'$BUILD_OUTPUT_FILE': SHA-1 [ '$UPLOAD_CHECKSUM' ]"
 # Create a new provider
 highlight "Trying to create a new provider '$BUILD_BOX_PROVIDER' ..."
 UPLOAD_NEW_PROVIDER=$( \
-  curl -sS \
-  --header "Content-Type: application/json" \
-  --header "Authorization: Bearer $VAGRANT_CLOUD_TOKEN" \
-  https://app.vagrantup.com/api/v1/box/$BUILD_BOX_USERNAME/$BUILD_BOX_NAME/version/$BUILD_BOX_VERSION/providers \
-  --data '{ "provider": { "checksum": "'$UPLOAD_CHECKSUM'", "checksum_type": "sha1", "name": "'$BUILD_BOX_PROVIDER'" } }' \
+    curl -sS \
+    --header "Content-Type: application/json" \
+    --header "Authorization: Bearer $VAGRANT_CLOUD_TOKEN" \
+    https://app.vagrantup.com/api/v1/box/$BUILD_BOX_USERNAME/$BUILD_BOX_NAME/version/$BUILD_BOX_VERSION/providers \
+    --data '{ "provider": { "checksum": "'$UPLOAD_CHECKSUM'", "checksum_type": "sha1", "name": "'$BUILD_BOX_PROVIDER'" } }' \
 )
 
 UPLOAD_NEW_PROVIDER_SUCCESS=`echo $UPLOAD_NEW_PROVIDER | jq '.success'`
@@ -156,7 +156,7 @@ if [ $UPLOAD_NEW_PROVIDER_SUCCESS == 'false' ]; then
         result "OK, the provider '$BUILD_BOX_PROVIDER' seems already taken. No need to create a new provider."
     # Check if upload is needed
     UPLOAD_PROVIDER=$( \
-      curl -sS \
+        curl -sS \
         --header "Authorization: Bearer $VAGRANT_CLOUD_TOKEN" \
           https://app.vagrantup.com/api/v1/box/$BUILD_BOX_USERNAME/$BUILD_BOX_NAME/version/$BUILD_BOX_VERSION/provider/$BUILD_BOX_PROVIDER \
     )
@@ -247,10 +247,10 @@ result "Upload ended with exit code $?."
 # Finalize upload
 highlight "Finalizing upload ..."
 UPLOAD_FINALIZE=$( \
-  curl -sS \
-  --header "Authorization: Bearer $VAGRANT_CLOUD_TOKEN" \
-  --request PUT \
-  $UPLOAD_FINALIZE_URL \
+    curl -sS \
+    --header "Authorization: Bearer $VAGRANT_CLOUD_TOKEN" \
+    --request PUT \
+    $UPLOAD_FINALIZE_URL \
 )
 
 result "Finalized with exit code $?."

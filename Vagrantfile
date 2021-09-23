@@ -1,7 +1,9 @@
 # -*- mode: ruby -*-
-# vim: ts=2 sw=2 et ft=ruby
+# vim: ts=2 sw=2 et ft=ruby :
 
 system("./config.sh >/dev/null")
+
+Vagrant.require_version ">= 2.1.0"
 
 $script_export_packages = <<SCRIPT
 # sync any guest packages to host (vboxsf)
@@ -73,11 +75,10 @@ set +o history
 rm -f /home/vagrant/.bash_history
 rm -f /root/.bash_history
 sync && sleep 5
-# run zerofree at last to squeeze the last bit
-# /boot
+# zerofree /boot
 mount -v -n -o remount,ro /dev/sda1
 zerofree /dev/sda1 && echo "zerofree: success on /dev/sda1 (boot)"
-# / (root fs)
+# zerofree root fs
 mount -v -n -o remount,ro /dev/sda4
 zerofree /dev/sda4 && echo "zerofree: success on /dev/sda4 (root)"
 # swap
@@ -87,6 +88,7 @@ mkswap /dev/sda3
 SCRIPT
 
 Vagrant.configure("2") do |config|
+  #config.vagrant.sensitive = ["MySecretPassword", ENV["MY_TOKEN"]] # TODO hide sensitive information
   config.vm.box_check_update = false
   config.vm.box = "#{ENV['BUILD_BOX_NAME']}"
   config.vm.hostname = "#{ENV['BUILD_BOX_NAME']}"
@@ -183,4 +185,5 @@ Vagrant.configure("2") do |config|
   config.vm.provision "clean_kernel", type: "shell", inline: $script_clean_kernel, privileged: true
   config.vm.provision "remove_kernel", type: "shell", inline: $script_remove_kernel, privileged: true
   config.vm.provision "cleanup", type: "shell", inline: $script_cleanup, privileged: true
+  # TODO add trigger for disk compaction?
 end
