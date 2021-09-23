@@ -30,7 +30,7 @@ fi
 highlight "Checking presence of parent box '$BUILD_PARENT_BOX_NAME' ..."
 vbox_hdd_found=$( $vboxmanage list hdds | grep "$BUILD_PARENT_BOX_CLOUD_VDI" || echo )
 if [ -f $BUILD_PARENT_BOX_OVF ] && [[ -z "$vbox_hdd_found" || "$vbox_hdd_found" = "" ]]; then
-    error "The parent box '${BUILD_PARENT_BOX_CLOUD_NAME}-${BUILD_PARENT_BOX_CLOUD_VERSION}' is not installed by Vagrant!"
+    error "The parent box '${BUILD_PARENT_BOX_CLOUD_NAME}-${BUILD_PARENT_BOX_CLOUD_VERSION}' was not installed by this script!"
     result "Try './clean_env.sh' in the parent box build dir or remove parent box manually, then try again."
     todo "Remove parent box from system?"
     exit 1
