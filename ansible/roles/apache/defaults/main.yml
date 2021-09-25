@@ -4,6 +4,7 @@
 apache_user: '{{ web_user }}'
 apache_group: '{{ web_group }}'
 apache_port_http: 8080
+apache_port_https: 8443
 
 # root for all hosts
 host_root: "/var/www"

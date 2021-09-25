@@ -8,3 +8,5 @@
     loop_var: roleinputvar
   loop:
    - lighttpd
+   #- phpldapadmin
+   #- phpmyadmin
