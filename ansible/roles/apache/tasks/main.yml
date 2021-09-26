@@ -5,3 +5,6 @@
 - include: dirs.yml
 - include: config.yml
 - include: vhosts.yml
+
+- name: enable service
+  shell: rc-update add apache2 default || /bin/true
