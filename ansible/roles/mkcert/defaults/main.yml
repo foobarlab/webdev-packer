@@ -1,0 +1,8 @@
+---
+# vim: ts=2 sw=2 et syntax=yaml
+
+cert_comains: 'localhost www.test beta.test mail.test mysql.test ldap.test admin.test *.test'
+
+cert_rootca: "TODO"
+cert_pub: "TODO"
+cert_key: "TODO"
