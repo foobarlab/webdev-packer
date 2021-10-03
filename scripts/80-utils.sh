@@ -100,9 +100,6 @@ sudo emerge -nuvtND --with-bdeps=y \
 # wireshark:
 sudo gpasswd -a vagrant wireshark
 
-# install 'minica' in GOPATH
-sudo GOPATH="/opt/go" go get github.com/jsha/minica
-
 # ---- various file utils
 
 sudo emerge -nuvtND --with-bdeps=y \
