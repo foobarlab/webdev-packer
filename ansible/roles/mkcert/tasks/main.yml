@@ -1,4 +1,48 @@
 ---
 # vim: ts=2 sw=2 et syntax=yaml
 
-# TODO generate dummy rootca etc.
+- name: ensure certs dir exists
+  file:
+    path: "{{ cert_dir }}"
+    owner: root
+    group: root
+    mode: 0755
+    state: directory
+
+- name: try copying rootca files (if available)
+  copy:
+    src: "/vagrant/{{ item.name }}"
+    dest: "{{ cert_dir }}/{{ item.name }}"
+    owner: root
+    group: root
+    mode: '{{ item.mode }}'
+  with_items:
+    - { name: "{{ cert_rootca }}", mode: '0644' }
+    - { name: "{{ cert_rootca_key }}", mode: '0600' }
+  ignore_errors: True
+
+- name: create fresh root ca (if not existant)
+  shell:
+    cmd: mkcert -install
+    chdir: "{{ cert_dir }}"
+    creates:
+      - "{{ cert_dir }}/{{ cert_rootca }}"
+      - "{{ cert_dir }}/{{ cert_rootca_key }}"
+  environment:
+    CAROOT: "{{ cert_dir }}"
+
+# TODO copy root ca to /vagrant/ for backup
+
+- name: create certs for {{ cert_domains }}
+  shell:
+    cmd: mkcert -cert-file {{ cert_pub }} -key-file {{ cert_key }} {{ cert_domains }}
+    chdir: "{{ cert_dir }}"
+    creates:
+      - "{{ cert_pub }}"
+      - "{{ cert_key }}"
+  environment:
+    CAROOT: "{{ cert_dir }}"
+
+# TODO delete rootCA-key.pem from system? add extra rootCA for custom user usage?
+
+# TODO create update script to run locally?
