@@ -6,9 +6,9 @@ if [ -z ${BUILD_RUN:-} ]; then
   exit 1
 fi
 
-# TODO disable 'sendfile' option in any webserver, see https://www.vagrantup.com/docs/synced-folders/virtualbox#caveats
-
 # ---- Apache
+
+# TODO disable 'sendfile' option in any webserver, see https://www.vagrantup.com/docs/synced-folders/virtualbox#caveats
 
 sudo emerge -nuvtND --with-bdeps=y \
     www-servers/apache \
@@ -92,19 +92,24 @@ sudo emerge -nuvtND --with-bdeps=y \
 sudo emerge -nuvtND --with-bdeps=y \
     www-servers/lighttpd
 
-# ---- Let's encrypt
-
-sudo emerge -nuvtND --with-bdeps=y \
-  app-crypt/certbot \
-  app-crypt/certbot-apache \
-  app-crypt/certbot-nginx
-
 # ---- Varnish proxy cache
 
 sudo emerge -nuvtND --with-bdeps=y \
   net-proxy/varnish
 
 # FIXME install net-proxy/varnish-modules
+
+# ---- dummy SSL/TLS Certificate
+
+sudo emerge -nuvtND --with-bdeps=y \
+    app-misc/mkcert
+
+# ---- Let's encrypt
+
+sudo emerge -nuvtND --with-bdeps=y \
+  app-crypt/certbot \
+  app-crypt/certbot-apache \
+  app-crypt/certbot-nginx
 
 # ---- DNSmasq
 
