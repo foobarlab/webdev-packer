@@ -110,6 +110,7 @@ sudo emerge -nuvtND --with-bdeps=y \
   app-arch/pigz \
   app-text/multitail \
   app-misc/jq \
+  sys-process/iotop \
   app-editors/curses-hexedit
 
 # FIXME app-shells/fzf no more in portage tree
