@@ -32,10 +32,10 @@ BUILD_CUSTOM_OVERLAY_URL="https://github.com/username/myreponame-overlay.git"
 BUILD_CUSTOM_OVERLAY_BRANCH="main"
 
 # TODO make finalize step optional, like:
-#export BUILD_AUTO_FINALIZE=false  # if 'true' automatically run finalize.sh script
+#BUILD_AUTO_FINALIZE=false  # if 'true' automatically run finalize.sh script
 
-BUILD_KERNEL=false                    # build a new kernel?
-BUILD_HEADLESS=true                   # if true, gui will be uninstalled, otherwise gui will be shown
+BUILD_KERNEL=false                 # build a new kernel?
+BUILD_HEADLESS=true                # if true, gui will be uninstalled, otherwise gui will be shown
 
 # TODO flag for xorg (BUILD_WINDOW_SYSTEM)?
 
