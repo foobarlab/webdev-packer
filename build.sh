@@ -99,7 +99,6 @@ mkdir -p packages || true
 . distfiles.sh quiet
 
 # do not build an already existing release on vagrant cloud by default
-
 if [ ! $# -eq 0 ]; then
     BUILD_SKIP_VERSION_CHECK=true
 else
