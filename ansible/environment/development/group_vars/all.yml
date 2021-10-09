@@ -7,6 +7,6 @@
 build_environment: development
 default_domainname: dev.test
 
-php_version: 7.3
+php_version: 7.4
 php_expose_php: "On"
 php_display_errors: "On"
