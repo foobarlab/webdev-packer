@@ -139,6 +139,7 @@ Vagrant.configure("2") do |config|
 
   # adapter 1 (eth0): private network (NAT with forwarding)
   config.vm.network "forwarded_port", guest: 8080, host: 8080   # apache
+  config.vm.network "forwarded_port", guest: 8443, host: 8443   # apache
   config.vm.network "forwarded_port", guest: 8000, host: 8000   # lighttpd / dashboard
   config.vm.network "forwarded_port", guest: 3306, host: 3306   # mysql
   config.vm.network "forwarded_port", guest: 5432, host: 5432   # postgresql
