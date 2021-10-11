@@ -1,3 +1,4 @@
 #!/bin/bash
 # TODO allow switching environment (dynamically detect available environments, default to first found when param not given?)
+cd /vagrant/ansible/
 ansible-playbook -i /vagrant/ansible/environment/development/ --limit all -c local /vagrant/ansible/provision.yml
