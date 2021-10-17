@@ -1,0 +1,10 @@
+---
+# vim: ts=2 sw=2 et syntax=yaml
+
+- name: Update php-fpm for all php versions
+  include_tasks: php_fpm/update.yml
+  loop:
+    - 7.3
+    - 7.4
+  loop_control:
+    loop_var: php_version_inputvar
