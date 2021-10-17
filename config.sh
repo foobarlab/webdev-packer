@@ -21,8 +21,8 @@ BUILD_PARENT_BOX_CLOUD_NAME="$BUILD_PARENT_BOX_USERNAME/$BUILD_PARENT_BOX_NAME"
 BUILD_GUEST_TYPE="Gentoo_64"
 
 # default memory/cpus/disk used for final created box:
-BUILD_BOX_CPUS="2"
-BUILD_BOX_MEMORY="2048"
+BUILD_BOX_CPUS="4"
+BUILD_BOX_MEMORY="4096"
 BUILD_BOX_DISKSIZE="30720" # resize disk in MB, comment-in to keep exiting size
 
 # add a custom overlay?
