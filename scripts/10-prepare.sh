@@ -322,6 +322,10 @@ sudo /usr/local/sbin/foo-sync
 sudo emaint binhost --fix
 sudo eclean packages
 
+# ---- clean distfiles
+
+sudo eclean-dist
+
 # ---- profile mix-ins
 
 sudo epro list

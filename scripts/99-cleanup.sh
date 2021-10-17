@@ -20,6 +20,11 @@ sudo revdep-rebuild
 sudo emaint binhost --fix
 sudo eclean packages
 
+# clean and export distfiles
+sudo eclean-dist
+sf_vagrant="`sudo df | grep vagrant | tail -1 | awk '{ print $6 }'`"
+sudo rsync -urv /var/cache/portage/distfiles/* $sf_vagrant/distfiles/
+
 sudo bash -c "sed -i '/^MAKEOPTS/d' /etc/portage/make.conf"           # delete MAKEOPTS (make.conf)
 #sudo bash -c "sed -i 's/^\(MAKEOPTS.*\)/#\1/g' /etc/genkernel.conf"   # comment-in MAKEOPTS (genkernel) # FIXME do when genkernel was invoked in 20-kernel.sh
 
@@ -53,10 +58,6 @@ sudo rm -f /etc/resolv.conf.bak
 
 sudo rc-update -v    # show final runlevels
 sudo genlop -u -l    # show (un)merged packages before logs are cleared
-
-# TODO test export distfiles to local directory
-sf_vagrant="`sudo df | grep vagrant | tail -1 | awk '{ print $6 }'`"
-sudo rsync -urv /var/cache/portage/distfiles/* $sf_vagrant/distfiles/
 
 sudo /usr/local/sbin/foo-cleanup
 
