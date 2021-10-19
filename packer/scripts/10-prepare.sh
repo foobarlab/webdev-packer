@@ -26,6 +26,9 @@ sudo find /var/cache/portage/packages/ -type d -exec chmod 755 {} +
 sudo find /var/cache/portage/packages/ -type f -exec chmod 644 {} +
 sudo chown root:portage /var/cache/portage/packages
 sudo chmod 775 /var/cache/portage/packages
+
+# ---- sync world and cleanup
+
 sudo ego sync
 sudo emaint binhost --fix
 
@@ -329,6 +332,8 @@ sudo eclean-dist
 # ---- profile mix-ins
 
 sudo epro list
+
+# ---- update environment
 
 user_id=$(id -u)    # FIX: because of "/etc/profile.d/java-config-2.sh: line 22: user_id: unbound variable" we try to set the variable here
 sudo env-update

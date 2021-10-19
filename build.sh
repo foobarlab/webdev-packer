@@ -9,7 +9,7 @@ command -v $vboxmanage >/dev/null 2>&1 || vboxmanage=vboxmanage   # try alternat
 
 . config.sh quiet
 
-header "Building box '$BUILD_BOX_NAME'"
+header "Building box '$BUILD_BOX_NAME' version '$BUILD_BOX_VERSION'"
 require_commands vagrant packer wget $vboxmanage
 
 highlight "Checking presence of box '$BUILD_BOX_NAME' ..."
@@ -44,7 +44,9 @@ else
     export BUILD_PARENT_OVF="$BUILD_PARENT_BOX_CLOUD_OVF"
     if [ -f "$BUILD_PARENT_BOX_CLOUD_OVF" ]; then
         echo
-        info "The '$BUILD_PARENT_BOX_CLOUD_NAME' parent box with version '$BUILD_PARENT_BOX_CLOUD_VERSION' has been previously downloaded."
+        note "The '$BUILD_PARENT_BOX_CLOUD_NAME' parent box"
+        note "with version '$BUILD_PARENT_BOX_CLOUD_VERSION'"
+        note "has been previously downloaded."
         echo
         read -p "    Do you want to delete it and download again (y/N)? " choice
         case "$choice" in
@@ -217,7 +219,7 @@ if [ $PACKER_LOG ]; then
     info "Logging Packer output to '$PACKER_LOG_PATH' ..."
 fi
 
-# TODO use 'only' conditionals in packer hcl2 for distinct provisioner?
+# TODO use 'only' conditionals in packer for distinct provisioner?
 packer build -force -on-error=abort "$PWD/packer/virtualbox.pkr.hcl"
 
 title "OPTIMIZING BOX SIZE"
