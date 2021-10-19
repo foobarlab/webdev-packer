@@ -218,7 +218,6 @@ if [ $PACKER_LOG ]; then
 fi
 
 # TODO use 'only' conditionals in packer hcl2 for distinct provisioner?
-#packer build -force -on-error=abort -var-file="$PWD/packer/virtualbox.auto.pkrvars.hcl" "$PWD/packer/virtualbox.pkr.hcl"
 packer build -force -on-error=abort "$PWD/packer/virtualbox.pkr.hcl"
 
 title "OPTIMIZING BOX SIZE"
