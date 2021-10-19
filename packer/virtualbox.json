@@ -53,7 +53,7 @@
       "valid_exit_codes": [ 0 ]
   },{
       "destination": "/tmp",
-      "source": "scripts",
+      "source": "packer/scripts",
       "type": "file"
   },{
       "type": "shell",
@@ -82,7 +82,7 @@
   "post-processors": [{
       "type": "checksum",
       "checksum_types": [ "sha1" ],
-      "output": "packer_{{.BuildName}}_{{.ChecksumType}}.checksum"
+      "output": "packer.sha1.checksum"
     },{
       "type": "vagrant",
       "keep_input_artifact": false,

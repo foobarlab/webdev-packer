@@ -162,7 +162,6 @@ source "virtualbox-ovf" "gold" {
 
 build {
   sources = ["source.virtualbox-ovf.gold"]
-  #description = "${var.box_description}"
   provisioner "shell" {
     environment_vars  = ["BUILD_RUN=true"]
     expect_disconnect = true
@@ -174,7 +173,7 @@ build {
   }
   provisioner "file" {
     destination = "/tmp"
-    source      = "scripts"
+    source      = "packer/scripts"
   }
   provisioner "shell" {
     environment_vars  = [
