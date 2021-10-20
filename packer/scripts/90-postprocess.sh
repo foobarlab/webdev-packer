@@ -21,8 +21,11 @@ sudo emerge -vtuDN --with-bdeps=y --complete-graph=y @world
 #sudo chown root:mail /var/spool/mail/
 #sudo chmod 03775 /var/spool/mail/
 
-# sys-apps/mlocate: add shared folder (usually '/vagrant') to /etc/updatedb.conf prune paths to avoid leaking shared files
+# ---- sys-apps/mlocate
+# add shared folder (usually '/vagrant') to /etc/updatedb.conf prune paths to avoid leaking shared files
+
 sudo sed -i 's/PRUNEPATHS="/PRUNEPATHS="\/srv \/data \/vagrant /g' /etc/updatedb.conf
 
-# sanitize golang packages
+# ---- sanitize golang packages
+
 sudo emerge -vt @golang-rebuild

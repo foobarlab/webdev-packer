@@ -25,19 +25,15 @@ sudo etc-update --verbose --preen    # auto-merge trivial changes
 
 # ---- update environment
 
-user_id=$(id -u)    # FIX: because of "/etc/profile.d/java-config-2.sh: line 22: user_id: unbound variable" we try to set the variable here
-sudo env-update
-source /etc/profile
+#user_id=$(id -u)    # FIX: because of "/etc/profile.d/java-config-2.sh: line 22: user_id: unbound variable" we try to set the variable here
+#sudo env-update
+#source /etc/profile
 
 # --- show updated packages
 
 sudo genlop -u -l
 
-# ---- show java info
-
-eselect java-vm list
-
-# ---- Sync packages
+# ---- sync packages
 
 sf_vagrant="`sudo df | grep vagrant | tail -1 | awk '{ print $6 }'`"
 sudo rsync -urv /var/cache/portage/packages/* $sf_vagrant/packages/

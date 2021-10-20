@@ -6,7 +6,7 @@ if [ -z ${BUILD_RUN:-} ]; then
   exit 1
 fi
 
-# ---- Run in headless mode?
+# ---- run in headless mode?
 
 if [ -z ${BUILD_HEADLESS:-} ]; then
     echo "BUILD_HEADLESS was not set. Skipping headless mode."
@@ -20,7 +20,8 @@ else
     fi
 fi
 
-# remove X11 related stuff
+# ---- uninstall X11 related stuff
+
 sudo sed -i 's:app-editors/gvim::g' /var/lib/portage/world
 sudo sed -i 's:app-editors/leafpad::g' /var/lib/portage/world
 sudo sed -i 's:gnome-extra/nm-applet::g' /var/lib/portage/world
@@ -42,24 +43,29 @@ sudo sed -i 's:x11-terms/xterm::g' /var/lib/portage/world
 sudo sed -i 's:x11-themes/fluxbox-styles-fluxmod::g' /var/lib/portage/world
 sudo sed -i 's:x11-wm/fluxbox::g' /var/lib/portage/world
 
-# set non-X profiles
+# --- set non-X profiles
+
 sudo epro mix-ins -X -gnome
 
-# remove use flag tweaks from previous boxes
+# ---- remove use flag tweaks from previous boxes
+
 sudo rm -f /etc/portage/package.use/base-gnome
 sudo rm -f /etc/portage/package.use/base-audio
 sudo rm -f /etc/portage/package.use/base-xorg
 sudo rm -f /etc/portage/package.use/webdev-lasa-plugins
 
-# modify use flags
+# ---- modify use flags
+
 cat <<'DATA' | sudo tee -a /etc/portage/package.use/webdev-headless
 net-analyzer/wireshark -qt5 tfshark
 media-video/ffmpeg -sdl -xvid
 DATA
 
-# install dummy kernel
-sudo emerge -nuvtND --with-bdeps=y \
+# ---- install dummy kernel
+
+sudo emerge -vt --with-bdeps=y \
     sys-kernel/dummy-sources
 
-# remove packages
+# ---- depclean packages
+
 sudo emerge --depclean

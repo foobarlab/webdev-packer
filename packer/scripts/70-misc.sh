@@ -28,7 +28,7 @@ sudo emerge -nuvtND --with-bdeps=y \
 sudo emerge -nuvtND --with-bdeps=y \
     net-misc/rabbitmq-server
 
-# ---- Sync packages
+# ---- sync packages
 
 sf_vagrant="`sudo df | grep vagrant | tail -1 | awk '{ print $6 }'`"
 sudo rsync -urv /var/cache/portage/packages/* $sf_vagrant/packages/

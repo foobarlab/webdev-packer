@@ -120,7 +120,6 @@ APACHE2_MODULES="${APACHE2_MODULES} http2 brotli proxy_http proxy_http2"
 #APACHE2_MPMS="worker"
 APACHE2_MPMS="event"
 
-
 # TODO switch from mod_php to php-fpm with apache MPM event, see: https://autoize.com/high-performance-mautic-apache-nginx-php-fpm/
 
 DATA
@@ -316,20 +315,7 @@ DATA
 
 sudo cp -f /usr/src/kernel.config /usr/src/linux/.config
 
-# ---- sync pkgs and fix bin pkgs
-
-sudo /usr/local/sbin/foo-sync
-
-# ---- clean bin pkgs
-
-sudo emaint binhost --fix
-sudo eclean packages
-
-# ---- clean distfiles
-
-sudo eclean-dist
-
-# ---- profile mix-ins
+# ---- show profile mix-ins
 
 sudo epro list
 

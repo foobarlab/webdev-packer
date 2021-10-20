@@ -114,7 +114,7 @@ sudo emerge -nuvtND --with-bdeps=y \
     dev-lang/erlang \
     dev-util/rebar-bin
 
-# ---- Sync packages
+# ---- sync packages
 
 sf_vagrant="`sudo df | grep vagrant | tail -1 | awk '{ print $6 }'`"
 sudo rsync -urv /var/cache/portage/packages/* $sf_vagrant/packages/

@@ -130,7 +130,7 @@ sudo emerge -nuvtND --with-bdeps=y \
   sys-auth/nss-mdns \
   dev-python/zeroconf
 
-# ---- Sync packages
+# ---- sync packages
 
 sf_vagrant="`sudo df | grep vagrant | tail -1 | awk '{ print $6 }'`"
 sudo rsync -urv /var/cache/portage/packages/* $sf_vagrant/packages/
