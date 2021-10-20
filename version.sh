@@ -40,7 +40,7 @@ if [ -z "${BUILD_BOX_VERSION:-}" ]; then
     export BUILD_BOX_VERSION
     echo $BUILD_BOX_VERSION > build_version
 else
-    : #if_not_silent info "Reusing previous set version: '$BUILD_BOX_VERSION'"
+    step "Reusing previous set version: '$BUILD_BOX_VERSION'"
 fi
 
 # extract major version
