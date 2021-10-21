@@ -13,6 +13,7 @@ sudo emerge -vtuDN --with-bdeps=y --complete-graph=y @world
 sudo emerge -vt @preserved-rebuild
 sudo emerge --depclean
 sudo emerge -vt @preserved-rebuild
+sudo revdep-rebuild
 
 # ---- remove known obsolete config files
 
