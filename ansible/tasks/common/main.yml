@@ -6,4 +6,7 @@
 - include: limits.yml
 - include: nsswitch.yml
 - include: java.yml
-#- include: update.yml
+#- include: conf.d.yml
+#- include: cron.yml
+#- include: rc-update.yml
+#- include: world-update.yml
