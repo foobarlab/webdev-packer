@@ -8,6 +8,7 @@ fi
 
 # ---- update world
 
+sudo /usr/local/sbin/foo-sync || sudo ego sync
 sudo emerge -vtuDN --with-bdeps=y --complete-graph=y @world
 sudo emerge -vt @preserved-rebuild
 sudo emerge --depclean
