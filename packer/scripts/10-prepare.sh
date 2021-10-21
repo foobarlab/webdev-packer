@@ -285,14 +285,14 @@ DATA
 # ---- package.mask
 
 sudo mkdir -p /etc/portage/package.mask
-cat <<'DATA' | sudo tee -a /etc/portage/package.mask/webdev-erlang
-# masked for couchdb 3.1.1
->=dev-lang/erlang-23.0
-DATA
-cat <<'DATA' | sudo tee -a /etc/portage/package.mask/webdev-rabbitmq-server
-# since version 3.8.16 erlang 23 is needed
->=net-misc/rabbitmq-server-3.8.16
-DATA
+#cat <<'DATA' | sudo tee -a /etc/portage/package.mask/webdev-erlang
+## masked for couchdb 3.1.1
+#>=dev-lang/erlang-23.0
+#DATA
+#cat <<'DATA' | sudo tee -a /etc/portage/package.mask/webdev-rabbitmq-server
+## since version 3.8.16 erlang 23 is needed
+#>=net-misc/rabbitmq-server-3.8.16
+#DATA
 
 # ---- package.unmask
 
