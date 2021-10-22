@@ -77,11 +77,6 @@ variable "output_file" {
   default = "${env("BUILD_OUTPUT_FILE_TEMP")}"
 }
 
-variable "password" {
-  type    = string
-  default = "vagrant"
-}
-
 variable "source_path" {
   type    = string
   default = "${env("BUILD_PARENT_OVF")}"
@@ -93,6 +88,11 @@ variable "timestamp" {
 }
 
 variable "username" {
+  type    = string
+  default = "vagrant"
+}
+
+variable "password" {
   type    = string
   default = "vagrant"
 }
@@ -177,22 +177,22 @@ build {
   }
   provisioner "shell" {
     environment_vars  = [
-        "scripts=/tmp",
-        "BUILD_RUN=true",
-        "BUILD_BOX_NAME=${var.vm_name}",
-        "BUILD_BOX_USERNAME=${var.vm_username}",
-        "BUILD_BOX_DESCRIPTION=${var.box_description}",
-        "BUILD_BOX_VERSION=${var.box_version}",
-        "BUILD_GIT_COMMIT_ID=${var.git_commit_id}",
-        "BUILD_MAKEOPTS=${var.makeopts}",
-        "BUILD_TIMESTAMP=${var.timestamp}",
-        "BUILD_KERNEL=${var.kernel}",
-        "BUILD_HEADLESS=${var.headless}",
-        "BUILD_CUSTOM_OVERLAY=${var.custom_overlay}",
-        "BUILD_CUSTOM_OVERLAY_NAME=${var.custom_overlay_name}",
-        "BUILD_CUSTOM_OVERLAY_URL=${var.custom_overlay_url}",
-        "BUILD_CUSTOM_OVERLAY_BRANCH=${var.custom_overlay_branch}",
-        "BUILD_MYSQL_ROOT_PASSWORD=${var.mysql_root_password}"
+      "scripts=/tmp",
+      "BUILD_RUN=true",
+      "BUILD_BOX_NAME=${var.vm_name}",
+      "BUILD_BOX_USERNAME=${var.vm_username}",
+      "BUILD_BOX_DESCRIPTION=${var.box_description}",
+      "BUILD_BOX_VERSION=${var.box_version}",
+      "BUILD_GIT_COMMIT_ID=${var.git_commit_id}",
+      "BUILD_MAKEOPTS=${var.makeopts}",
+      "BUILD_TIMESTAMP=${var.timestamp}",
+      "BUILD_KERNEL=${var.kernel}",
+      "BUILD_HEADLESS=${var.headless}",
+      "BUILD_CUSTOM_OVERLAY=${var.custom_overlay}",
+      "BUILD_CUSTOM_OVERLAY_NAME=${var.custom_overlay_name}",
+      "BUILD_CUSTOM_OVERLAY_URL=${var.custom_overlay_url}",
+      "BUILD_CUSTOM_OVERLAY_BRANCH=${var.custom_overlay_branch}",
+      "BUILD_MYSQL_ROOT_PASSWORD=${var.mysql_root_password}"
     ]
     expect_disconnect = false
     script            = "packer/provision.sh"

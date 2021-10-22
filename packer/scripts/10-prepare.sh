@@ -31,6 +31,7 @@ sudo chmod 775 /var/cache/portage/packages
 
 sudo ego sync
 sudo emaint binhost --fix
+sudo eclean-dist
 
 # ---- box name
 
