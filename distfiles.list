@@ -8,6 +8,3 @@
 # ---> ant 1.10.9 (custom ebuild): file backed up while gentoo infrastructure was down
 2249c7e1628052a2a6896c6995e0c5dd14ea77671ab0ef4402ece9968f41266cdf4411cd669dbb73c4d7043d7c6c5f6e992bfc2705e74899ff1058f0d4942704 ant-1.10.9-gentoo.tar.bz2 https://dev.gentoo.org/~fordfrog/distfiles/ant-1.10.9-gentoo.tar.bz2
 
-# ---> mariadb 10.5.9 (official ebuild): version has been moved from downloads.mariadb.org to archive.mariadb.org
-# TODO report back to Funtoo
-512c3fb0541bbeb19878979104f7858ce18ce67187507c8395798cfc9ffe92bd83e39bd47251419363600348a85716406286bd27b3c28662ea63e8ec761a4e01 mariadb-10.5.9.tar.gz https://downloads.mariadb.org/interstitial/mariadb-10.5.9/source/mariadb-10.5.9.tar.gz/from/https%3A//archive.mariadb.org/
