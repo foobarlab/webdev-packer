@@ -1,24 +1,23 @@
 #!/bin/bash -ue
 # vim: ts=4 sw=4 et
 
-. ./lib/functions.sh "$*"
+[[ -v BUILD_ROOT ]] || BUILD_ROOT="${PWD}"   # FIXME try to set correct path (e.g. when run from inside bin dir)
+source "${BUILD_ROOT}/bin/lib/utils.sh" "$*"
 require_commands git nproc
 set -a
 
-# ----------------------------!  edit settings below  !----------------------------
+# ----------------------------!  default settings below  !----------------------------
+
+BUILD_BOX_PROVIDER="virtualbox"
+BUILD_GUEST_TYPE="Gentoo_64"
 
 BUILD_BOX_NAME="webdev"
 BUILD_BOX_USERNAME="foobarlab"
-
-BUILD_BOX_PROVIDER="virtualbox"
-
 BUILD_BOX_SOURCES="https://github.com/foobarlab/webdev-packer"
 
 BUILD_PARENT_BOX_USERNAME="foobarlab"
 BUILD_PARENT_BOX_NAME="funtoo-base"
 BUILD_PARENT_BOX_CLOUD_NAME="$BUILD_PARENT_BOX_USERNAME/$BUILD_PARENT_BOX_NAME"
-
-BUILD_GUEST_TYPE="Gentoo_64"
 
 # default memory/cpus/disk used for final created box:
 BUILD_BOX_CPUS="4"
@@ -32,7 +31,7 @@ BUILD_CUSTOM_OVERLAY_URL="https://github.com/username/myreponame-overlay.git"
 BUILD_CUSTOM_OVERLAY_BRANCH="main"
 
 # TODO make finalize step optional, like:
-#BUILD_AUTO_FINALIZE=false  # if 'true' automatically run finalize.sh script
+BUILD_AUTO_FINALIZE=true           # if 'true' automatically run finalize.sh script
 
 BUILD_KERNEL=false                 # build a new kernel?
 BUILD_HEADLESS=true                # if true, gui will be uninstalled, otherwise gui will be shown
@@ -45,7 +44,9 @@ BUILD_KEEP_MAX_CLOUD_BOXES=1          # set the maximum number of boxes to keep 
 
 # ----------------------------!  do not edit below this line  !----------------------------
 
-. version.sh "$*"   # determine build version
+# TODO load custom user config
+
+source "${BUILD_ROOT}/bin/version.sh" "$*"   # determine build version
 
 # detect number of system cpus available (select half of cpus for best performance)
 BUILD_CPUS=$((`nproc --all` / 2))
@@ -108,7 +109,7 @@ BUILD_OUTPUT_FILE="$BUILD_BOX_NAME-$BUILD_BOX_VERSION.box"
 BUILD_PARENT_BOX_CHECK=true
 
 # get the latest parent version from Vagrant Cloud API call:
-. parent_version.sh "$*"
+source "${BUILD_ROOT}bin/parent_version.sh" "$*"
 
 BUILD_PARENT_BOX_OVF="$HOME/.vagrant.d/boxes/$BUILD_PARENT_BOX_NAME/0/virtualbox/box.ovf"
 BUILD_PARENT_BOX_CLOUD_PATHNAME=`echo "$BUILD_PARENT_BOX_CLOUD_NAME" | sed "s|/|-VAGRANTSLASH-|"`

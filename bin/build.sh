@@ -177,7 +177,7 @@ else
             highlight "Trying to remove hdd from Media Manager ..."
             $vboxmanage closemedium disk "${vbox_hdd_uuids[$i]}" --delete || true
             highlight "Removing previous resized vdi file ..."
-            rm -f "$BUILD_PARENT_BOX_CLOUD_VDI" || true
+            ##rm -f "$BUILD_PARENT_BOX_CLOUD_VDI" || true
         elif [[ "${vbox_hdd_states[$i]}" = "inaccessible" ]]; then
             warn "Found inaccessible hdd: '${vbox_hdd_locations2[$i]}'"
             highlight "Trying to remove hdd from Media Manager ..."
@@ -189,7 +189,7 @@ fi
 highlight "Trying to clone parent box hdd ..."
 if [ -f $BUILD_PARENT_BOX_CLOUD_VMDK ]; then
     if [ -f "$BUILD_PARENT_BOX_CLOUD_VDI" ]; then
-        rm -f "$BUILD_PARENT_BOX_CLOUD_VDI" || true
+        ##rm -f "$BUILD_PARENT_BOX_CLOUD_VDI" || true
     fi
     step "Cloning to vdi file ..."
     $vboxmanage clonemedium disk "$BUILD_PARENT_BOX_CLOUD_VMDK" "$BUILD_PARENT_BOX_CLOUD_VDI" --format VDI
@@ -244,12 +244,15 @@ if [ -f "$BUILD_OUTPUT_FILE_TEMP" ]; then
     #vagrant package --vagrantfile "Vagrantfile.template" --output "$BUILD_OUTPUT_FILE"
     vagrant package --output "$BUILD_OUTPUT_FILE_INTERMEDIATE"
     step "Removing temporary box file ..."
-    rm -f  "$BUILD_OUTPUT_FILE_TEMP"
+    ##rm -f  "$BUILD_OUTPUT_FILE_TEMP"
     result "Please run 'finalize.sh' to finish configuration and create the final box file."
 else
     error "There is no box file '$BUILD_OUTPUT_FILE_TEMP' in the current directory."
     exit 1
 fi
+
+# TODO run automatic finalization, check var BUILD_AUTO_FINALIZE
+. ./finalize.sh
 
 end=`date +%s`
 runtime=$((end-start))
@@ -258,6 +261,3 @@ minutes=$(( (runtime % 3600) / 60 ));
 seconds=$(( (runtime % 3600) % 60 ));
 echo "$hours hours $minutes minutes $seconds seconds" >> build_time
 result "Build runtime was $hours hours $minutes minutes $seconds seconds."
-
-# TODO test automatic finalization
-. ./finalize.sh

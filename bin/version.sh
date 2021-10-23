@@ -6,10 +6,10 @@
 # versioning format: major.minor.buildnumber
 # as required by Vagrant
 
-. ./lib/functions.sh "$*"
+source "${BUILD_ROOT}/bin/lib/utils.sh" "$*"
 
-if [ ! -f version ]; then
-    error "Missing file 'version'! Please run './config.sh' for default major version numbering."
+if [ ! -f ${BUILD_ETC_VERSION} ]; then
+    error "Missing file '${BUILD_ETC_VERSION}'! Please run 'config.sh' for default major version numbering."
     exit 1
 fi
 
@@ -18,7 +18,7 @@ if [ -z "${BUILD_BOX_VERSION:-}" ]; then
         BUILD_BOX_VERSION=$(<build_version)
     else
         # get major version (must exist as file 'version'):
-        BUILD_MAJOR_VERSION=$(<version)
+        BUILD_MAJOR_VERSION=$(<${BUILD_ETC_VERSION})
         # generate minor version (date in format YYMMDD):
         BUILD_MINOR_VERSION=$(date +%y%m%d)
         # take existing env var BUILD_NUMBER, increment the one stored in

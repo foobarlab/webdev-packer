@@ -1,18 +1,34 @@
-.vagrant/
-packer_cache/
-/*.box
+# eclipse
 .project
-/*.log*
+.settings
+
+# config files
+vagrant-cloud-token
+
+# temporary created files during build
+packer_cache/
 /keys
-vagrant-cloud-*
-!vagrant-cloud-token.sh
-output-*/
-build_number
-build_version
-build_time
-version
-temp/
+/certs
+/build
+/output-*
+
+# cache dirs
+.vagrant/
 packages/
-/*.checksum
 distfiles/
-/*.pem
+
+#/*.box
+#.project
+#/*.log*
+#/keys
+#!vagrant-cloud-token.sh
+#output-*/
+#build_number
+#build_version
+#build_time
+#version
+#temp/
+#packages/
+#/*.checksum
+#distfiles/
+#/*.pem

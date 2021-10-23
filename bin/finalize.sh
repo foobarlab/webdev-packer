@@ -11,7 +11,7 @@ header "Finalizing box '$BUILD_BOX_NAME'"
 
 # FIXME if finalized box exists, ask if delete and continue, or abort
 step "Deleting previous finalized box if any ..."
-rm -f $BUILD_OUTPUT_FILE
+##rm -f $BUILD_OUTPUT_FILE
 
 if [ -f "$BUILD_OUTPUT_FILE_INTERMEDIATE" ]; then
     step "Suspending any running instances ..."
