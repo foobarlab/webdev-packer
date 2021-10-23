@@ -18,7 +18,6 @@ if [[ -f "$PWD/distfiles.list" ]]; then
         line_number=$((line_number+1))
         shopt -s extglob; line=${line##*( )}; line="${line%%*( )}"; shopt -u extglob # remove leading and trailing spaces
         [[ $line =~ ^#.* ]] && continue # skip comments
-        #info "Line: $line"
         file_hash=""
         file_name=""
         file_url=""
@@ -37,14 +36,7 @@ if [[ -f "$PWD/distfiles.list" ]]; then
             error "Expected three space separated values, but got only $count in line $line_number: $line"
             exit 1
         fi
-
-        # DEBUG
-        #result "File: $file_name"
-        #result "Blake2b -> $file_hash"
-        #result "URL -> $file_url"
-
-        success "Processing file '$file_name' ..."
-        step "Check if file is present ..."
+        step "Check if file '$file_name' is present ..."
         if [ ! -f "$PWD/distfiles/$file_name" ]; then
             warn "File is missing."
             step "Downloading file ..."
@@ -55,10 +47,10 @@ if [[ -f "$PWD/distfiles.list" ]]; then
         if [ -f "$PWD/distfiles/$file_name" ]; then
             file_expected_hash=$(cat "$PWD/distfiles/$file_name" | b2sum -b | sed -e "s/ .*//g")
             if [[ "$file_hash" = "$file_expected_hash" ]]; then
-                result "OK, checksum matched."
+                success "$file_name"
                 continue
             else
-                warn "Failed, checksum did not match"
+                warn "Verification failed, checksum did not match"
                 result $file_expected_hash
                 result $file_hash
             fi
@@ -72,5 +64,5 @@ if [[ -f "$PWD/distfiles.list" ]]; then
     IFS=$old_IFS # restore default field separator
 
 else
-    info "File 'distfiles.list' not found."
+    step "File 'distfiles.list' not found."
 fi
