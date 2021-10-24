@@ -7,7 +7,7 @@
 source "${BUILD_ROOT}/bin/lib/utils.sh" "$*"
 
 if [ -z ${BUILD_BOX_NAME:-} ]; then
-    source "${BUILD_ROOT}bin/config.sh" quiet
+    source "${BUILD_ROOT}/bin/config.sh" quiet
 fi
 
 if [ -z "${BUILD_PARENT_BOX_CLOUD_VERSION:-}" ]; then
