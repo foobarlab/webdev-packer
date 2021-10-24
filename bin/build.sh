@@ -7,7 +7,7 @@ export BUILD_PARENT_BOX_CHECK=true
 vboxmanage=VBoxManage
 command -v $vboxmanage >/dev/null 2>&1 || vboxmanage=vboxmanage   # try alternative
 
-. config.sh quiet
+source "${BUILD_ROOT}/bin/config.sh" quiet
 
 header "Building box '$BUILD_BOX_NAME' version '$BUILD_BOX_VERSION'"
 require_commands vagrant packer wget $vboxmanage
@@ -98,7 +98,7 @@ fi
 highlight "Create packages dir ..."
 mkdir -p packages || true
 
-. distfiles.sh quiet
+source "${BUILD_ROOT}/bin/distfiles.sh" quiet
 
 # do not build an already existing release on vagrant cloud by default
 if [ ! $# -eq 0 ]; then
@@ -210,7 +210,7 @@ sync
 
 final "All preparations done."
 
-. config.sh
+source "${BUILD_ROOT}/bin/config.sh"
 
 export PACKER_LOG_PATH="$PWD/packer.log"
 export PACKER_LOG="1"
@@ -252,7 +252,7 @@ else
 fi
 
 # TODO run automatic finalization, check var BUILD_AUTO_FINALIZE
-. ./finalize.sh
+source "${BUILD_ROOT}/bin/finalize.sh"
 
 end=`date +%s`
 runtime=$((end-start))
@@ -261,3 +261,4 @@ minutes=$(( (runtime % 3600) / 60 ));
 seconds=$(( (runtime % 3600) % 60 ));
 echo "$hours hours $minutes minutes $seconds seconds" >> build_time
 result "Build runtime was $hours hours $minutes minutes $seconds seconds."
+

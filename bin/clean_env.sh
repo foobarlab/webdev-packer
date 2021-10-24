@@ -4,7 +4,7 @@
 vboxmanage=VBoxManage
 command -v $vboxmanage >/dev/null 2>&1 || vboxmanage=vboxmanage   # try alternative
 
-. config.sh quiet
+source "${BUILD_ROOT}/bin/config.sh" quiet
 
 require_commands vagrant $vboxmanage
 
@@ -118,4 +118,5 @@ step "Dropping build number ..."
 
 # basic cleanup
 echo
-. clean.sh
+source "${BUILD_ROOT}/bin/clean.sh"
+

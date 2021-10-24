@@ -1,11 +1,11 @@
 #!/bin/bash -ue
 # vim: ts=4 sw=4 et
 
-. config.sh quiet
+source "${BUILD_ROOT}/bin/config.sh" quiet
 
 title "CLEANUP"
 
-. clean_box.sh
+source "${BUILD_ROOT}/bin/clean_box.sh"
 
 highlight "Cleaning sources ..."
 

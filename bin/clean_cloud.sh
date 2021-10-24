@@ -2,11 +2,11 @@
 # vim: ts=4 sw=4 et
 # NOTE: Vagrant Cloud API see: https://www.vagrantup.com/docs/vagrant-cloud/api.html
 
-. config.sh quiet
+source "${BUILD_ROOT}/bin/config.sh" quiet
 
 title "CLEAN CLOUD"
 
-. vagrant_cloud_token.sh "$*"
+source "${BUILD_ROOT}/bin/vagrant_cloud_token.sh" "$*"
 
 require_commands curl jq
 

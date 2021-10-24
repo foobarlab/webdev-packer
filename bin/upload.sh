@@ -2,7 +2,7 @@
 # vim: ts=4 sw=4 et
 # NOTE: Vagrant Cloud API see: https://www.vagrantup.com/docs/vagrant-cloud/api.html
 
-. config.sh quiet
+source "${BUILD_ROOT}/bin/config.sh" quiet
 
 title "UPLOAD BOX"
 if [ -f "$BUILD_OUTPUT_FILE" ]; then
@@ -44,7 +44,7 @@ case "$choice" in
         ;;
 esac
 
-. vagrant_cloud_token.sh "$*"
+source "${BUILD_ROOT}/bin/vagrant_cloud_token.sh" "$*"
 
 # check if a latest version does exist
 LATEST_VERSION_HTTP_CODE=$( \

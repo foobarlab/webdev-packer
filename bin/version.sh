@@ -36,7 +36,7 @@ if [ -z "${BUILD_BOX_VERSION:-}" ]; then
             export BUILD_NUMBER
         fi
         BUILD_BOX_VERSION=$BUILD_MAJOR_VERSION.$BUILD_MINOR_VERSION.$BUILD_NUMBER
-    fi    
+    fi
     export BUILD_BOX_VERSION
     echo $BUILD_BOX_VERSION > build_version
 else
