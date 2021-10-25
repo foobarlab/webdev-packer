@@ -189,7 +189,7 @@ fi
 highlight "Trying to clone parent box hdd ..."
 if [ -f $BUILD_PARENT_BOX_CLOUD_VMDK ]; then
     if [ -f "$BUILD_PARENT_BOX_CLOUD_VDI" ]; then
-        ##rm -f "$BUILD_PARENT_BOX_CLOUD_VDI" || true
+        : ##rm -f "$BUILD_PARENT_BOX_CLOUD_VDI" || true
     fi
     step "Cloning to vdi file ..."
     $vboxmanage clonemedium disk "$BUILD_PARENT_BOX_CLOUD_VMDK" "$BUILD_PARENT_BOX_CLOUD_VDI" --format VDI
