@@ -13,14 +13,13 @@ check_su() {
 
 # ---- setup
 
-# TODO move to own script... lib/init.sh, lib/colors.sh, lib/...
-
-# TODO add debug mode (silent=false)
+# debug mode?
+if [[ -v BUILD_DEBUG ]]; then
+  silent=false
+fi
 
 # check if build root is set, otherwise set current working directory
-#[[ ! -v BUILD_ROOT ]] && BUILD_ROOT="${PWD}"
-#[[ -v BUILD_ROOT ]] || BUILD_ROOT="${PWD}"
-#[[ -v BUILD_ROOT ]] || echo "Error, environment var BUILD_ROOT is not set!" ; exit 1;
+[[ -v BUILD_ROOT ]] || BUILD_ROOT="${PWD}"
 step "build root is '$BUILD_ROOT'"
 
 # TODO abort if run from inside vm, run as root, or from wrong dir (must be inside project root)
@@ -36,21 +35,31 @@ step "build root is '$BUILD_ROOT'"
 # TODO check location: ensure it is a reasonable named dir with reasonable dir depth
 
 # set dir paths
-BUILD_SCRIPT_DIR="${BUILD_ROOT}/bin"  #"${BUILD_ROOT}/bin"
-BUILD_LIB_DIR="${BUILD_SCRIPT_DIR}/lib"
-BUILD_ETC_DIR="${BUILD_ROOT}/etc"
-BUILD_DIR="${BUILD_ROOT}/build"
+BUILD_DIR_BIN="${BUILD_ROOT:-.}/bin"
+BUILD_DIR_LIB="${BUILD_DIR_BIN}/lib"
+BUILD_DIR_ETC="${BUILD_ROOT:-.}/etc"
+  BUILD_DIR_BUILD="${BUILD_ROOT:-.}/build"
+BUILD_DIR_PACKER="${BUILD_ROOT:-.}/packer"
+BUILD_DIR_KEYS="${BUILD_ROOT:-.}/keys"
 
-# various configs or artefacts
-BUILD_ETC_DISTFILESLIST="${BUILD_ETC_DIR}/distfiles.list"
-BUILD_ETC_ROOTCA="${BUILD_ETC_DIR}/rootCA.pem"
-BUILD_ETC_ROOTCA_KEY="${BUILD_ETC_DIR}/rootCA-key.pem"
-BUILD_ETC_VAGRANT_TOKEN="${BUILD_ETC_DIR}/vagrant-cloud-token"
-BUILD_ETC_VERSION="${BUILD_ETC_DIR}/version"
+# bin files
+BUILD_BIN_CONFIG="${BUILD_DIR_BIN}/config.sh"
+BUILD_LIB_UTILS="${BUILD_DIR_LIB}/utils.sh"
 
-# files created during building
-BUILD_PATH_BUILD_NUMBER="${BUILD_DIR}/build_number"
-BUILD_PATH_BUILD_TIME="${BUILD_DIR}/build_time"
-BUILD_PATH_BUILD_VERSION="${BUILD_DIR}/build_version"
-BUILD_PATH_PACKER_LOG="${BUILD_DIR}/packer.log"
-BUILD_PATH_PACKER_CHECKSUM="${BUILD_DIR}/packer.sha1.checksum"
+# packer provisioner
+BUILD_FILE_PACKER_HCL="${BUILD_DIR_PACKER}/virtualbox.pkr.hcl"
+
+# etc config files
+BUILD_FILE_DISTFILESLIST="${BUILD_DIR_ETC}/distfiles.list"
+  BUILD_FILE_VERSIONFILE="${BUILD_DIR_ETC}/version"
+
+BUILD_FILE_ROOTCA="rootCA.pem"
+BUILD_FILE_ROOTCA_KEY="rootCA-key.pem"
+BUILD_FILE_VAGRANT_TOKEN="vagrant-cloud-token"
+
+# files created during build
+  BUILD_FILE_BUILD_NUMBER="${BUILD_DIR_BUILD}/build_number"
+  BUILD_FILE_BUILD_TIME="${BUILD_DIR_BUILD}/build_time"
+  BUILD_FILE_BUILD_VERSION="${BUILD_DIR_BUILD}/build_version"
+  BUILD_FILE_PACKER_LOG="packer.log"
+BUILD_FILE_PACKER_CHECKSUM="${BUILD_DIR_BUILD}/packer.sha1.checksum"

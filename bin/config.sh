@@ -2,7 +2,7 @@
 # vim: ts=4 sw=4 et
 
 [[ -v BUILD_ROOT ]] || BUILD_ROOT="${PWD}"   # FIXME try to set correct path (e.g. when run from inside bin dir)
-source "${BUILD_ROOT}/bin/lib/utils.sh" "$*"
+source "${BUILD_LIB_UTILS:-./bin/lib/utils.sh}" "$*"
 require_commands git nproc
 set -a
 

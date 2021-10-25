@@ -7,7 +7,7 @@ export BUILD_PARENT_BOX_CHECK=true
 vboxmanage=VBoxManage
 command -v $vboxmanage >/dev/null 2>&1 || vboxmanage=vboxmanage   # try alternative
 
-source "${BUILD_ROOT}/bin/config.sh" quiet
+source "${BUILD_BIN_CONFIG:-./bin/config.sh}" quiet
 
 header "Building box '$BUILD_BOX_NAME' version '$BUILD_BOX_VERSION'"
 require_commands vagrant packer wget $vboxmanage
@@ -65,7 +65,7 @@ else
     fi
 fi
 
-highlight "Downloading default ssh keys ..."
+highlight "Adding default ssh keys ..."
 if [ -d "keys" ]; then
     step "Ok, key dir exists."
 else
@@ -177,6 +177,7 @@ else
             highlight "Trying to remove hdd from Media Manager ..."
             $vboxmanage closemedium disk "${vbox_hdd_uuids[$i]}" --delete || true
             highlight "Removing previous resized vdi file ..."
+            step "Deleting file '$BUILD_PARENT_BOX_CLOUD_VDI'"
             ##rm -f "$BUILD_PARENT_BOX_CLOUD_VDI" || true
         elif [[ "${vbox_hdd_states[$i]}" = "inaccessible" ]]; then
             warn "Found inaccessible hdd: '${vbox_hdd_locations2[$i]}'"
@@ -189,6 +190,7 @@ fi
 highlight "Trying to clone parent box hdd ..."
 if [ -f $BUILD_PARENT_BOX_CLOUD_VMDK ]; then
     if [ -f "$BUILD_PARENT_BOX_CLOUD_VDI" ]; then
+        step "Deleting file '$BUILD_PARENT_BOX_CLOUD_VDI' ..."
         : ##rm -f "$BUILD_PARENT_BOX_CLOUD_VDI" || true
     fi
     step "Cloning to vdi file ..."
@@ -210,17 +212,21 @@ sync
 
 final "All preparations done."
 
-source "${BUILD_ROOT}/bin/config.sh"
+source "${BUILD_BIN_CONFIG}"
 
-export PACKER_LOG_PATH="$PWD/packer.log"
+step "Create build dir '${BUILD_DIR_BUILD:-build}' ..."
+mkdir -p ${BUILD_DIR_BUILD:-build}
+
+export PACKER_LOG_PATH="${BUILD_DIR_BUILD:-build}/${BUILD_FILE_PACKER_LOG:-packer.log}"
 export PACKER_LOG="1"
-
 if [ $PACKER_LOG ]; then
     highlight "Logging Packer output to '$PACKER_LOG_PATH' ..."
 fi
 
+step "Invoking packer ..."
+
 # TODO use 'only' conditionals in packer for distinct provisioner?
-packer build -force -on-error=abort "$PWD/packer/virtualbox.pkr.hcl"
+packer build -force -on-error=abort "${BUILD_DIR_BUILD:-build}/$BUILD_FILE_PACKER_HCL"
 
 title "OPTIMIZING BOX SIZE"
 
@@ -251,14 +257,16 @@ else
     exit 1
 fi
 
-# TODO run automatic finalization, check var BUILD_AUTO_FINALIZE
-source "${BUILD_ROOT}/bin/finalize.sh"
+# run automatic finalization?
+if [[ $BUILD_AUTO_FINALIZE == "true" ]]; then
+  source "${BUILD_ROOT}/bin/finalize.sh"
+fi
 
 end=`date +%s`
 runtime=$((end-start))
 hours=$((runtime / 3600));
 minutes=$(( (runtime % 3600) / 60 ));
 seconds=$(( (runtime % 3600) % 60 ));
-echo "$hours hours $minutes minutes $seconds seconds" >> build_time
+echo "$hours hours $minutes minutes $seconds seconds" >> "$BUILD_FILE_BUILD_TIME"
 result "Build runtime was $hours hours $minutes minutes $seconds seconds."
 

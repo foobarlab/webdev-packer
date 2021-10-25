@@ -1,7 +1,7 @@
 #!/bin/bash -ue
 # vim: ts=4 sw=4 et
 
-source "${BUILD_ROOT}/bin/lib/utils.sh" "$*"
+source "${BUILD_LIB_UTILS:-./bin/lib/utils.sh}" "$*"
 
 require_commands wget b2sum
 

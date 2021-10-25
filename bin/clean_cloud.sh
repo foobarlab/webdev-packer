@@ -2,7 +2,7 @@
 # vim: ts=4 sw=4 et
 # NOTE: Vagrant Cloud API see: https://www.vagrantup.com/docs/vagrant-cloud/api.html
 
-source "${BUILD_ROOT}/bin/config.sh" quiet
+source "${BUILD_BIN_CONFIG:-./bin/config.sh}" quiet
 
 title "CLEAN CLOUD"
 

@@ -9,7 +9,7 @@ export BUILD_ROOT:=$(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 
 .PHONY: all config build clean clean_env clean_box clean_cloud cloud_version \
         distfiles finalize init startup test test_ansible parent_version \
-        upload vagrant_cloud_token version help readme
+        upload vagrant_cloud_token version help readme download
 
 ## show help
 help:
@@ -81,6 +81,10 @@ test_ansible:
 ## print parent version from vagrant cloud
 parent_version:
 	@parent_version.sh
+
+## download box from vagrant cloud
+download:
+	@download.sh
 
 ## upload a built box to vagrant cloud
 upload:

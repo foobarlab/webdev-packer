@@ -4,7 +4,7 @@
 vboxmanage=VBoxManage
 command -v $vboxmanage >/dev/null 2>&1 || vboxmanage=vboxmanage   # try alternative
 
-source "${BUILD_ROOT}/bin/config.sh" quiet
+source "${BUILD_BIN_CONFIG:-./bin/config.sh}" quiet
 
 require_commands vagrant $vboxmanage
 

@@ -3,7 +3,7 @@
 
 export BUILD_PARENT_BOX_CHECK=false
 
-source "${BUILD_ROOT}/bin/config.sh" quiet
+source "${BUILD_BIN_CONFIG:-./bin/config.sh}" quiet
 
 require_commands vagrant
 

@@ -44,12 +44,9 @@ case "$choice" in
         ;;
 esac
 
-source "${BUILD_ROOT}/bin/vagrant_cloud_token.sh" "$*"
-
 # check if a latest version does exist
 LATEST_VERSION_HTTP_CODE=$( \
   curl -sS -w "%{http_code}" -o /dev/null \
-  --header "Authorization: Bearer $VAGRANT_CLOUD_TOKEN" \
   https://app.vagrantup.com/api/v1/box/$BUILD_BOX_USERNAME/$BUILD_BOX_NAME \
 )
 
@@ -63,7 +60,6 @@ esac
 highlight "Checking existing cloud version ..."
 LATEST_CLOUD_VERSION=$( \
   curl -sS \
-  --header "Authorization: Bearer $VAGRANT_CLOUD_TOKEN" \
   https://app.vagrantup.com/api/v1/box/$BUILD_BOX_USERNAME/$BUILD_BOX_NAME \
 )
 
@@ -76,6 +72,9 @@ if [[ $BUILD_BOX_VERSION = $LATEST_CLOUD_VERSION ]]; then
 else
     step "Looks like we got a new version to provide."
 fi
+
+# Request auth
+source "${BUILD_DIR_BIN}/vagrant_cloud_token.sh" "$*"
 
 # Create a new box
 highlight "Trying to create a new box '$BUILD_BOX_NAME' ..."

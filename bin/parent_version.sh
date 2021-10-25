@@ -4,10 +4,10 @@
 # get the lastest version number for a parent box from Vagrant Cloud
 # see: https://www.vagrantup.com/docs/vagrant-cloud/api.html#boxes
 
-source "${BUILD_ROOT}/bin/lib/utils.sh" "$*"
+source "${BUILD_LIB_UTILS:-./bin/lib/utils.sh}" "$*"
 
 if [ -z ${BUILD_BOX_NAME:-} ]; then
-    source "${BUILD_ROOT}/bin/config.sh" quiet
+    source "${BUILD_BIN_CONFIG:-./bin/config.sh}" quiet
 fi
 
 if [ -z "${BUILD_PARENT_BOX_CLOUD_VERSION:-}" ]; then
