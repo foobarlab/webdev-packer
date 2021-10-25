@@ -87,16 +87,21 @@ bash -c 'dd if=/dev/zero of=/dev/sda3 2>/dev/null' || true
 mkswap /dev/sda3
 SCRIPT
 
+box_name = ENV["BUILD_BOX_NAME"] || "foobarlab/webdev"
+headless = ENV['BUILD_HEADLESS'] || "false"
+memory   = ENV['BUILD_BOX_MEMORY'] || 2048
+cpus     = ENV['BUILD_BOX_CPUS'] || 2
+
 Vagrant.configure("2") do |config|
   #config.vagrant.sensitive = ["MySecretPassword", ENV["MY_TOKEN"]] # TODO hide sensitive information
   config.vm.box_check_update = false
-  config.vm.box = "#{ENV['BUILD_BOX_NAME']}"
+  config.vm.box = box_name
   #config.vm.box_version = ">0"   # TODO version constraint (not building funtoo next)
-  config.vm.hostname = "#{ENV['BUILD_BOX_NAME']}"
+  config.vm.hostname = box_name
   config.vm.provider "virtualbox" do |vb|
-    vb.gui = (ENV['BUILD_HEADLESS'] == "false")
-    vb.memory = "#{ENV['BUILD_BOX_MEMORY']}"
-    vb.cpus = "#{ENV['BUILD_BOX_CPUS']}"
+    vb.gui = (headless == "false")
+    vb.memory = memory
+    vb.cpus = cpus
     # customize VirtualBox settings, see also 'virtualbox.json'
     vb.customize ["modifyvm", :id, "--nictype1", "virtio"]
     vb.customize ["modifyvm", :id, "--nictype2", "virtio"]
@@ -179,7 +184,7 @@ Vagrant.configure("2") do |config|
     ansible.inventory_path = "ansible/environment/#{ENV['BUILD_ENVIRONMENT']}"
     ansible.raw_arguments  = ["--connection=local"]
     ansible.extra_vars = {
-      mysql_root_password: "#{ENV['BUILD_MYSQL_ROOT_PASSWORD']}"
+      mysql_root_password: "#{ENV['BUILD_MYSQL_ROOT_PASSWORD'] || "changeme"}"
     }
   end
 
