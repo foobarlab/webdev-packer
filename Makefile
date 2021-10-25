@@ -44,7 +44,7 @@ clean_env:
 
 ## clean current box
 clean_box:
-	@true
+	@clean_box.sh
 
 ## clean cloud boxes
 clean_cloud:
