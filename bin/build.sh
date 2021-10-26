@@ -178,7 +178,7 @@ else
             $vboxmanage closemedium disk "${vbox_hdd_uuids[$i]}" --delete || true
             highlight "Removing previous resized vdi file ..."
             step "Deleting file '$BUILD_PARENT_BOX_CLOUD_VDI'"
-            ##rm -f "$BUILD_PARENT_BOX_CLOUD_VDI" || true
+            rm -f "$BUILD_PARENT_BOX_CLOUD_VDI" || true
         elif [[ "${vbox_hdd_states[$i]}" = "inaccessible" ]]; then
             warn "Found inaccessible hdd: '${vbox_hdd_locations2[$i]}'"
             highlight "Trying to remove hdd from Media Manager ..."
@@ -191,7 +191,7 @@ highlight "Trying to clone parent box hdd ..."
 if [ -f $BUILD_PARENT_BOX_CLOUD_VMDK ]; then
     if [ -f "$BUILD_PARENT_BOX_CLOUD_VDI" ]; then
         step "Deleting file '$BUILD_PARENT_BOX_CLOUD_VDI' ..."
-        : ##rm -f "$BUILD_PARENT_BOX_CLOUD_VDI" || true
+        rm -f "$BUILD_PARENT_BOX_CLOUD_VDI" || true
     fi
     step "Cloning to vdi file ..."
     $vboxmanage clonemedium disk "$BUILD_PARENT_BOX_CLOUD_VMDK" "$BUILD_PARENT_BOX_CLOUD_VDI" --format VDI
