@@ -28,7 +28,7 @@ and provides an environment for web development.
  - Webserver (Apache, Nginx, Lighttpd)
  - Caching and reverse proxy (Varnish Cache, Nginx)
  - SSL certificate management (mkcert) with Root CA
- - dnsmasq (providing **.test** domain) for isolation and virtual hosts
+ - dnsmasq (providing *.test* domain) for isolation and virtual hosts
  - Email catchall and Webmail interface
 
 ## Download pre-build images
