@@ -23,8 +23,8 @@ help:
 readme:
 	@pandoc -f markdown -t asciidoc "./README.md"
 
-## clean environment, build and finalize box
-all: clean_env build finalize
+## clean environment and build a new box
+all: clean_env build
 
 ## show current configuration
 config:
