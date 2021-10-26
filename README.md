@@ -10,7 +10,7 @@ and provides an environment for web development.
  - Funtoo Linux 1.4 from [base box](https://github.com/foobarlab/funtoo-base-packer)
  - Architecture: x86-64bit, intel64-nehalem (compatible with most CPUs since 2008)
  - Initial 30 GB dynamic sized HDD image (ext4), can be expanded
- - Timezone: ```UTC```
+ - Timezone: **UTC**
  - NAT, host-only and bridged networking (virtio)
  - Vagrant user *vagrant* with password *vagrant* (can get superuser via sudo without password),
    additionally using the default SSH authorized keys provided by Vagrant
@@ -38,17 +38,22 @@ Get the latest build from Vagrant Cloud:
 
 ## Build your own using Packer
 
-Get and install [VirtualBox](https://www.virtualbox.org) (extensions not needed).
-Install [Vagrant](https://www.vagrantup.com/) and [Packer](https://www.packer.io/).
+Install [VirtualBox](https://www.virtualbox.org) (extensions not needed),
+[Vagrant](https://www.vagrantup.com/) and [Packer](https://www.packer.io/).
 
-The provided scripts make use of the following commandline utils:
+The provided scripts make use of various commandline utils:
+
+ - bash
  - wget
  - curl
  - jq
+ - nproc
  - b2sum
  - git
- - nproc
  - make
+ - sed
+ - awk
+ - grep
 
 Type ```make``` for help, build your own box with ```make all```.
 
