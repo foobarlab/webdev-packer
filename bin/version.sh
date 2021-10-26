@@ -14,8 +14,8 @@ if [ ! -f "${BUILD_FILE_VERSIONFILE}" ]; then
 fi
 
 if [ -z "${BUILD_BOX_VERSION:-}" ]; then
-    if [ -f build_version ]; then
-        BUILD_BOX_VERSION=$(<build_version)
+    if [ -f "$BUILD_FILE_BUILD_VERSION" ]; then
+        BUILD_BOX_VERSION=$(<"$BUILD_FILE_BUILD_VERSION")
     else
         # get major version (must exist as file 'version'):
         BUILD_MAJOR_VERSION=$(<"${BUILD_FILE_VERSIONFILE}")
@@ -31,8 +31,10 @@ if [ -z "${BUILD_BOX_VERSION:-}" ]; then
             else
                 BUILD_NUMBER=0
             fi
-            # store for later reuse in file 'build_number'
-            echo $BUILD_NUMBER > "$BUILD_FILE_BUILD_NUMBER"
+            # create build dir if not existant
+            mkdir -p "${BUILD_DIR_BUILD}" || true
+            # store 'build_number' for later reuse
+            echo $BUILD_NUMBER > "${BUILD_FILE_BUILD_NUMBER}"
             export BUILD_NUMBER
         fi
         BUILD_BOX_VERSION=$BUILD_MAJOR_VERSION.$BUILD_MINOR_VERSION.$BUILD_NUMBER

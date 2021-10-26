@@ -46,7 +46,7 @@ BUILD_KEEP_MAX_CLOUD_BOXES=1          # set the maximum number of boxes to keep 
 
 # TODO load custom user config
 
-source "${BUILD_ROOT}/bin/version.sh" "$*"   # determine build version
+source "${BUILD_DIR_BIN}/version.sh" "$*"   # determine build version
 
 # detect number of system cpus available (select half of cpus for best performance)
 BUILD_CPUS=$((`nproc --all` / 2))
@@ -102,14 +102,14 @@ else
     BUILD_BOX_DESCRIPTION="$BUILD_BOX_DESCRIPTION<br>This build is not version controlled yet.<br>$BUILD_RUNTIME_FANCY"
 fi
 
-BUILD_OUTPUT_FILE_TEMP="$BUILD_BOX_NAME.tmp.box"
-BUILD_OUTPUT_FILE_INTERMEDIATE="$BUILD_BOX_NAME-$BUILD_BOX_VERSION.raw.box"
-BUILD_OUTPUT_FILE="$BUILD_BOX_NAME-$BUILD_BOX_VERSION.box"
+BUILD_OUTPUT_FILE_TEMP="${BUILD_DIR_BUILD}/${BUILD_BOX_NAME}.tmp.box"
+BUILD_OUTPUT_FILE_INTERMEDIATE="${BUILD_DIR_BUILD}/${BUILD_BOX_NAME}-${BUILD_BOX_VERSION}.raw.box"
+BUILD_OUTPUT_FILE="${BUILD_DIR_BUILD}/${BUILD_BOX_NAME}-${BUILD_BOX_VERSION}.box"
 
 BUILD_PARENT_BOX_CHECK=true
 
 # get the latest parent version from Vagrant Cloud API call:
-source "${BUILD_ROOT}/bin/parent_version.sh" "$*"
+source "${BUILD_DIR_BIN}/parent_version.sh" "$*"
 
 BUILD_PARENT_BOX_OVF="$HOME/.vagrant.d/boxes/$BUILD_PARENT_BOX_NAME/0/virtualbox/box.ovf"
 BUILD_PARENT_BOX_CLOUD_PATHNAME=`echo "$BUILD_PARENT_BOX_CLOUD_NAME" | sed "s|/|-VAGRANTSLASH-|"`

@@ -19,8 +19,8 @@ if [ -f "$BUILD_OUTPUT_FILE" ]; then
     vagrant box add --name "$BUILD_BOX_NAME" "$BUILD_OUTPUT_FILE"
 else
     error "There is no box file '$BUILD_OUTPUT_FILE' in the current directory."
-    result "Please run './build.sh' to build a box."
+    result "Please run 'make build' to build a box."
     exit 1
 fi
 
-final "Box installed and ready to use. You may now enter './startup.sh' to boot the box."
+final "Box installed and ready to use. You may now enter 'make startup' to boot the box."

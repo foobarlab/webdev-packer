@@ -32,6 +32,6 @@ if [ -f "$BUILD_OUTPUT_FILE_INTERMEDIATE" ]; then
     vagrant ssh
 else
     error "There is no box file '$BUILD_OUTPUT_FILE_INTERMEDIATE' in the current directory."
-    info "You may need to run 'build.sh' first."
+    info "You may need to run 'make build' first."
     exit 1
 fi

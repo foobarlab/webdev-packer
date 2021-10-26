@@ -23,7 +23,7 @@ else
     info "Either this box is still powered on or you have a previous build"
     info "VirtualBox machine lying around."
     echo
-    error "Can not continue, please run './clean_env.sh' to shutdown and remove the box, then try again."
+    error "Can not continue, please run 'make clean_env' to shutdown and remove the box, then try again."
     exit 1
 fi
 
@@ -31,7 +31,7 @@ highlight "Checking presence of parent box '$BUILD_PARENT_BOX_NAME' ..."
 vbox_hdd_found=$( $vboxmanage list hdds | grep "$BUILD_PARENT_BOX_CLOUD_VDI" || echo )
 if [ -f $BUILD_PARENT_BOX_OVF ] && [[ -z "$vbox_hdd_found" || "$vbox_hdd_found" = "" ]]; then
     error "The parent box '${BUILD_PARENT_BOX_CLOUD_NAME}-${BUILD_PARENT_BOX_CLOUD_VERSION}' was not installed by this script!"
-    result "Try './clean_env.sh' in the parent box build dir or remove parent box manually, then try again."
+    result "Try 'make clean_env' in the parent box build dir or remove parent box manually, then try again."
     todo "Remove parent box from system?"
     exit 1
 fi
@@ -66,29 +66,29 @@ else
 fi
 
 highlight "Adding default ssh keys ..."
-if [ -d "keys" ]; then
+if [ -d "$BUILD_DIR_KEYS" ]; then
     step "Ok, key dir exists."
 else
     step "Creating key dir ..."
-    mkdir -p keys
+    mkdir -p "$BUILD_DIR_KEYS"
 fi
 
-if [ -f "keys/vagrant" ]; then
+if [ -f "$BUILD_DIR_KEYS/vagrant" ]; then
     step "Ok, private key exists."
 else
     step "Downloading default private key ..."
-    wget -c https://raw.githubusercontent.com/hashicorp/vagrant/master/keys/vagrant -O keys/vagrant
+    wget -c https://raw.githubusercontent.com/hashicorp/vagrant/master/keys/vagrant -O "$BUILD_DIR_KEYS/vagrant"
     if [ $? -ne 0 ]; then
         error "Could not download the private key. Exit code from wget was $?."
         exit $?
     fi
 fi
 
-if [ -f "keys/vagrant.pub" ]; then
+if [ -f "$BUILD_DIR_KEYS/vagrant.pub" ]; then
     step "Ok, public key exists."
 else
     step "Downloading default public key ..."
-    wget -c https://raw.githubusercontent.com/hashicorp/vagrant/master/keys/vagrant.pub -O keys/vagrant.pub
+    wget -c https://raw.githubusercontent.com/hashicorp/vagrant/master/keys/vagrant.pub -O "$BUILD_DIR_KEYS/vagrant.pub"
     if [ $? -ne 0 ]; then
         error "Could not download the public key. Exit code from wget was $?."
         exit 1
@@ -96,9 +96,9 @@ else
 fi
 
 highlight "Create packages dir ..."
-mkdir -p packages || true
+mkdir -p "$BUILD_DIR_PACKAGES" || true
 
-source "${BUILD_ROOT}/bin/distfiles.sh" quiet
+source "${BUILD_DIR_BIN}/distfiles.sh" quiet
 
 # do not build an already existing release on vagrant cloud by default
 if [ ! $# -eq 0 ]; then
@@ -126,7 +126,7 @@ if [ "$BUILD_SKIP_VERSION_CHECK" = false ]; then
     # TODO automatically generate initial build number?
 
     if [[ "$BUILD_BOX_VERSION" = "$latest_cloud_version" ]]; then
-        error "An equal version number already exists, please run './clean.sh' to increment your build number and try again."
+        error "An equal version number already exists, please run 'make clean' to increment your build number and try again."
         todo "Automatically increase build number?"
         exit 1
     else
@@ -166,7 +166,7 @@ else
                 "locked")
                     error "Seems like the vdi file is in state 'locked' and can not be removed easily. Is the box still up and running?"
                     todo "Detect if box is running and try to forecefully poweroff "
-                    result "Please run './clean_env.sh' and try again."
+                    result "Please run 'make clean_env' and try again."
                     exit 1
                     ;;
                 *)
@@ -214,10 +214,10 @@ final "All preparations done."
 
 source "${BUILD_BIN_CONFIG}"
 
-step "Create build dir '${BUILD_DIR_BUILD:-build}' ..."
-mkdir -p ${BUILD_DIR_BUILD:-build}
+step "Create build dir '${BUILD_DIR_BUILD}' ..."
+mkdir -p ${BUILD_DIR_BUILD}
 
-export PACKER_LOG_PATH="${BUILD_DIR_BUILD:-build}/${BUILD_FILE_PACKER_LOG:-packer.log}"
+export PACKER_LOG_PATH="${BUILD_FILE_PACKER_LOG}"
 export PACKER_LOG="1"
 if [ $PACKER_LOG ]; then
     highlight "Logging Packer output to '$PACKER_LOG_PATH' ..."
@@ -226,7 +226,7 @@ fi
 step "Invoking packer ..."
 
 # TODO use 'only' conditionals in packer for distinct provisioner?
-packer build -force -on-error=abort "${BUILD_DIR_BUILD:-build}/$BUILD_FILE_PACKER_HCL"
+packer build -force -on-error=abort "$BUILD_FILE_PACKER_HCL"
 
 title "OPTIMIZING BOX SIZE"
 
@@ -247,11 +247,10 @@ if [ -f "$BUILD_OUTPUT_FILE_TEMP" ]; then
     step "Exporting intermediate box to '$BUILD_OUTPUT_FILE_INTERMEDIATE' ..."
     # TODO package additional optional files with --include ?
     # TODO use configuration values inside template (BUILD_BOX_MEMORY, etc.)
-    #vagrant package --vagrantfile "Vagrantfile.template" --output "$BUILD_OUTPUT_FILE"
+    #vagrant package --vagrantfile "Vagrantfile.template" --output "${BUILD_DIR_BUILD}/${BUILD_OUTPUT_FILE}"
     vagrant package --output "$BUILD_OUTPUT_FILE_INTERMEDIATE"
     step "Removing temporary box file ..."
-    ##rm -f  "$BUILD_OUTPUT_FILE_TEMP"
-    result "Please run 'finalize.sh' to finish configuration and create the final box file."
+    rm -f "$BUILD_OUTPUT_FILE_TEMP"
 else
     error "There is no box file '$BUILD_OUTPUT_FILE_TEMP' in the current directory."
     exit 1
@@ -259,7 +258,9 @@ fi
 
 # run automatic finalization?
 if [[ $BUILD_AUTO_FINALIZE == "true" ]]; then
-  source "${BUILD_ROOT}/bin/finalize.sh"
+  source "${BUILD_DIR_BIN}/finalize.sh"
+else
+  result "Please run 'make finalize' to finish configuration and create the final box file."
 fi
 
 end=`date +%s`
@@ -269,4 +270,3 @@ minutes=$(( (runtime % 3600) / 60 ));
 seconds=$(( (runtime % 3600) % 60 ));
 echo "$hours hours $minutes minutes $seconds seconds" >> "$BUILD_FILE_BUILD_TIME"
 result "Build runtime was $hours hours $minutes minutes $seconds seconds."
-

@@ -7,14 +7,14 @@ require_commands wget b2sum
 
 highlight "Processing distfiles ..."
 
-if [[ -f "$PWD/distfiles.list" ]]; then
-    step "Ensure 'distfiles' dir exists ..."
-    mkdir -p "$PWD/distfiles" || true
-    step "Parsing 'distfiles.list' ..."
+if [[ -f "$BUILD_FILE_DISTFILESLIST" ]]; then
+    step "Ensure dir '${BUILD_DIR_DISTFILES##*/}' dir exists ..."
+    mkdir -p "$BUILD_DIR_DISTFILES" || true
+    step "Parsing '${BUILD_FILE_DISTFILESLIST}' ..."
     line_number=0
     old_IFS=$IFS # save the field separator
     IFS=$'\n' # new field separator, the end of line
-    for line in $(cat "$PWD/distfiles.list"); do
+    for line in $(cat "$BUILD_FILE_DISTFILESLIST"); do
         line_number=$((line_number+1))
         shopt -s extglob; line=${line##*( )}; line="${line%%*( )}"; shopt -u extglob # remove leading and trailing spaces
         [[ $line =~ ^#.* ]] && continue # skip comments
@@ -37,15 +37,15 @@ if [[ -f "$PWD/distfiles.list" ]]; then
             exit 1
         fi
         step "Check if file '$file_name' is present ..."
-        if [ ! -f "$PWD/distfiles/$file_name" ]; then
+        if [ ! -f "${BUILD_DIR_DISTFILES}/$file_name" ]; then
             warn "File is missing."
             step "Downloading file ..."
-            wget -c "$file_url" -O "$PWD/distfiles/$file_name"
+            wget -c "$file_url" -O "${BUILD_DIR_DISTFILES}/$file_name"
             todo "Check wget exit status"
         fi
         step "Verifying file integrity ..."
-        if [ -f "$PWD/distfiles/$file_name" ]; then
-            file_expected_hash=$(cat "$PWD/distfiles/$file_name" | b2sum -b | sed -e "s/ .*//g")
+        if [ -f "${BUILD_DIR_DISTFILES}/$file_name" ]; then
+            file_expected_hash=$(cat "${BUILD_DIR_DISTFILES}/$file_name" | b2sum -b | sed -e "s/ .*//g")
             if [[ "$file_hash" = "$file_expected_hash" ]]; then
                 success "$file_name"
                 continue
@@ -64,5 +64,5 @@ if [[ -f "$PWD/distfiles.list" ]]; then
     IFS=$old_IFS # restore default field separator
 
 else
-    step "File 'distfiles.list' not found."
+    step "File '${BUILD_FILE_DISTFILESLIST}' not found."
 fi

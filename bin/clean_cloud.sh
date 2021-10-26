@@ -6,8 +6,6 @@ source "${BUILD_BIN_CONFIG:-./bin/config.sh}" quiet
 
 title "CLEAN CLOUD"
 
-source "${BUILD_ROOT}/bin/vagrant_cloud_token.sh" "$*"
-
 require_commands curl jq
 
 echo
@@ -21,9 +19,10 @@ info "Box........: '$BUILD_BOX_NAME'"
 info "Provider...: '$BUILD_BOX_PROVIDER'"
 echo
 
+source "${BUILD_DIR_BIN}/vagrant_cloud_token.sh" "$*"
+
 CLOUD_BOX_INFO=$( \
   curl -sS -f \
-  --header "Authorization: Bearer $VAGRANT_CLOUD_TOKEN" \
   https://app.vagrantup.com/api/v1/box/$BUILD_BOX_USERNAME/$BUILD_BOX_NAME \
 )
 
@@ -121,7 +120,6 @@ done
 # re-read box infos, show summary
 CLOUD_BOX_INFO=$( \
   curl -sS -f \
-  --header "Authorization: Bearer $VAGRANT_CLOUD_TOKEN" \
   https://app.vagrantup.com/api/v1/box/$BUILD_BOX_USERNAME/$BUILD_BOX_NAME \
 )
 

@@ -31,6 +31,6 @@ if [ -f "$BUILD_OUTPUT_FILE_INTERMEDIATE" ]; then
     result "Build finalized."
 else
     error "There is no box file '$BUILD_OUTPUT_FILE_INTERMEDIATE' in the current directory."
-    warn "You may need to run 'build.sh' first."
+    warn "You may need to run 'make build' first."
     exit 1
 fi

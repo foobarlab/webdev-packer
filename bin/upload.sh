@@ -2,14 +2,15 @@
 # vim: ts=4 sw=4 et
 # NOTE: Vagrant Cloud API see: https://www.vagrantup.com/docs/vagrant-cloud/api.html
 
-source "${BUILD_ROOT}/bin/config.sh" quiet
+source "${BUILD_BIN_CONFIG:-./bin/config.sh}" quiet
 
 title "UPLOAD BOX"
 if [ -f "$BUILD_OUTPUT_FILE" ]; then
-    step "Found box file '$BUILD_OUTPUT_FILE' in the current directory."
+    step "Found box file '$BUILD_OUTPUT_FILE'."
 else
-    error "There is no box file '$BUILD_OUTPUT_FILE' in the current directory."
-    result "Please run './build.sh' to build a box."
+    step "Missing box file '$BUILD_OUTPUT_FILE'"
+    error "There is no box file '${BUILD_OUTPUT_FILE##*/}'!"
+    result "Please run 'make build' first."
     if [ $# -eq 0 ]; then
         exit 1  # exit with error when running without param
     else

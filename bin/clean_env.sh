@@ -18,7 +18,7 @@ vagrant box prune -f -k --name "${BUILD_BOX_NAME}"
 step "Prune invalid Vagrant entries ..."
 vagrant global-status --prune >/dev/null
 step "Delete temporary Vagrant files ..."
-##rm -rf "~/.vagrant.d/tmp/*" || true
+rm -rf "~/.vagrant.d/tmp/*" || true
 
 highlight "Housekeeping VirtualBox environment ..."
 step "Forcibly shutdown any running VirtualBox machine named '$BUILD_BOX_NAME' ..."
@@ -54,7 +54,7 @@ fi
 
 step "Force removing of appliance from VirtualBox machine folder ..."
 vboxmachinefolder=$( $vboxmanage list systemproperties | grep "Default machine folder" | cut -d ':' -f2 | sed -e 's/^\s*//g' )
-##rm -rf "$vboxmachinefolder/$BUILD_BOX_NAME/" || true
+rm -rf "$vboxmachinefolder/$BUILD_BOX_NAME/" || true
 
 step "Checking VirtualBox hdds ..."
 vbox_hdd_found_count=$( $vboxmanage list hdds | grep -o "^UUID" | wc -l )
@@ -71,21 +71,21 @@ else
                 warn "Found inaccessible parent box hdd: '$BUILD_PARENT_BOX_CLOUD_VMDK'"
                 result "Removing hdd from Media Manager ..."
                 $vboxmanage closemedium disk ${vbox_hdd_uuids[$i]} --delete >/dev/null 2>&1
-                ##rm -f "$vbox_hdd_locations2[$i]" || true
+                rm -f "$vbox_hdd_locations2[$i]" || true
             fi
         elif [[ "${vbox_hdd_locations2[$i]}" = "$BUILD_PARENT_BOX_CLOUD_VDI" ]]; then
             if [[ "${vbox_hdd_states[$i]}" = "inaccessible" ]]; then
                 warn "Found inaccessible parent box clone hdd: '$BUILD_PARENT_BOX_CLOUD_VDI'"
                 result "Removing hdd from Media Manager ..."
                 $vboxmanage closemedium disk ${vbox_hdd_uuids[$i]} --delete >/dev/null 2>&1
-                ##rm -f "$vbox_hdd_locations2[$i]" || true
+                rm -f "$vbox_hdd_locations2[$i]" || true
             fi
         elif [[ "${vbox_hdd_locations2[$i]}" = "$HOME/VirtualBox VMs/${BUILD_BOX_NAME}/box-disk001.vmdk" ]]; then
             if [[ "${vbox_hdd_states[$i]}" = "inaccessible" ]]; then
                 warn "Found inaccessible build box hdd: '${vbox_hdd_locations2[$i]}'"
                 result "Removing hdd from Media Manager ..."
                 $vboxmanage closemedium disk "${vbox_hdd_uuids[$i]}" --delete >/dev/null 2>&1
-                ##rm -f "$vbox_hdd_locations2[$i]" || true
+                rm -f "$vbox_hdd_locations2[$i]" || true
             fi
         elif [[ "${vbox_hdd_states[$i]}" = "inaccessible" ]]; then
             warn "Found another inaccessible hdd: '${vbox_hdd_locations2[$i]}'"
@@ -114,9 +114,8 @@ fi
 highlight "Housekeeping sources ..."
 
 step "Dropping build number ..."
-##rm -f "build_number" || true
+rm -f "$BUILD_FILE_BUILD_NUMBER" || true
 
 # basic cleanup
 echo
-source "${BUILD_ROOT}/bin/clean.sh"
-
+source "${BUILD_DIR_BIN}/clean.sh"
