@@ -1,0 +1,26 @@
+---
+# vim: ts=2 sw=2 et syntax=yaml
+
+domains:
+  - 'www.test'
+  - 'beta.test'
+  - 'mail.test'
+  - 'db.test'
+  - 'admin.test'
+  - 'assets.test'
+  - '*.admin.test'
+  - '*.www.test'
+  - '*.assets.test'
+  - '*.service.test'
+
+domains_test: "{{ domains|join(' ') }}"
+domains_local: 'localhost 127.0.0.1 ::1'
+cert_domains: '{{ domains_test }} {{ domains_local }}'
+
+cert_dir: '/usr/local/share/ca-certificates/mkcert'
+
+cert_rootca: 'rootCA.pem'
+cert_rootca_key: 'rootCA-key.pem'
+
+cert_pub: '/etc/ssl/certs/webdev.pem'
+cert_key: '/etc/ssl/private/webdev-key.pem'

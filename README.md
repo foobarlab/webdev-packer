@@ -1,82 +1,61 @@
-# Web Development Vagrant box
+# Web development Vagrant box
 
-This is a Funtoo Linux that is packaged into a Vagrant box file. Currently only a VirtualBox version is provided.
-It is based on the [Funtoo Base Vagrant box](https://github.com/foobarlab/funtoo-base-packer) and provides an environment for web development.
+This is a Funtoo Linux that is packaged into a Vagrant box file.
+Currently only a VirtualBox version is provided.
+It is based on the [Funtoo Base Vagrant box](https://github.com/foobarlab/funtoo-base-packer)
+and provides an environment for web development.
 
-### What's included?
+## Operating system
 
- - Funtoo Linux 1.4
+ - Funtoo Linux 1.4 from [base box](https://github.com/foobarlab/funtoo-base-packer)
  - Architecture: x86-64bit, intel64-nehalem (compatible with most CPUs since 2008)
  - Initial 30 GB dynamic sized HDD image (ext4), can be expanded
- - Timezone: ```UTC```
- - NAT Networking using DHCP (virtio)
- - Vagrant user *vagrant* with password *vagrant* (can get superuser via sudo without password), additionally using the default SSH authorized keys provided by Vagrant (see https://github.com/hashicorp/vagrant/tree/master/keys) 
+ - Timezone: UTC
+ - NAT, host-only and bridged networking (virtio)
+ - Vagrant user *vagrant* with password *vagrant* (can get superuser via sudo without password),
+   additionally using the default SSH authorized keys provided by Vagrant
+   (see https://github.com/hashicorp/vagrant/tree/master/keys) 
  - Optional: build your own Debian Kernel 5.10 (debian-sources)
- - List of installed software:
-    - Any software installed in the [base box](https://github.com/foobarlab/funtoo-base-packer)
-    - TODO
 
-### Download pre-build images
+## Applications and services
 
-Get the latest experimental build from Vagrant Cloud: [foobarlab/webdev](https://app.vagrantup.com/foobarlab/webdev)
+ - Ansible for provisioning the virtual machine
+ - PHP, Python, Java, Ruby, Erlang, Elixir, Perl, Java, JavaScript, Haskell, Rust and
+   C/C++ programming languages
+ - Various SQL (MariaDB, PostgreSQL) and NoSQL databases (CouchDB)
+ - RabbitMQ message queue
+ - Lucene search index provided by Solr
+ - Webserver (Apache, Nginx, Lighttpd)
+ - Caching and reverse proxy (Varnish Cache, Nginx)
+ - SSL certificate management (mkcert) with Root CA
+ - dnsmasq (providing *.test* domain) for isolation and virtual hosts
+ - Email catchall and Webmail interface
 
-### Build your own using Packer
+## Download pre-build images
 
-#### Preparation
+Get the latest build from Vagrant Cloud:
+[foobarlab/webdev](https://app.vagrantup.com/foobarlab/webdev)
 
- - Install [Vagrant](https://www.vagrantup.com/) and [Packer](https://www.packer.io/)
+## Build your own using Packer
 
-#### Build a fresh VirtualBox box
+Install [VirtualBox](https://www.virtualbox.org) (extensions not needed),
+[Vagrant](https://www.vagrantup.com/) and [Packer](https://www.packer.io/).
 
- - Run ```./build.sh```, followed by ```./finalize.sh```
- 
-#### Quick test the box file
+The provided scripts make use of various commandline utils:
 
- - Run ```./test.sh```
+ - bash
+ - wget
+ - curl
+ - jq
+ - nproc
+ - b2sum
+ - git
+ - make
+ - sed
+ - awk
+ - grep
 
-#### Test Ansible provisioning (for development only)
-
- - Run ```./test_ansible.sh```
-
-#### Upload the box to Vagrant Cloud (account required)
-
- - Run ```./upload.sh```
-
-### Regular use cases
-
-#### Initialize a fresh box (initial state, any modifications are lost)
-
- - Run ```./init.sh```
-
-#### Power on the box (keeping previous state)
-
- - Run ```./startup.sh```
-
-### Special use cases
-
-#### Show current build config
-
- - Run ```./config.sh```
-
-#### Cleanup build environment (poweroff and remove any related Vagrant and VirtualBox machines)
-
- - Run ```./clean_env.sh```
-
-#### Cleanup temporary build Vagrant box
-
- - Run ```./clean_box.sh```
-
-#### Cleanup build environment
-
- - Run ```./clean.sh```
-
-#### Generate Vagrant Cloud API Token
-
- - Run ```./vagrant_cloud_token.sh```
-
-#### Keep only a maximum number of boxes in Vagrant Cloud (experimental)
-
- - Run ```./clean_cloud.sh```
+Type ```make``` for help, build your own box with ```make all```.
 
 ## Feedback and bug reports welcome
 

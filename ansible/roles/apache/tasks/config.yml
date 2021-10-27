@@ -1,0 +1,7 @@
+---
+# vim: ts=2 sw=2 et syntax=yaml
+
+- name: Apache configuration
+  template:
+    src: httpd.conf.j2
+    dest: /etc/apache2/httpd.conf

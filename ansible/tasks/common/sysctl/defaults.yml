@@ -1,0 +1,8 @@
+---
+# vim: ts=2 sw=2 et syntax=yaml
+
+- name: defaults - iptables - reset IP forwarding
+  lineinfile:
+    path: /etc/sysctl.conf
+    regexp: '^(#)?net.ipv4.ip_forward'
+    line: '#net.ipv4.ip_forward=0'

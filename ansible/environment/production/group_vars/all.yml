@@ -1,0 +1,10 @@
+---
+# vim: ts=2 sw=2 et syntax=yaml
+
+# configure environment
+# advice to use .test domain (see RFC 6761 - https://www.rfc-editor.org/rfc/rfc6761.html)
+
+build_environment: production
+default_domainname: www.test
+
+php_version: 7.3

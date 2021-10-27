@@ -1,0 +1,27 @@
+---
+# vim: ts=2 sw=2 et syntax=yaml
+
+- name: Environment settings
+  debug:
+    msg:
+      - "Inventory hostname...: {{ inventory_hostname }}"
+      - "Inventory hostfile...: {{ inventory_file }}"
+      - "Build environment....: {{ hostvars[inventory_hostname].build_environment }}"
+# TODO print inventory settings
+
+- name: Common system settings
+  include: common/main.yml
+
+- name: Looping over tasks
+  include: 'rolegroups/{{ taskinputvar }}.yml'
+  loop_control:
+    loop_var: taskinputvar
+  loop:
+   #- dns
+   - webserver
+   #- database
+   #- email
+   #- ldap
+   #- editor
+   #- backup
+   #- dashboard

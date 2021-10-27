@@ -1,0 +1,17 @@
+---
+# vim: ts=2 sw=2 et syntax=yaml
+
+php_version: 7.3
+
+php_log_path: "/var/log/php"
+php_timezone: "Europe/Berlin"
+
+php_expose_php:     "Off"
+php_display_errors: "Off"
+
+php_max_input_time:      "30"
+php_max_execution_time:  "60"
+php_memory_limit:        "128M"
+php_post_max_size:       "8M"
+php_upload_max_filesize: "8M"
+php_session_maxlifetime: "7200"

@@ -1,0 +1,10 @@
+# This file contains a list of distfiles to download.
+# Useful if source files are not available through an ebuild.
+# Possibly be reported back to Funtoo (http://bugs.funtoo.org)
+# if default Funtoo packages are affected.
+# This file structure is as follows (space separated):
+# <BLAKE2B> <filename> <download url>
+
+# ---> ant 1.10.9 (custom ebuild): file backed up while gentoo infrastructure was down
+2249c7e1628052a2a6896c6995e0c5dd14ea77671ab0ef4402ece9968f41266cdf4411cd669dbb73c4d7043d7c6c5f6e992bfc2705e74899ff1058f0d4942704 ant-1.10.9-gentoo.tar.bz2 https://dev.gentoo.org/~fordfrog/distfiles/ant-1.10.9-gentoo.tar.bz2
+

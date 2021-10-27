@@ -1,0 +1,12 @@
+---
+# vim: ts=2 sw=2 et syntax=yaml
+
+- include: dirs.yml
+- include: sysctl.yml
+- include: limits.yml
+- include: nsswitch.yml
+- include: java.yml
+#- include: conf.d.yml
+#- include: cron.yml
+#- include: rc-update.yml
+#- include: world-update.yml

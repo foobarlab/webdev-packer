@@ -1,0 +1,8 @@
+---
+# vim: ts=2 sw=2 et syntax=yaml
+
+- include: dirs.yml
+- include: logs.yml
+- include: default_php.yml
+- include: php_ini.yml
+- include: php_fpm.yml

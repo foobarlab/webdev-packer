@@ -1,7 +1,9 @@
 # -*- mode: ruby -*-
-# vim: ts=2 sw=2 et ft=ruby
+# vim: ts=2 sw=2 et ft=ruby :
 
-system("./config.sh >/dev/null")
+system("./bin/config.sh >/dev/null")
+
+Vagrant.require_version ">= 2.1.0"
 
 $script_export_packages = <<SCRIPT
 # sync any guest packages to host (vboxsf)
@@ -73,11 +75,10 @@ set +o history
 rm -f /home/vagrant/.bash_history
 rm -f /root/.bash_history
 sync && sleep 5
-# run zerofree at last to squeeze the last bit
-# /boot
+# zerofree /boot
 mount -v -n -o remount,ro /dev/sda1
 zerofree /dev/sda1 && echo "zerofree: success on /dev/sda1 (boot)"
-# / (root fs)
+# zerofree root fs
 mount -v -n -o remount,ro /dev/sda4
 zerofree /dev/sda4 && echo "zerofree: success on /dev/sda4 (root)"
 # swap
@@ -86,14 +87,21 @@ bash -c 'dd if=/dev/zero of=/dev/sda3 2>/dev/null' || true
 mkswap /dev/sda3
 SCRIPT
 
+box_name = ENV["BUILD_BOX_NAME"] || "foobarlab/webdev"
+headless = ENV['BUILD_HEADLESS'] || "false"
+memory   = ENV['BUILD_BOX_MEMORY'] || 2048
+cpus     = ENV['BUILD_BOX_CPUS'] || 2
+
 Vagrant.configure("2") do |config|
+  #config.vagrant.sensitive = ["MySecretPassword", ENV["MY_TOKEN"]] # TODO hide sensitive information
   config.vm.box_check_update = false
-  config.vm.box = "#{ENV['BUILD_BOX_NAME']}"
-  config.vm.hostname = "#{ENV['BUILD_BOX_NAME']}"
+  config.vm.box = box_name
+  #config.vm.box_version = ">0"   # TODO version constraint (not building funtoo next)
+  config.vm.hostname = box_name
   config.vm.provider "virtualbox" do |vb|
-    vb.gui = (ENV['BUILD_HEADLESS'] == "false")
-    vb.memory = "#{ENV['BUILD_BOX_MEMORY']}"
-    vb.cpus = "#{ENV['BUILD_BOX_CPUS']}"
+    vb.gui = (headless == "false")
+    vb.memory = memory
+    vb.cpus = cpus
     # customize VirtualBox settings, see also 'virtualbox.json'
     vb.customize ["modifyvm", :id, "--nictype1", "virtio"]
     vb.customize ["modifyvm", :id, "--nictype2", "virtio"]
@@ -135,7 +143,8 @@ Vagrant.configure("2") do |config|
   config.vm.base_mac = "080027344abc"
 
   # adapter 1 (eth0): private network (NAT with forwarding)
-  config.vm.network "forwarded_port", guest: 80, host: 8080     # apache
+  config.vm.network "forwarded_port", guest: 8080, host: 8080   # apache
+  config.vm.network "forwarded_port", guest: 8443, host: 8443   # apache
   config.vm.network "forwarded_port", guest: 8000, host: 8000   # lighttpd / dashboard
   config.vm.network "forwarded_port", guest: 3306, host: 3306   # mysql
   config.vm.network "forwarded_port", guest: 5432, host: 5432   # postgresql
@@ -168,12 +177,14 @@ Vagrant.configure("2") do |config|
   # ansible provisioning executed only in finalizing step (finalize.sh)
   config.vm.provision "provision_ansible", type: "ansible_local" do |ansible|
     ansible.install = false
-    ansible.verbose = true
+    ansible.verbose = "v"
     ansible.compatibility_mode = "2.0"
     ansible.playbook = "ansible/provision.yml"
     ansible.config_file = "ansible/ansible.cfg"
+    ansible.inventory_path = "ansible/environment/#{ENV['BUILD_ENVIRONMENT']}"
+    ansible.raw_arguments  = ["--connection=local"]
     ansible.extra_vars = {
-      mysql_root_password: "#{ENV['BUILD_MYSQL_ROOT_PASSWORD']}"
+      mysql_root_password: "#{ENV['BUILD_MYSQL_ROOT_PASSWORD'] || "changeme"}"
     }
   end
 
@@ -181,4 +192,5 @@ Vagrant.configure("2") do |config|
   config.vm.provision "clean_kernel", type: "shell", inline: $script_clean_kernel, privileged: true
   config.vm.provision "remove_kernel", type: "shell", inline: $script_remove_kernel, privileged: true
   config.vm.provision "cleanup", type: "shell", inline: $script_cleanup, privileged: true
+  # TODO add trigger for disk compaction?
 end

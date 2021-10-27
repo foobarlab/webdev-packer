@@ -1,0 +1,31 @@
+---
+# vim: ts=2 sw=2 et syntax=yaml
+
+- name: Ensure log dir exists
+  file:
+    path: /var/log/apache2
+    state: directory
+    owner: '{{ apache_user }}'
+    group: '{{ apache_group }}'
+    mode: 0750
+
+- name: Set owner and group of '{{ host_root }}'
+  file:
+    path: '{{ host_root }}'
+    state: directory
+    owner: '{{ apache_user }}'
+    group: '{{ apache_group }}'
+    mode: 0750
+
+- name: Create new default hosting dir
+  file:
+    path: '{{ item }}'
+    state: directory
+    owner: '{{ apache_user }}'
+    group: '{{ apache_group }}'
+    mode: 0775
+  with_items:
+    - '{{ default_vhost_path }}'
+    - '{{ default_vhost_path }}/cgi-bin'
+    - '{{ default_htdocs_path }}'
+    - '{{ default_errordocs_path }}'

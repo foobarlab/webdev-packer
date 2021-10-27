@@ -1,0 +1,130 @@
+#!/bin/bash
+# vim: ts=4 sw=4 et
+# custom script for minica root ca signed certs
+# example run: `GOPATH=$HOME/go PATH=$PATH:$HOME/go/bin minica-create-cert www.test`
+# see: https://github.com/jsha/minica
+
+# try to set GOPATH globally in /etc/profile.d/go.sh if not existant
+if [ ! -f /etc/profile.d/go.sh ]; then
+cat <<'DATA' | sudo tee -a /etc/profile.d/go.sh
+# we want our go apps to be in /opt/go and globally available
+export GOPATH=/opt/go
+export PATH=$PATH:/opt/go/bin
+DATA
+fi
+
+. /etc/profile
+
+if [ $# -ne 1 ]; then
+    echo "None or too many arguments supplied. Please give a comma-separated list of domain names for which a certificate should be created."
+    exit 1
+fi
+
+currdate=`date +%Y-%m-%d\ %H:%M:%S`
+echo "$currdate: Creating certificate for '$1' ..."
+
+# check if certificate already exists
+certdir=`echo $1 | cut -d ',' -f1`
+certdir=${certdir/\*/_} # replace stars with underscore
+if [[ -d "$certdir" ]]; then
+    if [[ -f "$certdir/cert.pem" || -f "$certdir/key.pem" ]]; then
+        if [ ! -z "$certdir" ]; then
+            echo "Previously generated certificates in '$PWD/$certdir' found. Deleting ..."
+            rm -rf $certdir
+        fi
+    else
+        echo "No certificates found ... Proceeding ..."
+    fi
+fi
+
+command -v minica >/dev/null 2>&1 || {
+
+    echo "Required command 'minica' does not exist. Will try to install ...";
+
+    command -v go >/dev/null 2>&1 || {
+        echo "Seems like you have no 'go' command. Please install Golang first and run this script again. See: https://golang.org/";
+        exit 1;
+    }
+
+    # check actual go version
+    version=$(go version)
+    regex="(go[0-9]?.[0-9]?.[0-9]?)"
+    if [[ $version =~ $regex ]]; then
+        parsed_version=`echo $version | sed -re 's/(.*)go([0-9]?.[0-9]*.[0-9]*)(.*)/\2/'`
+        major=`echo $parsed_version | cut -d. -f1`
+        minor=`echo $parsed_version | cut -d. -f2`
+        revision=`echo $parsed_version | cut -d. -f3`
+        echo "Found installed Golang version: $major.$minor.$revision"
+
+        # abort if golang seems too old
+        if [ $major -lt 1 ]; then
+            echo "Seems like you have an outdated Golang version installed. Please upgrade Golang and run this script again."
+            exit 1
+        fi
+
+        # try to install minica
+        if [ $major -eq 1 -a $minor -lt 11 ]; then
+            # (<1.11)
+            echo "You are using an older possibly unsupported version of Golang (< 1.11) so things can break. Will try to proceed ...";
+            if [[ ! -v GOPATH ]]; then
+                echo "GOPATH is not set. Please configure first and run this script again."
+                exit 1
+            elif [[ -z "$GOPATH" ]]; then
+                echo "GOPATH is set to the empty string. Please configure first and run this script again."
+                exit 1
+            else
+                go get github.com/jsha/minica
+                . /etc/profile
+                command -v minica >/dev/null 2>&1 || { echo "'minica' was installed but could not be found in your PATH. Please ensure the bin dir of GOPATH is in your PATH. Aborting."; exit 1; }
+            fi
+        else
+            # (>=1.11)
+            echo "Congratulations, you seem to have a recent Golang installation! Preparing installation of 'minica' executable ..."
+            if [[ ! -v GOPATH || -z "$GOPATH" ]]; then
+                echo "GOPATH is not set or is empty. Trying anyway ..."
+                command -v git >/dev/null 2>&1 || { echo "Required command 'git' not installed. Aborting."; exit 1; }
+                rm -rf ./go/
+                mkdir -p go
+                cd go
+                git clone https://github.com/jsha/minica
+                cd minica
+                go build
+                mv minica ../../
+                cd ../../
+                rm -rf ./go/
+                export PATH=$PATH:.
+            else
+                go get github.com/jsha/minica
+                . /etc/profile
+                command -v minica >/dev/null 2>&1 || { echo "'minica' was installed but could not be found in your PATH. Please ensure the bin dir of GOPATH is in your PATH. Aborting."; exit 1; }
+            fi
+        fi
+
+    else
+        echo "An unexpected error occured. Please check your Golang installation."
+        exit 1
+    fi
+}
+
+# check if root ca already exists
+for pemfile in minica.pem minica-key.pem; do
+    if [ ! -f $pemfile ]; then
+        echo "No minica root ca found. Generating a new one."
+        rm -f minica.pem minica-key.pem || true
+        continue
+    fi
+done
+
+# create our cert
+minica --domains $1
+status=$?
+[ $status -ne 0 ] && exit $status
+
+if [[ ! -d $certdir ]]; then
+    echo "The certificate directory '$certdir' seems not existant. Possibly something went wrong."
+    exit 1
+else
+    echo "A new certificate was created in '$PWD/$certdir/'."
+    openssl x509 -in $certdir/cert.pem -text    # output cert info
+    echo "Done."
+fi

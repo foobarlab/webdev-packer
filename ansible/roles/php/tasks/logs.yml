@@ -1,0 +1,20 @@
+---
+# vim: ts=2 sw=2 et syntax=yaml
+
+- name: Create initial empty logs
+  file:
+    path: '{{ php_log_path }}/{{ item }}'
+    state: touch
+    owner: '{{ web_user }}'
+    group: '{{ web_group }}'
+    mode: 0750
+  with_items:
+    - error.log
+    - opcache.log
+    - mail.log
+    - error_cgi.log
+    - opcache_cgi.log
+    - mail_cgi.log
+    - error_cli.log
+    - opcache_cli.log
+    - mail_cli.log

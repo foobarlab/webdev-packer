@@ -1,0 +1,16 @@
+---
+# vim: ts=2 sw=2 et syntax=yaml
+
+- name: install executable
+  shell: 'go get github.com/jsha/minica'
+  args:
+    creates: '/opt/go/bin/minica'
+    executable: /bin/bash
+
+- name: copy create-cert script
+  copy:
+    src: 'minica-create-cert'
+    dest: '/usr/local/bin/'
+    mode: 0755
+    owner: root
+    group: root
