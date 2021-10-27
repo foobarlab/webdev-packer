@@ -66,7 +66,7 @@ finalize:
 init:
 	@init.sh
 
-## startup an initilized box
+## startup an initialized box
 startup:
 	@startup.sh
 
