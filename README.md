@@ -7,7 +7,7 @@ and provides an environment for web development.
 
 ## Operating system
 
- - Funtoo Linux 1.4 from [base box](https://github.com/foobarlab/funtoo-base-packer)
+ - Funtoo Linux 1.4
  - Architecture: x86-64bit, intel64-nehalem (compatible with most CPUs since 2008)
  - Initial 30 GB dynamic sized HDD image (ext4), can be expanded
  - Timezone: UTC
