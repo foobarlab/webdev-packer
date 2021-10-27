@@ -32,6 +32,7 @@ sudo sed -i 's:media-sound/pasystray::g' /var/lib/portage/world
 sudo sed -i 's:media-sound/pavucontrol::g' /var/lib/portage/world
 sudo sed -i 's:media-sound/pavumeter::g' /var/lib/portage/world
 sudo sed -i 's:media-sound/pulseaudio::g' /var/lib/portage/world
+sudo sed -i 's:media-gfx/graphviz::g' /var/lib/portage/world
 sudo sed -i 's:net-vpn/networkmanager-openvpn::g' /var/lib/portage/world
 sudo sed -i 's:sys-auth/elogind::g' /var/lib/portage/world
 sudo sed -i 's:x11-apps/mesa-progs::g' /var/lib/portage/world

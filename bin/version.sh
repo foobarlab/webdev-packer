@@ -22,7 +22,7 @@ if [ -z "${BUILD_BOX_VERSION:-}" ]; then
         # generate minor version (date in format YYMMDD):
         BUILD_MINOR_VERSION=$(date +%y%m%d)
         # take existing env var BUILD_NUMBER, increment the one stored in
-        # file 'build_number' or initialize a new one beginning with 0:
+        # file 'build_number' or initialize a new one starting with 0:
         if [ -z ${BUILD_NUMBER:-} ] ; then
             if [ -f "$BUILD_FILE_BUILD_NUMBER" ]; then
                 # read from file and increase by one

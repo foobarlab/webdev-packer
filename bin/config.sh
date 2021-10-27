@@ -72,8 +72,8 @@ if [ ! -z ${BUILD_TAG+x} ]; then
     BUILD_BOX_DESCRIPTION="$BUILD_BOX_DESCRIPTION ($BUILD_TAG)"
 fi
 
-if [[ -f ./build_time && -s build_time ]]; then
-    BUILD_RUNTIME=`cat build_time`
+if [[ -f ${BUILD_FILE_BUILD_TIME} && -s ${BUILD_FILE_BUILD_TIME} ]]; then
+    BUILD_RUNTIME=`cat ${BUILD_FILE_BUILD_TIME}`
     BUILD_RUNTIME_FANCY="Total build runtime was $BUILD_RUNTIME."
 else
     BUILD_RUNTIME="unknown"
