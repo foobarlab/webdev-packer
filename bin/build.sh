@@ -215,7 +215,7 @@ final "All preparations done."
 source "${BUILD_BIN_CONFIG}"
 
 step "Create build dir '${BUILD_DIR_BUILD}' ..."
-mkdir -p ${BUILD_DIR_BUILD}
+mkdir -p "${BUILD_DIR_BUILD}"
 
 export PACKER_LOG_PATH="${BUILD_FILE_PACKER_LOG}"
 export PACKER_LOG="1"
@@ -224,7 +224,6 @@ if [ $PACKER_LOG ]; then
 fi
 
 step "Invoking packer ..."
-
 # TODO use 'only' conditionals in packer for distinct provisioner?
 packer build -force -on-error=abort "$BUILD_FILE_PACKER_HCL"
 

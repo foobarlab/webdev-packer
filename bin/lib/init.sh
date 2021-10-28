@@ -55,9 +55,9 @@ BUILD_LIB_UTILS="${BUILD_DIR_LIB}/utils.sh"
 # packer provisioner
 BUILD_FILE_PACKER_HCL="${BUILD_DIR_PACKER}/virtualbox.pkr.hcl"
 BUILD_FILE_PACKER_LOG="${BUILD_DIR_BUILD}/packer.log"
-  BUILD_FILE_PACKER_CHECKSUM="${BUILD_DIR_BUILD}/packer.sha1.checksum"
+#BUILD_FILE_PACKER_CHECKSUM="${BUILD_DIR_BUILD}/packer.sha1.checksum"
 
-# etc config files
+# config files
 BUILD_FILE_DISTFILESLIST="${BUILD_DIR_ETC}/distfiles.list"
 BUILD_FILE_VERSIONFILE="${BUILD_DIR_ETC}/version"
 

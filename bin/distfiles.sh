@@ -36,9 +36,9 @@ if [[ -f "$BUILD_FILE_DISTFILESLIST" ]]; then
             error "Expected three space separated values, but got only $count in line $line_number: $line"
             exit 1
         fi
-        step "Check if file '$file_name' is present ..."
+        step "Looking for file '$file_name' ..."
         if [ ! -f "${BUILD_DIR_DISTFILES}/$file_name" ]; then
-            warn "File is missing."
+            warn "Missing file '$file_name'"
             step "Downloading file ..."
             wget -c "$file_url" -O "${BUILD_DIR_DISTFILES}/$file_name"
             todo "Check wget exit status"
@@ -64,5 +64,5 @@ if [[ -f "$BUILD_FILE_DISTFILESLIST" ]]; then
     IFS=$old_IFS # restore default field separator
 
 else
-    step "File '${BUILD_FILE_DISTFILESLIST}' not found."
+    step "File '${BUILD_FILE_DISTFILESLIST##*/}' not found."
 fi

@@ -11,8 +11,8 @@ set -a
 BUILD_BOX_PROVIDER="virtualbox"
 BUILD_GUEST_TYPE="Gentoo_64"
 
-BUILD_BOX_NAME="webdev"
 BUILD_BOX_USERNAME="foobarlab"
+BUILD_BOX_NAME="webdev"
 BUILD_BOX_SOURCES="https://github.com/foobarlab/webdev-packer"
 
 BUILD_PARENT_BOX_USERNAME="foobarlab"

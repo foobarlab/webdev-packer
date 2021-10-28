@@ -92,7 +92,7 @@ else
             # TODO check if location is related to current or parent box
             todo "Check if location is related to current or parent box, remove?"
             #step "Removing hdd from Media Manager ..."
-            #$vboxmanage closemedium disk ${vbox_hdd_uuids[$i]} --delete
+            #$vboxmanage closemedium disk ${vbox_hdd_uuids[$i]} --delete >/dev/null 2>&1
             #rm -f "$vbox_hdd_locations2[$i]" || true
         fi
     done
