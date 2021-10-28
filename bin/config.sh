@@ -44,8 +44,6 @@ BUILD_KEEP_MAX_CLOUD_BOXES=1          # set the maximum number of boxes to keep 
 
 # ----------------------------!  do not edit below this line  !----------------------------
 
-# TODO load custom user config (./etc/build.conf)
-
 source "${BUILD_DIR_BIN}/version.sh" "$*"   # determine build version
 
 # detect number of system cpus available (select half of cpus for best performance)

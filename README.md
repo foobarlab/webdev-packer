@@ -8,10 +8,12 @@ and provides an environment for web development.
 ## Operating system
 
  - Funtoo Linux 1.4
+ - Optional: experimental Funtoo next installation (work-in-progress)
  - Architecture: x86-64bit, intel64-nehalem (compatible with most CPUs since 2008)
+   respectively generic_64 (Funtoo next)
  - Initial 30 GB dynamic sized HDD image (ext4), can be expanded
  - Timezone: UTC
- - NAT, host-only and bridged networking (virtio)
+ - NAT, host-only and bridged networking (virtio) by default
  - Vagrant user *vagrant* with password *vagrant* (can get superuser via sudo without password),
    additionally using the default SSH authorized keys provided by Vagrant
    (see https://github.com/hashicorp/vagrant/tree/master/keys) 
