@@ -1,4 +1,4 @@
-# Web development Vagrant box
+# Web development box
 
 This is a Funtoo Linux that is packaged into a Vagrant box file.
 Currently only a VirtualBox version is provided.
