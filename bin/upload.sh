@@ -45,6 +45,7 @@ case "$choice" in
         ;;
 esac
 
+# TODO call cloud_version.sh?
 # check if a latest version does exist
 LATEST_VERSION_HTTP_CODE=$( \
   curl -sS -w "%{http_code}" -o /dev/null \
@@ -57,6 +58,7 @@ case "$LATEST_VERSION_HTTP_CODE" in
     *) error `printf "Received: HTTP $LATEST_VERSION_HTTP_CODE ==> Unhandled status code while trying to get latest box meta info, aborting.\n"`; exit 1 ;;
 esac
 
+# TODO call cloud_version.sh?
 # check version match on cloud and abort if same
 highlight "Checking existing cloud version ..."
 LATEST_CLOUD_VERSION=$( \

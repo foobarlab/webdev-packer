@@ -4,6 +4,8 @@
 # get the lastest version number for a parent box from Vagrant Cloud
 # see: https://www.vagrantup.com/docs/vagrant-cloud/api.html#boxes
 
+# TODO cover with cloud_version.sh?
+
 source "${BUILD_LIB_UTILS:-./bin/lib/utils.sh}" "$*"
 
 if [ -z ${BUILD_BOX_NAME:-} ]; then
@@ -13,9 +15,9 @@ fi
 if [ -z "${BUILD_PARENT_BOX_CLOUD_VERSION:-}" ]; then
     if [ ! -z ${BUILD_PARENT_BOX_CHECK:-} ]; then
         require_commands curl jq
-        step "Reading meta info of parent box ..."
+        step "Requesting parent box info ..."
         PARENT_VERSION_HTTP_CODE=$( \
-        curl -sS -w "%{http_code}" -o /dev/null \
+          curl -sS -w "%{http_code}" -o /dev/null \
           https://app.vagrantup.com/api/v1/box/$BUILD_PARENT_BOX_CLOUD_NAME \
         )
         case "$PARENT_VERSION_HTTP_CODE" in
@@ -30,14 +32,12 @@ if [ -z "${BUILD_PARENT_BOX_CLOUD_VERSION:-}" ]; then
         esac
         step "Getting latest version of parent box ..."
         LATEST_PARENT_VERSION=$( \
-        curl -sS \
+          curl -sS \
           https://app.vagrantup.com/api/v1/box/$BUILD_PARENT_BOX_CLOUD_NAME \
         )
         export BUILD_PARENT_BOX_CLOUD_VERSION=$(echo $LATEST_PARENT_VERSION | jq .current_version.version | tr -d '"')
-        step "Found current parent box version: '$BUILD_PARENT_BOX_CLOUD_VERSION'"
+        if_not_silent result "Parent version is '$BUILD_PARENT_BOX_CLOUD_VERSION'"
     fi
 else
     step "Reusing previous found parent box version: '$BUILD_PARENT_BOX_CLOUD_VERSION'"
 fi
-
-if_not_silent result "Parent version is '$BUILD_PARENT_BOX_CLOUD_VERSION'"

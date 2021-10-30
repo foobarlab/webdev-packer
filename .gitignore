@@ -2,17 +2,15 @@
 .project
 .settings
 
-# config files
+# cached dirs and files
+packages/
+distfiles/
 vagrant-cloud-token
 
 # temporary created files during build
+.vagrant/
 packer_cache/
 /keys
 /certs
 /build
 /output-*
-
-# cache dirs
-.vagrant/
-packages/
-distfiles/

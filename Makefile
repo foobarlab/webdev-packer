@@ -9,7 +9,7 @@ export BUILD_ROOT:=$(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 
 .PHONY: all config build clean clean_env clean_box clean_cloud cloud_version \
         distfiles finalize init startup test test_ansible parent_version \
-        upload vagrant_cloud_token version help readme download
+        upload vagrant_cloud_token version help readme download clean_temp
 
 ## show help
 help:
@@ -34,23 +34,27 @@ config:
 build:
 	@build.sh
 
-## clean temporary created files
+## remove any build and temporary created files
 clean:
 	@clean.sh
 
-## clean vm environment
+## remove only temporary created files
+clean_temp:
+	@clean_temp.sh
+
+## cleanup whole environment (cleanup virtual machines, vagrant and clean build)
 clean_env:
 	@clean_env.sh
 
-## clean current box
+## cleanup vagrant environment
 clean_box:
 	@clean_box.sh
 
-## clean cloud boxes
+## tidy cloud boxes, delete old ones
 clean_cloud:
 	@clean_cloud.sh
 
-## show cloud box versions
+## show all cloud box versions
 cloud_version:
 	@cloud_version.sh
 
@@ -58,11 +62,11 @@ cloud_version:
 distfiles:
 	@distfiles.sh
 
-## finalize a raw box
+## finalize a raw box (ansible as second stage)
 finalize:
 	@finalize.sh
 
-## init a built box
+## initialize a new box from build
 init:
 	@init.sh
 
@@ -70,11 +74,11 @@ init:
 startup:
 	@startup.sh
 
-## test a built box
+## quick test a built box for bootability
 test:
 	@test.sh
 
-## run ansible on built box
+## run ansible provisioning on built box
 test_ansible:
 	@test_ansible.sh
 

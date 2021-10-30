@@ -46,12 +46,14 @@ BUILD_FILE_PACKER_LOG="${BUILD_DIR_BUILD}/packer.log"
 BUILD_FILE_DISTFILESLIST="${BUILD_DIR_ETC}/distfiles.list"
 BUILD_FILE_BUILDCONF="${BUILD_DIR_ETC}/build.conf"
 BUILD_FILE_VERSIONFILE="${BUILD_DIR_ETC}/version"
+#BUILD_FILE_VERSIONFILE="${BUILD_DIR_ETC}/version"
+#BUILD_FILE_ROOTCA="${BUILD_DIR_ETC}/certs/rootCA.pem"
+#BUILD_FILE_ROOTCA_KEY="${BUILD_DIR_ETC}/certs/rootCA-key.pem"
 
-  BUILD_FILE_ROOTCA="rootCA.pem"
-  BUILD_FILE_ROOTCA_KEY="rootCA-key.pem"
+# cached files
 BUILD_FILE_VAGRANT_TOKEN="${BUILD_ROOT}/vagrant-cloud-token"
 
-# files created during build
+# temp files created during build
 BUILD_FILE_BUILD_NUMBER="${BUILD_DIR_BUILD}/build_number"
 BUILD_FILE_BUILD_TIME="${BUILD_DIR_BUILD}/build_time"
 BUILD_FILE_BUILD_VERSION="${BUILD_DIR_BUILD}/build_version"
