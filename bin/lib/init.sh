@@ -10,7 +10,7 @@
 # override silent mode for debugging
 if [[ -v BUILD_DEBUG ]]; then
   if [[ "$BUILD_DEBUG" == "true" ]]; then
-    silent=true
+    silent=false
   else
     # let scripts set silent mode
     set_silent_mode "$*"
