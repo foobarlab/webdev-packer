@@ -15,8 +15,9 @@ sudo emerge -nuvtND --with-bdeps=y \
 
 # ---- Redis
 
-sudo emerge -nuvtND --with-bdeps=y \
-    dev-db/redis
+# temporary disabled due to Manifest failure (FL-9112)
+#sudo emerge -nuvtND --with-bdeps=y \
+#    dev-db/redis
 
 # ---- Solr
 
