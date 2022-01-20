@@ -17,7 +17,7 @@ and provides an environment for web development.
  - Vagrant user *vagrant* with password *vagrant* (can get superuser via sudo without password),
    additionally using the default SSH authorized keys provided by Vagrant
    (see https://github.com/hashicorp/vagrant/tree/master/keys) 
- - Optional: build your own Debian Kernel 5.10 (debian-sources)
+ - Optional: build your own Debian Kernel 5.15 (debian-sources)
 
 ## Applications and services
 
