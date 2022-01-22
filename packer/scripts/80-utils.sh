@@ -89,7 +89,6 @@ sudo emerge -nuvtND --with-bdeps=y \
   net-analyzer/dhcpdump \
   net-analyzer/traceroute \
   net-analyzer/snort \
-  net-analyzer/wireshark \
   net-analyzer/mtr \
   net-misc/httpie \
   net-misc/geoipupdate \
@@ -97,8 +96,10 @@ sudo emerge -nuvtND --with-bdeps=y \
   net-misc/keychain \
   app-benchmarks/httperf
 
-# wireshark:
-sudo gpasswd -a vagrant wireshark
+## wireshark:
+#sudo emerge -nuvtND --with-bdeps=y \
+#  net-analyzer/wireshark
+#sudo gpasswd -a vagrant wireshark
 
 # ---- various file utils
 
